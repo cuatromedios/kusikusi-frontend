@@ -1,0 +1,26 @@
+@import "./element";
+@import "./icons";
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background-color: $--color-primary;
+  font-family: 'Nunito', arial, helvetica, sans-serif;
+  font-weight: 300;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: $--color-text-primary;
+}
+
+h1, h2, h3, h4, h5 {
+  font-family: 'Nunito', arial, helvetica, sans-serif;
+  font-weight: 300;
+  color: $--color-info;
+  margin: 0;
+}
+main {
+  margin: 0 89px;
+  @media all and (max-width: 800px) {
+    margin: 0 16px;
+  }
+}

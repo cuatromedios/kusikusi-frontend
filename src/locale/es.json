@@ -1,0 +1,14 @@
+{
+  "general": {
+    "title": "Kusikusi"
+  },
+  "login": {
+    "welcome": "¡Bienvenido!",
+    "email_placeholder": "Correo electrónico",
+    "password_placeholder": "Contraseña",
+    "button": "Ingresar"
+  },
+  "dashboard": {
+    "title": "Tablero"
+  }
+}
