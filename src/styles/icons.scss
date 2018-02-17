@@ -8,3 +8,4 @@
 };
 $fa-css-prefix: el-icon-fa;
 @import "~font-awesome/scss/font-awesome";
+// TODO: Fonts were copied to the src folder because webpack was unable to load them. Find the solution to use the fonts inside node_modules!

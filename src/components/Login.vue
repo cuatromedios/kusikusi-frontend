@@ -6,20 +6,9 @@
         <h1>{{ 'login.welcome' | translate }}</h1>
       </div>
       <el-form class="login-form">
-        <el-input
-          :placeholder="$t('login.email_placeholder')"
-          v-model="form.email"
-          prefix-icon="el-icon-fa-envelope"></el-input>
-        <el-input
-          ref="passwordField"
-          :placeholder="$t('login.password_placeholder')"
-          :type="passwordType"
-          v-model="form.password"
-          prefix-icon="el-icon-fa-lock">
-          <i :class="{'el-icon-fa-eye': passwordType === 'password', 'el-icon-fa-eye-slash': passwordType !== 'password', 'el-input__icon': true}"
-            slot="suffix"
-            @click="handleShowPassword">
-          </i>
+        <el-input :placeholder="$t('login.email_placeholder')" v-model="form.email" prefix-icon="el-icon-fa-envelope"></el-input>
+        <el-input ref="passwordField" :placeholder="$t('login.password_placeholder')" :type="passwordType" v-model="form.password" prefix-icon="el-icon-fa-lock">
+          <i :class="{'el-icon-fa-eye': passwordType === 'password', 'el-icon-fa-eye-slash': passwordType !== 'password', 'el-input__icon': true}" slot="suffix" @click="handleShowPassword"></i>
         </el-input>
         <loading-button
           type="primary"
