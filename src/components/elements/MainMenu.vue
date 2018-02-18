@@ -3,38 +3,35 @@
     <div class="logo-container">
       <img src="../../assets/logo.svg">
     </div>
-    <el-menu default-active="1" >
-      <el-menu-item  index="1">
-        <i class="el-icon-menu"></i>
-        <span slot="title">{{ 'dashboard.title' | translate }}</span>
+    <el-menu :default-active="this.$route.name" @select="handleSelect" >
+      <el-menu-item :index="item.id" :key="item.id"  v-for="item in menu">
+        <i :class=" 'el-icon-fa-' + item.icon "></i>
+        <span slot="title">{{ item.id+'.title' | translate }}</span>
       </el-menu-item >
-      <el-menu-item index="2">
-        <i class="el-icon-fa-pencil-square-o"></i>
-        <span slot="title">{{ 'content.title' | translate }}</span>
-      </el-menu-item>
-      <el-menu-item index="3">
-        <i class="el-icon-fa-picture-o"></i>
-        <span slot="title">{{ 'media.title' | translate }}</span>
-      </el-menu-item>
-      <el-menu-item index="4">
-        <i class="el-icon-fa-users"></i>
-        <span slot="title">{{ 'users.title' | translate }}</span>
-      </el-menu-item>
-      <el-menu-item index="4">
-        <i class="el-icon-fa-sign-out"></i>
-        <span slot="title">{{ 'logout.title' | translate }}</span>
-      </el-menu-item>
     </el-menu>
   </div>
 </template>
 
 <script>
+import { routes } from '@/router'
+
 export default {
   props: {
   },
+  data () {
+    return {
+      menu: [
+        { id: routes.dashboard.name, icon: 'tachometer' },
+        { id: routes.content.name, icon: 'pencil-square-o' },
+        { id: routes.media.name, icon: 'picture-o' },
+        { id: routes.users.name, icon: 'users' },
+        { id: routes.logout.name, icon: 'sign-out' }
+      ]
+    }
+  },
   methods: {
-    handleClick: function () {
-      this.$emit('click')
+    handleSelect (index) {
+      this.$router.push({ name: index })
     }
   }
 }

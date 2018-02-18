@@ -3,7 +3,7 @@
     <el-card class="box-card login-card">
       <div slot="header">
         <img src="../assets/logo.svg" class="logo">
-        <h1>{{ 'login.welcome' | translate }}</h1>
+        <h2>{{ 'login.welcome' | translate }}</h2>
       </div>
       <el-form class="login-form">
         <el-input :placeholder="$t('login.email_placeholder')" v-model="form.email" prefix-icon="el-icon-fa-envelope"></el-input>
@@ -25,11 +25,14 @@
 
 import LoadingButton from './elements/LoadingButton'
 import Connection from '@/Connection'
-import config from '../config'
+import { routes } from '@/router'
 
 export default {
   components: {LoadingButton},
   name: 'Login',
+  beforeCreate () {
+    this.$store.dispatch('resetUserData')
+  },
   data () {
     return {
       passwordType: 'password',
@@ -59,7 +62,8 @@ export default {
           _this.$store.commit('setAuthtoken', loginResult.data.token)
           _this.$store.commit('setName', loginResult.data.entity.data.name)
           _this.$store.commit('setProfile', loginResult.data.entity.data.profile)
-          this.$router.push({ name: config.routes.dashboard })
+          _this.$store.commit('setUserId', loginResult.data.entity.id)
+          this.$router.push({ name: routes.dashboard.name })
         } else {
           this.message = this.$t('login.invalid')
         }
@@ -93,7 +97,7 @@ export default {
     max-width: 30em;
     margin: 4em auto;
     overflow: visible;
-    h1 {
+    h2 {
       text-align: center;
     }
     .header {
@@ -104,7 +108,6 @@ export default {
       height: 6em;
       animation-name: down;
       animation-duration: 0.5s;
-      animation-delay: 0.5s;
     }
     .login-form {
       .el-input, .el-alert {

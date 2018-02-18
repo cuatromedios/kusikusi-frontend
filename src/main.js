@@ -1,17 +1,17 @@
 // The Vue build version to load with the `import` command
 // (runtime-only or standalone) has been set in webpack.base.conf with an alias.
 import Vue from 'vue'
-import App from './App'
-import config from './config'
-import router from './router'
+import App from '@/App'
+import config from '@/config'
+import { default as router, routes } from '@/router'
 import Vuex from 'vuex' // general storage (states container)
-import vuexStore from './vuexStore' // store definition for Vuex
+import vuexStore from '@/vuexStore' // store definition for Vuex
 import localstorage from 'store' // local storage in the browser
 import vuexI18n from 'vuex-i18n' // Localization
 import ElementUI from 'element-ui'
 import elementLocale from 'element-ui/lib/locale/lang/en'
-import './styles/main.scss'
-import Connection from './Connection'
+import '@/styles/main.scss'
+import Connection from '@/Connection'
 
 // TODO: Language files should be lazy loaded
 import englishTexts from './locale/en.json'
@@ -28,14 +28,15 @@ const store = new Vuex.Store(vuexStore)
 let authtoken = localstorage.get('authtoken')
 let name = localstorage.get('name')
 let profile = localstorage.get('profile')
+let userId = localstorage.get('userId')
 if (authtoken && authtoken !== '') {
   store.commit('setAuthtoken', authtoken)
   store.commit('setName', name)
+  store.commit('setUserId', userId)
   store.commit('setProfile', profile)
-  router.push({ name: config.routes.dashboard })
 } else {
   store.dispatch('resetUserData')
-  router.push({ name: config.routes.login })
+  router.push({ name: routes.login })
 }
 
 /* Initialize localozation support and search for prefered language in the browser */

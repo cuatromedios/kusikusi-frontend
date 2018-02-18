@@ -1,42 +1,42 @@
 <template>
-  <div id="app">
-    <main-menu class="main-menu"></main-menu>
+  <el-container id="app">
+    <aside v-if="this.$store.state.logged">
+      <main-menu class="main-menu"></main-menu>
+    </aside>
     <main>
       <router-view/>
+      <footer>
+        <p>Powered by <a href="http://kusikusi.cuatromedios.com/" target="_blank">KusiKusi</a></p>
+      </footer>
     </main>
-    <footer>
-      <p>Powered by <a href="http://kusikusi.cuatromedios.com/" target="_blank">KusiKusi</a></p>
-    </footer>
-  </div>
+  </el-container>
 </template>
 
 <script>
 import MainMenu from './components/elements/MainMenu'
+import ElCol from 'element-ui/packages/col/src/col'
 export default {
   name: 'App',
-  components: {MainMenu}
+  components: {
+    ElCol,
+    MainMenu}
 }
 </script>
 
 <style lang="scss">
   @import "./styles/variables";
-  #app {
-    display: grid;
-    height: 100vh;
-    grid-template-columns: 12em auto;
-    grid-template-areas:
-      'menu main'
-      'menu footer';
-    grid-gap: 0px;
-    .main-menu {
-      grid-area: menu;
+  #app.el-container {
+    aside {
+      width: 15rem;
+      height: 100vh;
+      background-color: $--color-primary;
     }
     main {
-      grid-area: main;
+      width: 100%;
       padding: 1em;
     }
     footer {
-      grid-area: footer;
+      padding: 2em 0;
       font-size: 80%;
       text-align: center;
       color: #999;

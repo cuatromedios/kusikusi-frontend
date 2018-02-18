@@ -5,8 +5,16 @@
 </template>
 
 <script>
+import { routes } from '@/router'
 export default {
   name: 'Home',
+  mounted () {
+    if (this.$store.state.logged) {
+      this.$router.push({ name: routes.dashboard.name })
+    } else {
+      this.$router.push({ name: routes.login.name })
+    }
+  },
   data () {
     return {
     }
@@ -18,5 +26,7 @@ export default {
 <style scoped>
 img {
   display: block;
+  width: 50%;
+  margin: 1em auto;
 }
 </style>
