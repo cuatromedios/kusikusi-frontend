@@ -6,9 +6,23 @@
     "welcome": "¡Bienvenido!",
     "email_placeholder": "Correo electrónico",
     "password_placeholder": "Contraseña",
-    "button": "Ingresar"
+    "button": "Ingresar",
+    "invalid": "El correo electrónico o la contraseña son incorrectos",
+    "error": "Hubo un error inesperado en el servidor"
   },
   "dashboard": {
     "title": "Tablero"
+  },
+  "content": {
+    "title": "Contenido"
+  },
+  "media": {
+    "title": "Medios"
+  },
+  "users": {
+    "title": "Usuarios"
+  },
+  "logout": {
+    "title": "Salir"
   }
 }

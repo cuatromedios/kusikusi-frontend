@@ -11,6 +11,7 @@ import vuexI18n from 'vuex-i18n' // Localization
 import ElementUI from 'element-ui'
 import elementLocale from 'element-ui/lib/locale/lang/en'
 import './styles/main.scss'
+import Connection from './Connection'
 
 // TODO: Language files should be lazy loaded
 import englishTexts from './locale/en.json'
@@ -31,6 +32,7 @@ if (authtoken && authtoken !== '') {
   store.commit('setAuthtoken', authtoken)
   store.commit('setName', name)
   store.commit('setProfile', profile)
+  router.push({ name: config.routes.dashboard })
 } else {
   store.dispatch('resetUserData')
   router.push({ name: config.routes.login })
@@ -54,10 +56,13 @@ if (lang && lang !== '') {
 }
 store.commit('setLang', lang)
 
+Connection.setBaseUrl(config.api.url)
+
 /* eslint-disable no-new */
 new Vue({
   el: '#app',
   router,
+  store,
   components: { App },
   template: '<App/>'
 })

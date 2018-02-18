@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import axios from 'axios'
+import Connection from '@/Connection'
 import store from 'store' // Browser storage
 
 export default {
@@ -14,7 +14,7 @@ export default {
   },
   mutations: {
     setAuthtoken (state, newToken) {
-      axios.defaults.headers.common['Authorization'] = 'Bearer ' + newToken
+      Connection.setHeader('Authorization', 'Bearer ' + newToken)
       store.set('authtoken', newToken) // local data in the browser
       state.user.authtoken = newToken
     },

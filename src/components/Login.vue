@@ -10,6 +10,7 @@
         <el-input ref="passwordField" :placeholder="$t('login.password_placeholder')" :type="passwordType" v-model="form.password" prefix-icon="el-icon-fa-lock">
           <i :class="{'el-icon-fa-eye': passwordType === 'password', 'el-icon-fa-eye-slash': passwordType !== 'password', 'el-input__icon': true}" slot="suffix" @click="handleShowPassword"></i>
         </el-input>
+        <el-alert :title="message" type="error" v-if="message !== ''" :closable="false"></el-alert>
         <loading-button
           type="primary"
           :loading="loading"
@@ -23,6 +24,8 @@
 <script>
 
 import LoadingButton from './elements/LoadingButton'
+import Connection from '@/Connection'
+import config from '../config'
 
 export default {
   components: {LoadingButton},
@@ -34,18 +37,49 @@ export default {
         email: '',
         password: ''
       },
-      loading: false
+      loading: false,
+      message: ''
     }
   },
   methods: {
     handleShowPassword: function () {
       this.passwordType = this.passwordType === 'password' ? 'text' : 'password'
     },
-    handleLogin: function () {
-      this.loading = true
-      console.log('Login!')
+    handleLogin: async function () {
+      var _this = this
+      this.message = ''
+      try {
+        this.loading = true
+        let loginResult = await Connection.post('/user/login', {
+          'email': this.form.email,
+          'password': this.form.password
+        })
+        this.loading = false
+        if (loginResult.success) {
+          _this.$store.commit('setAuthtoken', loginResult.data.token)
+          _this.$store.commit('setName', loginResult.data.entity.data.name)
+          _this.$store.commit('setProfile', loginResult.data.entity.data.profile)
+          this.$router.push({ name: config.routes.dashboard })
+        } else {
+          this.message = this.$t('login.invalid')
+        }
+      } catch (error) {
+        console.error(error)
+        this.loading = false
+        if (error.response) {
+          switch (error.response.status) {
+            case 401:
+              _this.message = this.$t('login.invalid')
+              break
+            default:
+              _this.message = this.$t('login.error')
+              break
+          }
+        }
+      }
     }
   }
+
 }
 </script>
 
@@ -73,7 +107,7 @@ export default {
       animation-delay: 0.5s;
     }
     .login-form {
-      .el-input {
+      .el-input, .el-alert {
         margin-bottom: 1em;
       }
       .el-button {

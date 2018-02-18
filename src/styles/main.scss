@@ -4,10 +4,9 @@
 html, body {
   margin: 0;
   padding: 0;
-  background-color: $--color-primary;
+  background-color: white;
   font-family: 'Source Sans Pro', sans-serif;
   font-weight: 400;
-  fonts-size: 20px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: $--color-text-primary;
@@ -24,12 +23,13 @@ input {
 h1, h2, h3, h4, h5 {
   font-family: 'Source Sans Pro', sans-serif;
   font-weight: 800;
-  color: $--color-info;
+  color: $--color-primary;
   margin: 0;
 }
-main {
-  margin: 0 89px;
-  @media all and (max-width: 800px) {
-    margin: 0 16px;
-  }
+h1 {
+  font-size: 2em;
+  background-color: lighten($--color-primary, 55%);
+  padding: 0.5em;
+  margin: -0.5em;
+  height: 1.5em;
 }
