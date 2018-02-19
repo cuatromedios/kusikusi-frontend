@@ -24,7 +24,7 @@ let routes = {
     component: Dashboard
   },
   content: {
-    path: '/content',
+    path: '/content/:id?',
     component: Content
   },
   media: {

@@ -43,7 +43,8 @@ class Connection {
     let result = await Connection.call('patch', path, body)
     return result
   }
-  static async delete (path, body) {
+  static async delete (path) {
+    // DELETE method don't support body
     let result = await Connection.call('delete', path)
     return result
   }
