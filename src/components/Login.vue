@@ -62,7 +62,7 @@ export default {
           _this.$store.commit('setAuthtoken', loginResult.data.token)
           _this.$store.commit('setName', loginResult.data.entity.data.name)
           _this.$store.commit('setProfile', loginResult.data.entity.data.profile)
-          _this.$store.commit('setUserId', loginResult.data.entity.id)
+          _this.$store.commit('setUserId', loginResult.data.entity.relations)
           this.$router.push({ name: routes.dashboard.name })
         } else {
           this.message = this.$t('login.invalid')
