@@ -30,8 +30,12 @@ export default {
       width: 15rem;
       height: 100vh;
       background-color: $--color-primary;
+      position: fixed;
+      top: 0;
+      left: 0;
     }
     main {
+      margin-left: 15rem;
       width: 100%;
       padding: 1em;
     }
