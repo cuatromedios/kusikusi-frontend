@@ -32,12 +32,32 @@ class Connection {
     delete axios.defaults.headers.common[header]
   }
   static async get (path) {
-    let result = await axios.get(baseUrl + path)
-    return result.data
+    let result = await Connection.call('get', path)
+    return result
   }
   static async post (path, body) {
-    let jsonBody = JSON.stringify(body)
-    let result = await axios.post(baseUrl + path, jsonBody)
+    let result = await Connection.call('post', path, body)
+    return result
+  }
+  static async patch (path, body) {
+    let result = await Connection.call('patch', path, body)
+    return result
+  }
+  static async delete (path, body) {
+    let result = await Connection.call('delete', path)
+    return result
+  }
+  static async call (method, path, body) {
+    if (['get', 'post', 'patch', 'delete'].indexOf(method.toLowerCase()) < 0) {
+      return {success: false, data: null, info: 'No method or method not allowed'}
+    }
+    let jsonBody = body ? JSON.stringify(body) : null
+    let result
+    try {
+      result = await axios[method](baseUrl + path, jsonBody)
+    } catch (error) {
+      return {success: false, data: null, info: 'An error ocurried in the external call'}
+    }
     return result.data
   }
 }
