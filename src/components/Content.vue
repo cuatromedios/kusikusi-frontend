@@ -48,17 +48,28 @@
       <h2>Relations</h2>
       <ul>
         <li v-for="relation in this.relations" :key="relation.id + '-' + relation.relation.kind">
-          {{ relation.relation.kind }} | <router-link :to="{ name: 'content', params: { id: relation.id }}">{{ relation.name }}</router-link>
+          <img :src="'http://127.0.0.1:8088/media/'+relation.id+'/thumb'" class="related-image"> {{ relation.relation.kind }} | <router-link :to="{ name: 'content', params: { id: relation.id }}">{{ relation.name }}</router-link>
           <small><el-button size="mini" @click="deleteRelation(relation.id, relation.relation.kind)">delete relation</el-button></small>
         </li>
       </ul>
       <h3>Create</h3>
-      <el-form label-width="100px" :model="newRelation" :inline="true">
-        <el-form-item label="ID">
-          <el-input v-model="newRelation.id"></el-input>
+      <el-form label-width="100px" :inline="true">
+        <el-form-item label="Title">
+          <el-input v-model="newMedium.contents.title"></el-input>
         </el-form-item>
         <el-form-item label="Kind">
           <el-input v-model="newRelation.kind"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-upload
+            class="upload-demo"
+            ref="upload"
+            :headers="this.uploadHeaders"
+            :action="this.uploadAction"
+            :auto-upload="false">
+            <el-button slot="trigger" size="small" type="primary">select file</el-button>
+            <div class="el-upload__tip" slot="tip">jpg/png files with a size less than 500kb</div>
+          </el-upload>
         </el-form-item>
         <el-form-item >
           <loading-button label="Create" type="primary" @click="createRelation" :loading="loading"></loading-button>
@@ -72,8 +83,15 @@
 import Connection from '@/Connection'
 import LoadingButton from './elements/LoadingButton'
 import { routes } from '@/router'
+import ElForm from '../../node_modules/element-ui/packages/form/src/form.vue'
+import ElFormItem from '../../node_modules/element-ui/packages/form/src/form-item.vue'
+import config from '@/config'
+
 export default {
-  components: {LoadingButton},
+  components: {
+    ElFormItem,
+    ElForm,
+    LoadingButton},
   name: 'Content',
   mounted () {
     this.getEntity()
@@ -102,10 +120,24 @@ export default {
         data: {},
         relations: []
       },
+      newMedium: {
+        model: 'medium',
+        contents: {
+          title: ''
+        }
+      },
       newRelation: {
         id: '',
-        kind: 'relation'
+        kind: 'medium'
       }
+    }
+  },
+  computed: {
+    uploadAction: function () {
+      return `${config.api.url}/media/${this.newRelation.id}/upload`
+    },
+    uploadHeaders: function () {
+      return {Authorization: 'Bearer ' + this.$store.state.user.authtoken}
     }
   },
   methods: {
@@ -203,9 +235,14 @@ export default {
     },
     createRelation: async function () {
       this.loading = true
-      let createResult = await Connection.post(`/entity/${this.entity.id}/relations`, this.newRelation)
+      let createResult = await Connection.post(`/media`, this.newMedium)
+      this.newRelation.id = createResult.data
+      this.$nextTick(() => {
+        this.$refs.upload.submit()
+      })
+      let relationResult = await Connection.post(`/entity/${this.entity.id}/relations`, this.newRelation)
       this.loading = false
-      if (createResult.success) {
+      if (createResult.success && relationResult) {
         this.$message({message: 'The relation', type: 'success'})
         this.getEntity()
       } else {
@@ -220,5 +257,7 @@ export default {
 </script>
 
 <style scoped>
-
+ .related-image {
+   width: 32px; height: 32px;
+ }
 </style>
