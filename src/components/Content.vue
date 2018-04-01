@@ -1,97 +1,33 @@
 <template>
-  <article>
+  <article v-loading="loading">
     <h1>{{ title }}</h1>
-    <div v-loading="loading">
-
-      <el-breadcrumb separator="/">
-        <el-breadcrumb-item
-          v-for="ancestor in this.ancestors"
-          :key="ancestor.id"
-          :to="{ name: 'content', params: { id: ancestors.id }}">
-          {{ ancestor.name }}
-        </el-breadcrumb-item>
-        <el-breadcrumb-item :to="{ name: 'content', params: { id: entity.id }}">{{ entity.name }}</el-breadcrumb-item>
-      </el-breadcrumb>
-      <br>
-
-      <h2>Update</h2>
-      <el-form label-width="100px" :model="entity" :inline="true">
-        <el-form-item label="Title">
-          <el-input v-model="entity.contents.title"></el-input>
-        </el-form-item>
-        <el-form-item label="">
-          <loading-button label="Save" type="primary" @click="saveEntity" :loading="loading"></loading-button>
-        </el-form-item>
-      </el-form>
-
-      <h2>Children</h2>
-      <ul>
-        <li v-for="child in this.children" :key="child.id">
-          <router-link :to="{ name: 'content', params: { id: child.id }}">{{ child.name }}</router-link>
-          <small><el-button size="mini" @click="deleteEntity(child.id)">delete</el-button></small>
-        </li>
-      </ul>
-
-      <h3>Create</h3>
-      <el-form label-width="100px" :model="newEntity" :inline="true">
-        <el-form-item label="Title">
-          <el-input v-model="newEntity.contents.title"></el-input>
-        </el-form-item>
-        <el-form-item label="Model">
-          <el-input v-model="newEntity.model"></el-input>
-        </el-form-item>
-        <el-form-item >
-          <loading-button label="Create" type="primary" @click="createEntity" :loading="loading"></loading-button>
-        </el-form-item>
-      </el-form>
-
-      <h2>Relations</h2>
-      <ul>
-        <li v-for="relation in this.relations" :key="relation.id + '-' + relation.relation.kind">
-          <img :src="'http://127.0.0.1:8088/media/'+relation.id+'/thumb'" class="related-image"> {{ relation.relation.kind }} | <router-link :to="{ name: 'content', params: { id: relation.id }}">{{ relation.name }}</router-link>
-          <small><el-button size="mini" @click="deleteRelation(relation.id, relation.relation.kind)">delete relation</el-button></small>
-        </li>
-      </ul>
-      <h3>Create</h3>
-      <el-form label-width="100px" :inline="true">
-        <el-form-item label="Title">
-          <el-input v-model="newMedium.contents.title"></el-input>
-        </el-form-item>
-        <el-form-item label="Kind">
-          <el-input v-model="newRelation.kind"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-upload
-            class="upload-demo"
-            ref="upload"
-            :headers="this.uploadHeaders"
-            :action="this.uploadAction"
-            :auto-upload="false">
-            <el-button slot="trigger" size="small" type="primary">select file</el-button>
-            <div class="el-upload__tip" slot="tip">jpg/png files with a size less than 500kb</div>
-          </el-upload>
-        </el-form-item>
-        <el-form-item >
-          <loading-button label="Create" type="primary" @click="createRelation" :loading="loading"></loading-button>
-        </el-form-item>
-      </el-form>
-    </div>
+    <EntityBreadcrumb :entity="this.entity" :ancestors="this.ancestors" />
+    <el-form label-width="100px" :model="this.entity" >
+      <el-form-item v-for="field in this.formFields" :key="field.label" :label="field.label">
+        <div :is="field.component" v-model="field.field" >{{field.child}}</div>
+      </el-form-item>
+      <el-form-item label="">
+        <loading-button label="Save" type="primary" @click="saveEntity" :loading="loading"></loading-button>
+      </el-form-item>
+    </el-form>
   </article>
 </template>
 
 <script>
 import Connection from '@/Connection'
+import EntityBreadcrumb from './elements/EntityBreadcrumb'
 import LoadingButton from './elements/LoadingButton'
-import { routes } from '@/router'
-import ElForm from '../../node_modules/element-ui/packages/form/src/form.vue'
-import ElFormItem from '../../node_modules/element-ui/packages/form/src/form-item.vue'
-import config from '@/config'
+
+/* eslint-disable */
+import ElInput from '../../node_modules/element-ui/packages/input/src/input'
+import ElInputNumber from '../../node_modules/element-ui/packages/input-number/src/input-number'
+import ElButton from '../../node_modules/element-ui/packages/button/src/button'
+/* eslint-enable */
 
 export default {
   components: {
-    ElFormItem,
-    ElForm,
-    LoadingButton},
+    EntityBreadcrumb, LoadingButton
+  },
   name: 'Content',
   mounted () {
     this.getEntity()
@@ -103,41 +39,19 @@ export default {
   },
   data () {
     return {
-      title: this.$t('content.title'),
       loading: true,
+      ancestors: [],
       entity: {
         contents: {},
         data: {},
         relations: []
       },
-      children: [],
-      relations: [],
-      ancestors: [],
-      newEntity: {
-        model: 'page',
-        parent: '',
-        contents: {},
-        data: {},
-        relations: []
-      },
-      newMedium: {
-        model: 'medium',
-        contents: {
-          title: ''
-        }
-      },
-      newRelation: {
-        id: '',
-        kind: 'medium'
-      }
+      formFields: []
     }
   },
   computed: {
-    uploadAction: function () {
-      return `${config.api.url}/media/${this.newRelation.id}/upload`
-    },
-    uploadHeaders: function () {
-      return {Authorization: 'Bearer ' + this.$store.state.user.authtoken}
+    title: function () {
+      return this.entity.name
     }
   },
   methods: {
@@ -165,31 +79,35 @@ export default {
       let entityResult = await Connection.get(`/entity/${entityId}`)
       if (entityResult.success) {
         this.entity = entityResult.data
-        this.title = this.entity.name
       }
-
-      // Get children
-      let childrenResult = await Connection.get(`/entity/${this.entity.id}/children`)
-      if (childrenResult.success) {
-        this.children = childrenResult.data
-      }
-
-      // Get relations
-      let relationResult = await Connection.get(`/entity/${this.entity.id}/relations`)
-      if (relationResult.success) {
-        this.relations = relationResult.data
-      }
+      console.log(this.entity)
 
       // Get ancestors
       let ancestorsResult = await Connection.get(`/entity/${this.entity.id}/ancestors`)
       if (ancestorsResult.success) {
         this.ancestors = ancestorsResult.data
       }
+      const modelsEditor = {
+        home: [
+          {
+            label: 'Título',
+            field: this.entity.contents.title,
+            component: ElInput
+          },
+          {
+            label: 'Posición',
+            field: this.entity.position,
+            component: ElInputNumber
+          }
+        ]
+      }
+      this.formFields = modelsEditor[this.entity.model]
 
       this.loading = false
     },
     saveEntity: async function () {
       this.loading = true
+      console.log(this.entity)
       let saveResult = await Connection.patch(`/entity/${this.entity.id}`, this.entity)
       this.loading = false
       if (saveResult.success) {
@@ -210,47 +128,6 @@ export default {
       } else {
         this.$message.error({message: 'There was a problem creating the entity.'})
       }
-    },
-    deleteEntity: async function (id) {
-      this.loading = true
-      let createResult = await Connection.delete(`/entity/${id}`)
-      this.loading = false
-      if (createResult.success) {
-        this.$message({message: 'The entity was delete', type: 'success'})
-        this.getEntity()
-      } else {
-        this.$message.error({message: 'There was a problem deleting the entity.'})
-      }
-    },
-    deleteRelation: async function (id, kind) {
-      this.loading = true
-      let createResult = await Connection.delete(`/entity/${this.entity.id}/relations/${id}/${kind}`)
-      this.loading = false
-      if (createResult.success) {
-        this.$message({message: 'The relation was delete', type: 'success'})
-        this.getEntity()
-      } else {
-        this.$message.error({message: 'There was a problem deleting the relation.'})
-      }
-    },
-    createRelation: async function () {
-      this.loading = true
-      let createResult = await Connection.post(`/media`, this.newMedium)
-      this.newRelation.id = createResult.data
-      this.$nextTick(() => {
-        this.$refs.upload.submit()
-      })
-      let relationResult = await Connection.post(`/entity/${this.entity.id}/relations`, this.newRelation)
-      this.loading = false
-      if (createResult.success && relationResult) {
-        this.$message({message: 'The relation', type: 'success'})
-        this.getEntity()
-      } else {
-        this.$message.error({message: 'There was a problem creating the relation.'})
-      }
-    },
-    goContent: function (id) {
-      this.$router.push({ name: routes.content.name }, id)
     }
   }
 }

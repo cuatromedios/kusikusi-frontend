@@ -4,6 +4,7 @@ import Home from '@/components/Home'
 import Login from '@/components/Login'
 import Dashboard from '@/components/Dashboard'
 import Content from '@/components/Content'
+import Sample from '@/components/Sample'
 import Media from '@/components/Media'
 import Users from '@/components/Users'
 import Logout from '@/components/Logout'
@@ -26,6 +27,10 @@ let routes = {
   content: {
     path: '/content/:id?',
     component: Content
+  },
+  sample: {
+    path: '/entity/:id?',
+    component: Sample
   },
   media: {
     path: '/media',

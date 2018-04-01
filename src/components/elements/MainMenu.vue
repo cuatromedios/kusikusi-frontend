@@ -23,6 +23,7 @@ export default {
       menu: [
         { id: routes.dashboard.name, icon: 'tachometer' },
         { id: routes.content.name, icon: 'pencil-square-o' },
+        { id: routes.sample.name, icon: 'pencil-square-o' },
         { id: routes.media.name, icon: 'picture-o' },
         { id: routes.users.name, icon: 'users' },
         { id: routes.logout.name, icon: 'sign-out' }
