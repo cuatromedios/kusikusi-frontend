@@ -3,9 +3,13 @@
     <h1>{{ title }}</h1>
     <EntityBreadcrumb :entity="this.entity" :ancestors="this.ancestors" />
     <el-form label-width="100px" :model="this.entity" >
-      <el-form-item v-for="field in this.formFields" :key="field.label" :label="field.label">
-        <div :is="field.component" v-model="field.field" >{{field.child}}</div>
-      </el-form-item>
+      <div v-for="item in this.formItems"
+           v-bind:key="item.label"
+           :is="item.component"
+           :field="item.field"
+           :label="item.label"
+           :params="item.params"
+           :entity="entity" ></div>
       <el-form-item label="">
         <loading-button label="Save" type="primary" @click="saveEntity" :loading="loading"></loading-button>
       </el-form-item>
@@ -19,14 +23,15 @@ import EntityBreadcrumb from './elements/EntityBreadcrumb'
 import LoadingButton from './elements/LoadingButton'
 
 /* eslint-disable */
-import ElInput from '../../node_modules/element-ui/packages/input/src/input'
-import ElInputNumber from '../../node_modules/element-ui/packages/input-number/src/input-number'
+import kkInput from './formItems/kkInput'
+import kkUrl from './formItems/kkUrl'
+import kkInputNumber from './formItems/kkInputNumber'
 import ElButton from '../../node_modules/element-ui/packages/button/src/button'
 /* eslint-enable */
 
 export default {
   components: {
-    EntityBreadcrumb, LoadingButton
+    EntityBreadcrumb, LoadingButton, kkInput, kkInputNumber, ElButton
   },
   name: 'Content',
   mounted () {
@@ -46,7 +51,7 @@ export default {
         data: {},
         relations: []
       },
-      formFields: []
+      formItems: []
     }
   },
   computed: {
@@ -60,15 +65,20 @@ export default {
       let entityId
       if (!this.$route.params.id) {
         let relations
+        let relationsResult
         if (this.$store.state.user.id) {
           // TODO: If not entity id is set in the url
-          let relationsResult = await Connection.get(`/entity/${this.$store.state.user.id}/relations?fields=e.id,r.kind`)
-          relations = relationsResult.data
+          relationsResult = await Connection.get(`/entity/${this.$store.state.user.id}/relations?fields=e.id,r.kind`)
         }
-        for (let r = 0; r < relations.length; r++) {
-          if (relations[r].relation.kind === 'home') {
-            entityId = relations[r].id
+        if (relationsResult.success) {
+          relations = relationsResult.data
+          for (let r = 0; r < relations.length; r++) {
+            if (relations[r].relation.kind === 'home') {
+              entityId = relations[r].id
+            }
           }
+        } else {
+          this.loading = false
         }
       } else {
         entityId = this.$route.params.id
@@ -80,28 +90,13 @@ export default {
       if (entityResult.success) {
         this.entity = entityResult.data
       }
-      console.log(this.entity)
 
       // Get ancestors
       let ancestorsResult = await Connection.get(`/entity/${this.entity.id}/ancestors`)
       if (ancestorsResult.success) {
         this.ancestors = ancestorsResult.data
       }
-      const modelsEditor = {
-        home: [
-          {
-            label: 'Título',
-            field: this.entity.contents.title,
-            component: ElInput
-          },
-          {
-            label: 'Posición',
-            field: this.entity.position,
-            component: ElInputNumber
-          }
-        ]
-      }
-      this.formFields = modelsEditor[this.entity.model]
+      this.formItems = modelsEditor[this.entity.model]
 
       this.loading = false
     },
@@ -130,6 +125,15 @@ export default {
       }
     }
   }
+}
+const modelsEditor = {
+  home: [
+    { label: 'Título', field: 'contents.title', component: kkInput },
+    { label: 'Reseña', field: 'contents.summary', component: kkInput, params: {type: 'textarea', rows: 3} },
+    { label: 'Posición', field: 'position', component: kkInputNumber, params: {min: 5, max: 8} },
+    { label: 'Posición2', field: 'position', component: kkInput },
+    { label: 'Url', field: 'contents.url', component: kkUrl, params: {reference: 'contents.title'} }
+  ]
 }
 </script>
 
