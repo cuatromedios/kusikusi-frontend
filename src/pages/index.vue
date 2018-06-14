@@ -1,14 +1,18 @@
 <template>
   <q-page class="flex flex-center">
-    <img alt="Quasar logo" src="~assets/quasar-logo-full.svg">
+    <h1>. . .</h1>
   </q-page>
 </template>
-
-<style>
-</style>
-
 <script>
+import { routes } from '../router/routes'
 export default {
-  name: 'PageIndex'
+  name: 'PageIndex',
+  mounted () {
+    if (this.$store.state.main.user && this.$store.state.main.user.authtoken !== '') {
+      this.$router.push({name: routes.dashboard.name})
+    } else {
+      this.$router.push({name: routes.login.name})
+    }
+  }
 }
 </script>

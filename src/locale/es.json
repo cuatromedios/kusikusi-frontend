@@ -1,0 +1,46 @@
+{
+  "general": {
+    "title": "Sears Convive 2018",
+    "pullToRefresh": "Desliza para recargar",
+    "releaseToRefresh": "Suelta para recargar",
+    "refreshing": "Recargando",
+    "serverError": "Hubo un error inesperado en el servidor",
+    "back": "Regresar"
+  },
+  "login": {
+    "title": "Ingresar",
+    "welcome": "¡Bienvenido!",
+    "storeNumber": "Número de tienda",
+    "salespersonNumber": "Número de empleado",
+    "button": "Ingresar",
+    "invalid": "El número de empleado o tienda son incorrectos"
+  },
+  "selection": {
+    "title": "Cuadro básico",
+    "subtitle": "Los productos que has seleccionado",
+    "noProducts": "No has seleccionado productos de esta línea todavía"
+  },
+  "products": {
+    "title": "Productos",
+    "subtitle": "Encuentra los productos disponibles",
+    "providers": "Proveedores:",
+    "selectProvider": "Selecciona un proveedor",
+    "categories": "Líneas:",
+    "selectCategory": "Selecciona una línea",
+    "searchProvider": "Buscar un proveedor",
+    "add": "Agregar a mi cuadro básico",
+    "remove": "Quitar de mi cuadro básico",
+    "maintain": "Mantener en mi cuadro básico",
+    "close": "cerrar",
+    "selectedOk": "El producto se modificó en el cuadro básico",
+    "deletedOk": "Se quitó cualquier instrucción del producto en el cuadro básico"
+  },
+  "capacity": {
+    "title": "Capacidades",
+    "subtitle": "¿Cuántos productos puedes exhibir en tu tienda?"
+  },
+  "logout": {
+    "title": "Salir",
+    "subtitle": "Salir de la cuenta"
+  }
+}

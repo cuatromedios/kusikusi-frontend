@@ -46,6 +46,8 @@ module.exports = function (ctx) {
     // framework: 'all' --- includes everything; for dev only!
     framework: {
       components: [
+        'QInput',
+        'QField',
         'QLayout',
         'QLayoutHeader',
         'QLayoutDrawer',
@@ -59,7 +61,15 @@ module.exports = function (ctx) {
         'QListHeader',
         'QItem',
         'QItemMain',
-        'QItemSide'
+        'QItemSide',
+        'QCard',
+        'QCardTitle',
+        'QCardMain',
+        'QCardMedia',
+        'QCardSeparator',
+        'QCardActions',
+        'QInnerLoading',
+        'Loading'
       ],
       directives: [
         'Ripple'
