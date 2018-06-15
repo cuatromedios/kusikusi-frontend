@@ -14,7 +14,7 @@
           <div class="card-content" style="width: 650px; max-width: 90vw;">
             <q-input v-model="form.storeNumber" float-label="Correo Electrónico" />
             <q-input v-model="form.salespersonNumber" type="password"  float-label="Contraseña" />
-            <q-btn class="q-ma-lg" color="primary" @click="handleLogin">Ingresar</q-btn>
+            <q-btn class="q-ma-lg" color="primary" @click="handleLogin">{{ 'login.title' | translate }}</q-btn>
           </div>
         </q-card-main>
         <q-inner-loading :visible="loading" />
