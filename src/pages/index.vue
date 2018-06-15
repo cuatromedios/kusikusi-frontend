@@ -9,7 +9,7 @@ export default {
   name: 'PageIndex',
   mounted () {
     if (this.$store.state.main.user && this.$store.state.main.user.authtoken !== '') {
-      this.$router.push({name: routes.dashboard.name})
+      this.$router.push('/home')
     } else {
       this.$router.push({name: routes.login.name})
     }

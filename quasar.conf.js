@@ -62,6 +62,7 @@ module.exports = function (ctx) {
         'QItem',
         'QItemMain',
         'QItemSide',
+        'QItemTile',
         'QCard',
         'QCardTitle',
         'QCardMain',
@@ -69,7 +70,10 @@ module.exports = function (ctx) {
         'QCardSeparator',
         'QCardActions',
         'QInnerLoading',
-        'Loading'
+        'Loading',
+        'QSelect',
+        'QSpinner',
+        'QSpinnerAudio'
       ],
       directives: [
         'Ripple'

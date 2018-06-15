@@ -45,23 +45,23 @@
             <q-icon name="fa-times" class="lt-lg" color="white" />
           </q-btn>
         </q-list-header>
-        <q-item @click.native="openURL('http://quasar-framework.org')">
+        <q-item @click.native="$router.push('/dashboard')">
           <q-item-side icon="fa-tachometer-alt" />
           <q-item-main label="Dashboard"/>
         </q-item>
-        <q-item @click.native="openURL('https://github.com/quasarframework/')">
+        <q-item @click.native="$router.push('/content')">
           <q-item-side icon="fa-list" />
           <q-item-main label="Content"  />
         </q-item>
-        <q-item @click.native="openURL('https://discord.gg/5TDhbDg')">
+        <q-item @click.native="$router.push('/media')">
           <q-item-side icon="fa-image" />
           <q-item-main label="Media" />
         </q-item>
-        <q-item @click.native="openURL('http://forum.quasar-framework.org')">
+        <q-item @click.native="$router.push('/users')">
           <q-item-side icon="fa-users" />
           <q-item-main label="Users" />
         </q-item>
-        <q-item @click.native="openURL('https://twitter.com/quasarframework')">
+        <q-item @click.native="$router.push('/config')">
           <q-item-side icon="fa-cog" />
           <q-item-main label="Config" />
         </q-item>

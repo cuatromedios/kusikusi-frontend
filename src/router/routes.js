@@ -10,9 +10,29 @@ let notLoggedRoutes = {
   }
 }
 let loggedRoutes = {
-  dashboard: {
+  home: {
     path: '/home',
     component: () => import('pages/home')
+  },
+  dashboard: {
+    path: '/dashboard',
+    component: () => import('pages/dashboard')
+  },
+  content: {
+    path: '/content',
+    component: () => import('pages/content')
+  },
+  media: {
+    path: '/media',
+    component: () => import('pages/media')
+  },
+  users: {
+    path: '/users',
+    component: () => import('pages/users')
+  },
+  config: {
+    path: '/config',
+    component: () => import('pages/config')
   }
 }
 let routes = {}

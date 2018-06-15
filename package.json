@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "quasar": "0.0.18",
     "store": "^2.0.12",
     "vue-i18n": "^7.8.0",
     "vuex-i18n": "^1.10.5"
