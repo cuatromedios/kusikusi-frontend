@@ -1,6 +1,6 @@
-let loggedBasePath = '/home'
+let loggedBasePath = '/cms'
 let notLoggedRoutes = {
-  home: {
+  index: {
     path: '/',
     component: () => import('pages/index')
   },
@@ -33,6 +33,10 @@ let loggedRoutes = {
   config: {
     path: '/config',
     component: () => import('pages/config')
+  },
+  editEntity: {
+    path: '/edit/{}',
+    component: () => import('pages/editEntity')
   }
 }
 let routes = {}

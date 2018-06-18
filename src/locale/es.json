@@ -35,6 +35,9 @@
     "selectedOk": "El producto se modificó en el cuadro básico",
     "deletedOk": "Se quitó cualquier instrucción del producto en el cuadro básico"
   },
+  "content": {
+    "title": "Contenido"
+  },
   "capacity": {
     "title": "Capacidades",
     "subtitle": "¿Cuántos productos puedes exhibir en tu tienda?"

@@ -73,7 +73,11 @@ module.exports = function (ctx) {
         'Loading',
         'QSelect',
         'QSpinner',
-        'QSpinnerAudio'
+        'QSpinnerAudio',
+        'QModal',
+        'QModalLayout',
+        'QBreadcrumbs',
+        'QBreadcrumbsEl'
       ],
       directives: [
         'Ripple'

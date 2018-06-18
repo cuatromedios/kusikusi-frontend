@@ -1,7 +1,10 @@
 <template>
-  <q-page class="flex flex-center">
-    <q-btn class="q-ma-lg" color="primary" @click="handleEntity">GET</q-btn>
-    <p>{{ entities }}</p>
+  <q-page class="q-ma-md">
+    <q-btn class="q-ma-lg" color="primary" @click="redirect">Editar</q-btn>
+    <q-btn class="q-ma-lg" color="primary" @click="redirect2">Editar (section)</q-btn>
+    <q-btn class="q-ma-lg" color="primary" @click="redirect3">Editar (pages)</q-btn>
+    <q-btn class="q-ma-lg" color="warning">Usuarios</q-btn>
+    <q-btn class="q-ma-lg" color="warning">Medios</q-btn>
   </q-page>
 </template>
 
@@ -9,75 +12,73 @@
 </style>
 
 <script>
-import Connection from '../Connection'
+import { routes } from '../router/routes'
 
 export default {
   components: {},
   name: 'Content',
-  beforeCreate () {
-    this.$store.dispatch('main/resetEntityData')
-  },
   mounted () {
   },
   data () {
     return {
-      loading: false,
-      entities: {
-        id: '',
-        model: '',
-        name: '',
-        parent: ''
-      }
     }
   },
   methods: {
-    //  `/entity/${}`
-    handleEntity: async function () {
-      this.message = ''
-      try {
-        this.loading = true
-        let entityResult = await Connection.get('/entity/home')
-        this.loading = false
-        if (entityResult.success) {
-          this.entities.id = entityResult.data.id
-          this.entities.model = entityResult.data.model
-          this.entities.name = entityResult.data.name
-          this.entities.parent = entityResult.data.parent
-        } else {
-          this.notifyError(this.$t('Fail to retrieve entity'))
-        }
-      } catch (error) {
-        this.loading = false
-        if (error.response) {
-          switch (error.response.status) {
-            case 401:
-              this.notifyError(this.$t('The other fail'))
-              break
-            default:
-              this.notifyError(this.$t('general.serverError'))
-              break
-          }
-        }
-      }
+    redirect: async function () {
+      this.$router.push({name: routes.editEntity.name})
     },
-    notifyError: function (message) {
-      this.$q.notify({
-        message: message,
-        timeout: 3000,
-        type: 'warning',
-        textColor: 'black',
-        icon: 'error',
-        position: 'top',
-        actions: [
-          {
-            label: '',
-            icon: 'close', // optional
-            handler: () => {
-            }
-          }
-        ]
-      })
+    redirect2: async function () {
+      this.$router.push({name: routes.editEntity.name, params: {id: '8fdaf02e-884c-48a0-adb6-d18e8f0e6dde'}})
+    },
+    redirect3: async function () {
+      this.$router.push({name: routes.editEntity.name, params: {id: '0c819314-0189-4433-8348-1ae867e83516'}})
     }
+    // handleEntity: async function () {
+    //   this.message = ''
+    //   try {
+    //     this.loading = true
+    //     let entityResult = await Connection.get('/entity/0c819314-0189-4433-8348-1ae867e83516')
+    //     this.loading = false
+    //     if (entityResult.success) {
+    //       this.entities.id = entityResult.data.id
+    //       this.entities.model = entityResult.data.model
+    //       this.entities.name = entityResult.data.name
+    //       this.entities.parent = entityResult.data.parent
+    //     } else {
+    //       this.notifyError(this.$t('Fail to retrieve entity'))
+    //     }
+    //   } catch (error) {
+    //     this.loading = false
+    //     if (error.response) {
+    //       switch (error.response.status) {
+    //         case 401:
+    //           this.notifyError(this.$t('The other fail'))
+    //           break
+    //         default:
+    //           this.notifyError(this.$t('general.serverError'))
+    //           break
+    //       }
+    //     }
+    //   }
+    // },
+    // notifyError: function (message) {
+    //   this.$q.notify({
+    //     message: message,
+    //     timeout: 3000,
+    //     type: 'warning',
+    //     textColor: 'black',
+    //     icon: 'error',
+    //     position: 'top',
+    //     actions: [
+    //       {
+    //         label: '',
+    //         icon: 'close', // optional
+    //         handler: () => {
+    //         }
+    //       }
+    //     ]
+    //   })
+    // }
   }
 }
 </script>
