@@ -1,12 +1,12 @@
 <template>
   <q-field :label="label">
-    <el-input ref="field" v-model="fieldReference" :type="params.type" :rows="params.rows" />
+    <q-input ref="field" v-model="fieldReference" :type="params.type" :rows="params.rows" />
   </q-field>
 </template>
 
 <script>
 export default {
-  name: 'kkInput',
+  name: 'entityInput',
   props: {
     field: {
       default: '',
@@ -38,7 +38,6 @@ export default {
   },
   computed: {
     fieldReference: {
-      // TODO: There must be a better way to do this
       get: function () {
         let fieldParts = this.field.split('.')
         if (fieldParts.length === 1) {
@@ -56,10 +55,6 @@ export default {
         }
       }
     }
-  },
-  mounted () {
-  },
-  methods: {
   }
 }
 </script>

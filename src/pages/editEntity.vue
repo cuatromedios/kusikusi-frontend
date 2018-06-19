@@ -1,8 +1,8 @@
 <template>
   <q-page class="q-ma-md">
     <q-breadcrumbs>
-      <q-breadcrumbs-el label="Root"/>
-      <q-breadcrumbs-el label="Home"/>
+      <q-breadcrumbs-el v-for="ancest in this.ancestors" :key="ancest.id" :label="ancest.name" @click.native="$router.push(`/content/${ancest.id}`)" class="pointer"/>
+      <q-breadcrumbs-el :model="this.entity" :label="this.entity.name" />
     </q-breadcrumbs>
     <q-field :model="this.entity">
       <div v-for="item in this.formItems"
@@ -13,20 +13,21 @@
            :params="item.params"
            :entity="entity" ></div>
     </q-field>
-    <p>
-      {{ entity }}
-    </p>
-    <q-btn class="q-ma-lg" color="primary" @click="child">Ir a Hijo</q-btn>
-    <q-btn class="q-ma-lg" color="primary" @click="parent">Ir a Padre</q-btn>
+    <q-btn class="q-ma-lg" color="primary" @click="saveEntity" :loading="loading">Guardar</q-btn>
+    <q-item
+      v-for="children in this.children"
+      v-bind:key="children.id"
+      @click.native="$router.push(`/content/${children.id}`)"
+      class="dark">
+      Children: {{ children.name }}
+    </q-item>
   </q-page>
 </template>
 
 <script>
-import Connection from '../Connection'
-
 /* eslint-disable */
 import entityInput from '../components/formItems/entityInput'
-import entityInputUrl from '../components/formItems/entityInputUrl'
+import Connection from '../Connection'
 import { routes } from '../router/routes'
 /* es-lint enable */
 
@@ -36,7 +37,7 @@ export default {
     this.getEntity()
   },
   beforeRouteUpdate(to, from, next) {
-    console.log(to.params.id)
+    // console.log(to.params.id)
     this.getEntity(to.params.id)
     next()
   } ,
@@ -44,7 +45,6 @@ export default {
     return {
       loading: false,
       ancestors: [],
-      parents: [],
       children: [],
       entity: {
         contents: {},
@@ -88,15 +88,10 @@ export default {
       if (ancestorsResult.success) {
         this.ancestors = ancestorsResult.data
       }
-      // Get parent
-      let parentResult = await Connection.get(`/entity/${this.entity.id}/parent`)
-      if (parentResult.success) {
-        this.parents = parentResult.data
-      }
        //Get children
       let childrenResult = await Connection.get(`/entity/${this.entity.id}/children`)
       if (childrenResult.success) {
-        this.children = childrenResult.data[0]
+        this.children = childrenResult.data
       }
 
       this.formItems = modelsEditor[this.entity.model]
@@ -105,12 +100,11 @@ export default {
     },
     saveEntity: async function () {
       this.loading = true
-      console.log(this.entity)
+      // console.log(this.entity)
       let saveResult = await Connection.patch(`/entity/${this.entity.id}`, this.entity)
       this.loading = false
       if (saveResult.success) {
-        this.$message({message: 'The entity was saved.', type: 'success'
-        })
+        this.notifySuccess(this.$t(`${this.entity.name} updated succesfully`))
       } else {
         this.$message.error({message: 'There was a problem saving the entity.'})
       }
@@ -121,41 +115,63 @@ export default {
       let createResult = await Connection.post('/entity', this.newEntity)
       this.loading = false
       if (createResult.success) {
-        this.$message({message: 'The entity was created.', type: 'success'})
+        this.notifySuccess(this.$t(`${this.entity.name} created succesfully`))
         this.getEntity()
       } else {
         this.$message.error({message: 'There was a problem creating the entity.'})
       }
     },
-    child: async function () {
-      this.$router.push({name: routes.editEntity.name, params: {id: this.children.id}})
-    },
-    parent: async function () {
-      this.$router.push({name: routes.editEntity.name, params: {id: this.entity.parent}})
-    }
+    // child: async function () {
+    //   this.$router.push({name: routes.editEntity.name, params: {id: this.children[0].id}})
+    // },
+    // parent: async function () {
+    //   this.$router.push({name: routes.editEntity.name, params: {id: this.entity.parent}})
+    // },
+    notifySuccess: function (message) {
+       this.$q.notify({
+         message: message,
+         timeout: 2000,
+         type: 'positive',
+         textColor: 'white',
+         icon: 'fa-check',
+         position: 'top',
+         actions: [
+           {
+             label: '',
+             icon: 'fa-times', // optional
+             handler: () => {
+             }
+           }
+         ]
+       })
+     }
   }
 }
 const modelsEditor = {
   home: [
     { label: 'Título', field: 'contents.title', component: entityInput },
-    { label: 'Reseña', field: 'contents.summary', component: entityInput, params: {type: 'textarea', rows: 3} },
-    { label: 'Subtitulo', field: 'contents.subtitle', component: entityInput },
-    { label: 'Modelo Home', field: 'contents.subtitle', component: entityInput },
-    { label: 'Url', field: 'contents.url', component: entityInputUrl, params: {reference: 'contents.title'} }
+    { label: 'Descripción', field: 'contents.description', component: entityInput, params: {type: 'textarea', rows: 3} },
+    { label: 'Subtítulo', field: 'contents.summary', component: entityInput },
+    { label: 'Modelo Home', field: 'Home', component: entityInput },
   ],
   section: [
     { label: 'Título', field: 'contents.title', component: entityInput },
-    { label: 'Reseña', field: 'contents.summary', component: entityInput, params: {type: 'textarea', rows: 3} },
-    { label: 'Subtitulo', field: 'contents.subtitle', component: entityInput },
-    { label: 'Modelo Section', field: 'contents.subtitle', component: entityInput },
-    { label: 'Url', field: 'contents.url', component: entityInputUrl, params: {reference: 'contents.title'} }
+    { label: 'Descripción', field: 'contents.description', component: entityInput, params: {type: 'textarea', rows: 3} },
+    { label: 'Modelo Section', field: 'Section', component: entityInput },
   ],
   page: [
     { label: 'Título', field: 'contents.title', component: entityInput },
-    { label: 'Reseña', field: 'contents.summary', component: entityInput, params: {type: 'textarea', rows: 3} },
-    { label: 'Subtitulo', field: 'contents.subtitle', component: entityInput },
-    { label: 'Modelo Page', field: 'contents.subtitle', component: entityInput },
-    { label: 'Url', field: 'contents.url', component: entityInputUrl, params: {reference: 'contents.title'} }
+    { label: 'Descripción', field: 'contents.description', component: entityInput, params: {type: 'textarea', rows: 3} },
+    { label: 'Modelo Page', field: 'Page', component: entityInput },
   ]
 }
 </script>
+<style>
+  .dark{
+    color: #2e3436;
+    cursor: pointer;
+  }
+  .pointer{
+    cursor: pointer;
+  }
+</style>

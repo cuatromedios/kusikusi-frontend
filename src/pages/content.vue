@@ -1,8 +1,6 @@
 <template>
   <q-page class="q-ma-md">
     <q-btn class="q-ma-lg" color="primary" @click="redirect">Editar</q-btn>
-    <q-btn class="q-ma-lg" color="primary" @click="redirect2">Editar (section)</q-btn>
-    <q-btn class="q-ma-lg" color="primary" @click="redirect3">Editar (pages)</q-btn>
     <q-btn class="q-ma-lg" color="warning">Usuarios</q-btn>
     <q-btn class="q-ma-lg" color="warning">Medios</q-btn>
   </q-page>
