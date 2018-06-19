@@ -35,7 +35,7 @@ let loggedRoutes = {
     component: () => import('pages/config')
   },
   editEntity: {
-    path: '/edit/{}',
+    path: '/edit/:id',
     component: () => import('pages/editEntity')
   }
 }

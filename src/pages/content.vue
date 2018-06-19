@@ -28,10 +28,10 @@ export default {
       this.$router.push({name: routes.editEntity.name})
     },
     redirect2: async function () {
-      this.$router.push({name: routes.editEntity.name, params: {id: '8fdaf02e-884c-48a0-adb6-d18e8f0e6dde'}})
+      this.$router.push({name: routes.editEntity.name, params: {id: '1fbf9ee6-2399-44c7-a849-43e880fe4ce0'}})
     },
     redirect3: async function () {
-      this.$router.push({name: routes.editEntity.name, params: {id: '0c819314-0189-4433-8348-1ae867e83516'}})
+      this.$router.push({name: routes.editEntity.name, params: {id: '0b41cf44-7d53-45e9-ab49-267b6bc82838'}})
     }
     // handleEntity: async function () {
     //   this.message = ''

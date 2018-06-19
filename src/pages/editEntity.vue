@@ -38,6 +38,7 @@ export default {
     return {
       loading: false,
       ancestors: [],
+      parents: [],
       children: [],
       entity: {
         contents: {},
@@ -83,10 +84,15 @@ export default {
       if (ancestorsResult.success) {
         this.ancestors = ancestorsResult.data
       }
+      // Get parent
+      let parentResult = await Connection.get(`/entity/${this.entity.id}/parent`)
+      if (parentResult.success) {
+        this.parents = parentResult.data
+      }
        //Get children
       let childrenResult = await Connection.get(`/entity/${this.entity.id}/children`)
       if (childrenResult.success) {
-        this.children = childrenResult.data
+        this.children = childrenResult.data[0]
       }
 
       this.formItems = modelsEditor[this.entity.model]
@@ -118,10 +124,10 @@ export default {
       }
     },
     child: async function () {
-      this.$router.push({name: routes.editEntity.name, params: {id: entity.children.id}})
+      this.$router.push({name: routes.editEntity.name, params: {id: this.children.id}})
     },
     parent: async function () {
-      this.$router.push({name: routes.editEntity.name, params: {id: entity.ancestors.id}})
+      this.$router.push({name: routes.editEntity.name, params: {id: this.parents.id}})
     }
   }
 }
