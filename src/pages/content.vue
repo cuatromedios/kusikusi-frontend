@@ -25,7 +25,7 @@ export default {
   },
   methods: {
     redirect: async function () {
-      this.$router.push({name: routes.editEntity.name})
+      this.$router.push({name: routes.editEntity.name, params: {id: 'home'}})
     },
     redirect2: async function () {
       this.$router.push({name: routes.editEntity.name, params: {id: '1fbf9ee6-2399-44c7-a849-43e880fe4ce0'}})

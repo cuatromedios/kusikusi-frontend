@@ -22,6 +22,10 @@ let loggedRoutes = {
     path: '/content',
     component: () => import('pages/content')
   },
+  editEntity: {
+    path: '/content/:id',
+    component: () => import('pages/editEntity')
+  },
   media: {
     path: '/media',
     component: () => import('pages/media')
@@ -33,10 +37,6 @@ let loggedRoutes = {
   config: {
     path: '/config',
     component: () => import('pages/config')
-  },
-  editEntity: {
-    path: '/edit/:id',
-    component: () => import('pages/editEntity')
   }
 }
 let routes = {}

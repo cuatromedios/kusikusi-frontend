@@ -3,12 +3,12 @@ export default
   version: '0.1.0',
   langs: ['es'],
   api: {
-    url: (process.env.NODE_ENV === 'development' ? 'http://127.0.0.1:8001' : '') + '/api'
+    url: (process.env.NODE_ENV === 'development' ? 'http://127.0.0.1:8000' : '') + '/api'
   },
   media: {
-    url: (process.env.NODE_ENV === 'development' ? 'http://127.0.0.1:8001' : '') + '/media'
+    url: (process.env.NODE_ENV === 'development' ? 'http://127.0.0.1:8000' : '') + '/media'
   },
   server: {
-    url: (process.env.NODE_ENV === 'development' ? 'http://127.0.0.1:8001' : '')
+    url: (process.env.NODE_ENV === 'development' ? 'http://127.0.0.1:8000' : '')
   }
 }

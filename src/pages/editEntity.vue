@@ -27,6 +27,7 @@ import Connection from '../Connection'
 /* eslint-disable */
 import entityInput from '../components/formItems/entityInput'
 import entityInputUrl from '../components/formItems/entityInputUrl'
+import { routes } from '../router/routes'
 /* es-lint enable */
 
 export default {
@@ -34,6 +35,11 @@ export default {
   mounted () {
     this.getEntity()
   },
+  beforeRouteUpdate(to, from, next) {
+    console.log(to.params.id)
+    this.getEntity(to.params.id)
+    next()
+  } ,
   data () {
     return {
       loading: false,
@@ -49,10 +55,10 @@ export default {
     }
   },
   methods: {
-    getEntity: async function () {
+    getEntity: async function (id) {
       // Get Entity
-      let entityId
-      if (!this.$route.params.id) {
+      let entityId = id ? id : this.$route.params.id
+      if (!entityId) {
         let relations
         let relationsResult
         if (this.$store.state.main.user.id) {
@@ -68,8 +74,6 @@ export default {
         } else {
           this.loading = false
         }
-      } else {
-        entityId = this.$route.params.id
       }
       if (!entityId) {
         return
@@ -127,7 +131,7 @@ export default {
       this.$router.push({name: routes.editEntity.name, params: {id: this.children.id}})
     },
     parent: async function () {
-      this.$router.push({name: routes.editEntity.name, params: {id: this.parents.id}})
+      this.$router.push({name: routes.editEntity.name, params: {id: this.entity.parent}})
     }
   }
 }
