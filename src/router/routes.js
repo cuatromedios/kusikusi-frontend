@@ -1,4 +1,4 @@
-let loggedBasePath = '/cms'
+let loggedBasePath = '/home'
 let notLoggedRoutes = {
   index: {
     path: '/',
@@ -19,12 +19,11 @@ let loggedRoutes = {
     component: () => import('pages/dashboard')
   },
   content: {
-    path: '/content',
-    component: () => import('pages/content')
-  },
-  editEntity: {
-    path: '/content/:id',
-    component: () => import('pages/editEntity')
+    path: '/content/edit/:id?',
+    component: () => import('components/editEntity'),
+    children: [
+      {path: '', component: () => import('pages/content')}
+    ]
   },
   media: {
     path: '/media',

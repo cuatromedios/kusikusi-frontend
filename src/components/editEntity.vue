@@ -1,7 +1,7 @@
 <template>
   <q-page class="q-ma-md">
     <q-breadcrumbs>
-      <q-breadcrumbs-el v-for="ancest in this.ancestors" :key="ancest.id" :label="ancest.name" @click.native="$router.push(`/content/${ancest.id}`)" class="pointer"/>
+      <q-breadcrumbs-el v-for="ancest in this.ancestors" :key="ancest.id" :label="ancest.name" @click.native="$router.push(`/content/edit/${ancest.id}`)" class="pointer"/>
       <q-breadcrumbs-el :model="this.entity" :label="this.entity.name" />
     </q-breadcrumbs>
     <q-field :model="this.entity">
@@ -11,13 +11,24 @@
            :field="item.field"
            :label="item.label"
            :params="item.params"
-           :entity="entity" ></div>
+           :entity="entity"></div>
     </q-field>
-    <q-btn class="q-ma-lg" color="primary" @click="saveEntity" :loading="loading">Guardar</q-btn>
+    <q-select
+      style="width: 650px; max-width: 90vw; color: black;"
+      class="q-mt-md"
+      color="primary"
+      v-model="entity.model"
+      separator
+      placeholder="Seleccione un modelo"
+      :options="options"
+      @click="test"
+    />
+    <q-btn class="q-ma-lg" color="primary" @click="saveEntity" :loading="loading">Actualizar</q-btn>
+    <q-btn class="q-ma-lg" color="primary" @click="createEntity" :loading="loading">Guardar como hijo</q-btn>
     <q-item
       v-for="children in this.children"
       v-bind:key="children.id"
-      @click.native="$router.push(`/content/${children.id}`)"
+      @click.native="$router.push(`/content/edit/${children.id}`)"
       class="dark">
       Children: {{ children.name }}
     </q-item>
@@ -26,7 +37,7 @@
 
 <script>
 /* eslint-disable */
-import entityInput from '../components/formItems/entityInput'
+import entityInput from './formItems/entityInput'
 import Connection from '../Connection'
 import { routes } from '../router/routes'
 /* es-lint enable */
@@ -44,12 +55,48 @@ export default {
   data () {
     return {
       loading: false,
+      options: [
+        {
+          label: 'Root',
+          value: 'root'
+        },
+        {
+          label: 'Home',
+          value: 'home'
+        },
+        {
+          label: 'Section',
+          value: 'section'
+        },
+        {
+          label: 'Page',
+          value: 'page'
+        },
+        {
+          label: 'Container',
+          value: 'container'
+        },
+        {
+          label: 'Medium',
+          value: 'medium'
+        },
+        {
+          label: 'User',
+          value: 'user'
+        }
+      ],
       ancestors: [],
       children: [],
       entity: {
         contents: {},
         data: {},
         relations: []
+      },
+      newEntity: {
+        model: '',
+        name: '',
+        parent: '',
+        contents: []
       },
       formItems: []
     }
@@ -99,26 +146,30 @@ export default {
       this.loading = false
     },
     saveEntity: async function () {
+      //TODO: Right now you can´t update a field when it hasn´t been stated first. FIX THAT!
       this.loading = true
-      // console.log(this.entity)
       let saveResult = await Connection.patch(`/entity/${this.entity.id}`, this.entity)
       this.loading = false
       if (saveResult.success) {
         this.notifySuccess(this.$t(`${this.entity.name} updated succesfully`))
+        setTimeout(() => this.getEntity(), 2000)
       } else {
-        this.$message.error({message: 'There was a problem saving the entity.'})
+        this.notifyError(this.$t(`${this.entity.name} failed at update`))
       }
     },
     createEntity: async function () {
       this.loading = true
       this.newEntity.parent = this.entity.id
+      this.newEntity.model = this.entity.model
+      this.newEntity.name = this.entity.name
+      this.newEntity.contents = this.entity.contents
       let createResult = await Connection.post('/entity', this.newEntity)
       this.loading = false
       if (createResult.success) {
-        this.notifySuccess(this.$t(`${this.entity.name} created succesfully`))
-        this.getEntity()
+        this.notifySuccess(this.$t(`New entity created succesfully`))
+        setTimeout(() => this.$router.push({name: routes.content.name, params: {id: createResult.data.id}}), 2000)
       } else {
-        this.$message.error({message: 'There was a problem creating the entity.'})
+        this.notifyError(this.$t(`Couldn´t create new entity`))
       }
     },
     // child: async function () {
@@ -144,25 +195,43 @@ export default {
            }
          ]
        })
-     }
+     },
+    notifyError: function (message) {
+      this.$q.notify({
+        message: message,
+        timeout: 2000,
+        type: 'negative',
+        textColor: 'white',
+        icon: 'fa-exclamation-triangle',
+        position: 'top',
+        actions: [
+          {
+            label: '',
+            icon: 'fa-times', // optional
+            handler: () => {
+            }
+          }
+        ]
+      })
+    }
   }
 }
 const modelsEditor = {
   home: [
+    { label: 'Nombre', field: 'name', component: entityInput},
     { label: 'Título', field: 'contents.title', component: entityInput },
     { label: 'Descripción', field: 'contents.description', component: entityInput, params: {type: 'textarea', rows: 3} },
     { label: 'Subtítulo', field: 'contents.summary', component: entityInput },
-    { label: 'Modelo Home', field: 'Home', component: entityInput },
   ],
   section: [
+    { label: 'Nombre', field: 'name', component: entityInput},
     { label: 'Título', field: 'contents.title', component: entityInput },
     { label: 'Descripción', field: 'contents.description', component: entityInput, params: {type: 'textarea', rows: 3} },
-    { label: 'Modelo Section', field: 'Section', component: entityInput },
   ],
   page: [
+    { label: 'Nombre', field: 'name', component: entityInput},
     { label: 'Título', field: 'contents.title', component: entityInput },
     { label: 'Descripción', field: 'contents.description', component: entityInput, params: {type: 'textarea', rows: 3} },
-    { label: 'Modelo Page', field: 'Page', component: entityInput },
   ]
 }
 </script>

@@ -1,6 +1,6 @@
 <template>
-  <q-field :label="label">
-    <q-input ref="field" v-model="fieldReference" :type="params.type" :rows="params.rows" />
+  <q-field :label="label" style="width: 600px; max-width: 90vw;">
+    <q-input ref="field" v-model="fieldReference" :type="params.type" :rows="params.rows" style="width: 500px; max-width: 90vw;"/>
   </q-field>
 </template>
 
