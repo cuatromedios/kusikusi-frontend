@@ -9,12 +9,12 @@
               style="width:30vw;max-width:150px;"
             >
           </p>
-          <p class="q-display-1 text-primary">¡Bienvenido!</p>
+          <p class="q-display-1 text-primary">{{ 'login.welcome' | translate }}</p>
         </div>
           <div class="card-content" style="width: 650px; max-width: 90vw;">
-            <q-input v-model="form.storeNumber" float-label="Correo Electrónico" />
+            <q-input :autofocus="true" v-model="form.storeNumber" float-label="Correo Electrónico" />
             <q-input v-model="form.salespersonNumber" type="password"  float-label="Contraseña" />
-            <q-btn class="q-ma-lg" color="primary" @click="handleLogin">{{ 'login.title' | translate }}</q-btn>
+            <q-btn class="q-ma-lg" color="primary" @click="handleLogin">{{ 'login.button' | translate }}</q-btn>
           </div>
         </q-card-main>
         <q-inner-loading :visible="loading" />

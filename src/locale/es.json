@@ -10,10 +10,10 @@
   "login": {
     "title": "Ingresar",
     "welcome": "¡Bienvenido!",
-    "storeNumber": "Número de tienda",
-    "salespersonNumber": "Número de empleado",
+    "email": "Correo Electrónico",
+    "password": "Contraseña",
     "button": "Ingresar",
-    "invalid": "El número de empleado o tienda son incorrectos"
+    "invalid": "El correo electrónico o la contraseña son incorrectas"
   },
   "selection": {
     "title": "Cuadro básico",
