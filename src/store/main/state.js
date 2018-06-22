@@ -7,6 +7,7 @@ export default {
     profile: '',
     relations: []
   },
+  config: {},
   lang: 'es',
   currentTitle: '',
   currentProvider: '',

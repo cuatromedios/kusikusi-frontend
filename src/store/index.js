@@ -30,12 +30,14 @@ let name = localstorage.get('name')
 let storeName = localstorage.get('storeName')
 let profile = localstorage.get('profile')
 let userId = localstorage.get('userId')
+let Config = localstorage.get('config')
 if (authtoken && authtoken !== '') {
   store.commit('main/setAuthtoken', authtoken)
   store.commit('main/setName', name)
   store.commit('main/setStoreName', storeName)
   store.commit('main/setUserId', userId)
   store.commit('main/setProfile', profile)
+  store.commit('main/setConfig', Config)
 } else {
   store.dispatch('main/resetUserData')
   Vue.nextTick(() => {

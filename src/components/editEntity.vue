@@ -14,14 +14,14 @@
            :entity="entity"></div>
     </q-field>
     <q-select
-      style="width: 650px; max-width: 90vw; color: black;"
+      style="width: 300px; max-width: 90vw; color: black;"
       class="q-mt-md"
       dark
       inverted-light
       v-model="entity.model"
       separator
-      placeholder="Seleccione un modelo"
-      :options="options"
+      placeholder="Seleccione un modelo:"
+      :options="this.models"
     />
     <q-btn class="q-ma-lg" color="primary" @click="saveEntity" :loading="loading">Actualizar</q-btn>
     <q-btn class="q-ma-lg" color="primary" @click="createEntity" :loading="loading">Guardar como hijo</q-btn>
@@ -68,36 +68,8 @@ export default {
   data () {
     return {
       loading: false,
-      options: [
-        {
-          label: 'Root',
-          value: 'root'
-        },
-        {
-          label: 'Home',
-          value: 'home'
-        },
-        {
-          label: 'Section',
-          value: 'section'
-        },
-        {
-          label: 'Page',
-          value: 'page'
-        },
-        {
-          label: 'Container',
-          value: 'container'
-        },
-        {
-          label: 'Medium',
-          value: 'medium'
-        },
-        {
-          label: 'User',
-          value: 'user'
-        }
-      ],
+      auth: true,
+      models: [],
       ancestors: [],
       children: [],
       // selectChild: '',
@@ -106,6 +78,7 @@ export default {
         data: {},
         relations: []
       },
+      entityModel: '',
       newEntity: {
         model: '',
         name: '',
@@ -155,12 +128,16 @@ export default {
         this.children = childrenResult.data
       }
 
+       //Set models
+      this.models = this.$store.state.main.config.models.list
+      this.entityModel = this.entity.model
+
       this.formItems = modelsEditor[this.entity.model]
 
       this.loading = false
     },
     saveEntity: async function () {
-      //TODO: Right now you can´t update a field when it hasn´t been stated first. FIX THAT!
+      //TODO: Right now you can´t update a field when it hasn´t been stated first.
       this.loading = true
       let saveResult = await Connection.patch(`/entity/${this.entity.id}`, this.entity)
       this.loading = false
@@ -172,18 +149,40 @@ export default {
       }
     },
     createEntity: async function () {
-      this.loading = true
-      this.newEntity.parent = this.entity.id
-      this.newEntity.model = this.entity.model
-      this.newEntity.name = this.entity.name
-      this.newEntity.contents = this.entity.contents
-      let createResult = await Connection.post('/entity', this.newEntity)
-      this.loading = false
-      if (createResult.success) {
-        this.notifySuccess(this.$t(`New entity created succesfully`))
-        setTimeout(() => this.$router.push({name: routes.content.name, params: {id: createResult.data.id}}), 1500)
+      this.childAuth()
+      if (this.auth == true) {
+        this.loading = true
+        this.newEntity.parent = this.entity.id
+        this.newEntity.model = this.entity.model
+        this.newEntity.name = this.entity.name
+        this.newEntity.contents = this.entity.contents
+        let createResult = await Connection.post('/entity', this.newEntity)
+        this.loading = false
+        if (createResult.success) {
+          this.notifySuccess(this.$t(`New entity created succesfully`))
+          setTimeout(() => this.$router.push({name: routes.content.name, params: {id: createResult.data.id}}), 1500)
+        } else {
+          this.notifyError(this.$t(`Couldn´t create new entity`))
+        }
       } else {
-        this.notifyError(this.$t(`Couldn´t create new entity`))
+        this.notifyError(this.$t(`Child's model not allowed`))
+      }
+    },
+    childAuth: function () {
+      let configModels = this.$store.state.main.config.models
+      if (configModels[this.entityModel]) {
+        let allowedChildren = configModels[this.entityModel].allowedChildren
+        console.log(this.entityModel)
+        console.log(this.entity.model)
+        for (let i = 0; i < allowedChildren.length; i++) {
+          if (allowedChildren[i] == this.entity.model) {
+            this.auth = true
+            return
+          }
+        }
+        this.auth = false
+      } else {
+        this.auth = false
       }
     },
     // child: async function () {
