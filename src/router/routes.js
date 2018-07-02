@@ -33,6 +33,13 @@ let loggedRoutes = {
     path: '/users',
     component: () => import('pages/users')
   },
+  usersEdit: {
+    path: '/users/edit/:id?',
+    component: () => import('components/editUser'),
+    children: [
+      {path: '', component: () => import('pages/users')}
+    ]
+  },
   config: {
     path: '/config',
     component: () => import('pages/config')

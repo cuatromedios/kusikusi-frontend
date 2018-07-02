@@ -92,6 +92,7 @@ export default {
     getEntity: async function (id) {
       // Get Entity
       let entityId = id ? id : this.$route.params.id
+      console.log(entityId)
       if (!entityId) {
         let relations
         let relationsResult

@@ -8,11 +8,6 @@
 
 <script>
 export default {
-  components: {},
-  name: 'Content',
-  data () {
-    return {
-    }
-  }
+  name: 'Content'
 }
 </script>
