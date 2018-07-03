@@ -1,14 +1,14 @@
 <template>
   <q-page class="flex flex-center q-pa-md">
-    <q-item class="absolute-top-left q-ma-md">
-      <q-item-main
-        v-for="user in this.users"
-        v-bind:key="user.id"
-        @click.native="$router.push(`/users/edit/${user.id}`)"
-        style="color: #2e3436; cursor: pointer;">
-        {{ user.data.name }}
-      </q-item-main>
-    </q-item>
+    <div class="absolute-top-left">
+      <q-item class="q-ma-md"
+              v-for="user in this.users"
+              v-bind:key="user.id"
+              @click.native="$router.push(`/users/edit/${user.id}`)"
+              style="color: #2e3436; cursor: pointer;">
+          {{ user.name }}
+      </q-item>
+    </div>
     <q-btn color="primary" @click="$router.push('/users/edit')" :loading="loading">Agregar Usuario</q-btn>
   </q-page>
 </template>
@@ -22,11 +22,13 @@ export default {
   },
   data () {
     return {
+      loading: false,
       users: []
     }
   },
   methods: {
     getUsers: async function () {
+      let data
       let usersContainer
       let containerResult = await Connection.get(`/entity/${this.$store.state.main.user.id}/ancestors`)
       if (containerResult.success) {
@@ -38,7 +40,10 @@ export default {
       }
       let userResult = await Connection.get(`/entity/${usersContainer}/children`)
       if (userResult.success) {
-        this.users = userResult.data
+        for (let i = 0; i < userResult.data.length; i++) {
+          data = {'id': userResult.data[i].id, 'name': userResult.data[i].data.name}
+          this.users.push(data)
+        }
       }
     }
   }
