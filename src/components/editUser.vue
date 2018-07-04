@@ -29,7 +29,8 @@
         </div>
         <q-collapsible icon="fa-user" label="Permisos" v-if="this.$route.params.id" style="color: #2e3436; -webkit-text-fill-color: #2e3436;" color="primary">
           <div>
-            <q-input v-model="permission.entityId" float-label="Permiso sobre:" style="width: 300px; max-width: 80vw;"/>
+            {{ this.permission.get }}
+            <q-input v-model="this.permission.entity_id" float-label="Permiso sobre:" :label="this.permission.entity_id" style="width: 300px; max-width: 80vw;"/>
             Derechos de lectura:
             <q-btn-toggle
               v-model="permission.get"
@@ -52,7 +53,8 @@
       ]"
               class="q-ma-md"
             />
-            <q-btn color="primary" @click="UpdatePermissions" :loading="loading">Actualizar Permisos</q-btn>
+            <q-btn color="primary" @click="UpdatePermissions" :loading="loading" v-if="this.new">Actualizar Permisos</q-btn>
+            <q-btn color="primary" @click="CreatePermissions" :loading="loading" v-if="!this.new">Otorgar Permisos</q-btn>
           </div>
         </q-collapsible>
       </q-item-main>
@@ -76,6 +78,7 @@ export default {
   data () {
     return {
       loading: false,
+      new: false,
       user: {
         name: '',
         model: 'user',
@@ -86,7 +89,11 @@ export default {
           password: ''
         }
       },
-      permission: {}
+      permission: {
+        entity_id: '',
+        get: '',
+        post: ''
+      }
     }
   },
   methods: {
@@ -97,9 +104,17 @@ export default {
       }
     },
     getPermission: async function () {
-      let permissionResult = await Connection.get(`/user/${this.$route.params.id}/permissions`)
+      let permissionResult = await Connection.get(`/user/permissions/${this.$route.params.id}`)
       if (permissionResult.success) {
-        this.user = permissionResult.data
+        this.permission = permissionResult.data[0]
+        console.log(permissionResult.data.length)
+        if (permissionResult.data.length > 0) {
+          this.new = true
+          console.log(this.new)
+        } else {
+          this.new = false
+          console.log(this.new)
+        }
       }
     },
     Save: async function () {
@@ -137,13 +152,24 @@ export default {
     },
     UpdatePermissions: async function () {
       this.loading = true
-      let deleteResult = await Connection.post(`/user/${this.user.id}/permissions`)
+      let updateResult = await Connection.patch(`/user/${this.user.id}/permissions`)
       this.loading = false
-      if (deleteResult.success) {
+      if (updateResult.success) {
         this.notifySuccess(this.$t(`${this.user.name} deactivated succesfully`))
         setTimeout(() => this.$router.push(`/users`), 1500)
       } else {
         this.notifyError(this.$t(`${this.user.name} failed at delete`))
+      }
+    },
+    CreatePermissions: async function () {
+      this.loading = true
+      let createResult = await Connection.post(`/user/permissions`)
+      this.loading = false
+      if (createResult.success) {
+        this.notifySuccess(this.$t(`${this.user.name} was given permissions succesfully`))
+        setTimeout(() => this.$router.push(`/users/edit/${createResult.data.id}`), 1500)
+      } else {
+        this.notifyError(this.$t(`failed at creating permissions for ${this.user.name} `))
       }
     },
     notifySuccess: function (message) {
