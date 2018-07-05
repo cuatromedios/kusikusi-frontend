@@ -60,11 +60,11 @@ export default {
   mounted () {
     this.getEntity()
   },
-  beforeRouteUpdate(to, from, next) {
+  beforeRouteUpdate (to, from, next) {
     // console.log(to.params.id)
     this.getEntity(to.params.id)
     next()
-  } ,
+  },
   data () {
     return {
       loading: false,
@@ -91,8 +91,14 @@ export default {
   methods: {
     getEntity: async function (id) {
       // Get Entity
+      if (id == ' ') {
+        this.$route.params.id = undefined
+        id = undefined
+      }
+      if (this.$route.params.id == ' ') {
+        this.$route.params.id = undefined
+      }
       let entityId = id ? id : this.$route.params.id
-      console.log(entityId)
       if (!entityId) {
         let relations
         let relationsResult

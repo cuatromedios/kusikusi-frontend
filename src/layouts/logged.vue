@@ -49,7 +49,7 @@
           <q-item-side icon="fa-tachometer-alt" />
           <q-item-main label="Dashboard"/>
         </q-item>
-        <q-item @click.native="$router.push('/content/edit')">
+        <q-item @click.native="$router.push('/content/edit/ ')">
           <q-item-side icon="fa-list" />
           <q-item-main label="Content"  />
         </q-item>

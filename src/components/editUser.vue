@@ -6,16 +6,26 @@
           <strong style="font-size: 25px;" v-if="this.$route.params.id">{{ user.data.name }}</strong>
           <strong style="font-size: 25px;" v-if="!this.$route.params.id">Nuevo Usuario</strong>
           <q-field label="Modelo:" style="width: 500px; max-width: 50vw;">
-            <q-input :autofocus="true" v-model="user.model" label="user" readonly="readonly" style="width: 500px; max-width: 80vw;"/>
+            <q-input :autofocus="true" v-model="user.model" label="user" readonly="readonly" disabled style="width: 500px; max-width: 80vw;"/>
           </q-field>
           <q-field label="Nombre:" style="width: 500px; max-width: 50vw;">
             <q-input v-model="user.name" :label="user.name" style="width: 500px; max-width: 80vw;"/>
           </q-field>
           <q-field label="Padre:" style="width: 500px; max-width: 50vw;">
-            <q-input v-model="user.parent" label="users" readonly="readonly" style="width: 500px; max-width: 80vw;"/>
+            <q-input v-model="user.parent" label="users" readonly="readonly" disabled style="width: 500px; max-width: 80vw;"/>
           </q-field>
           <q-field label="Nombre:" style="width: 500px; max-width: 50vw;">
             <q-input v-model="user.data.name" :label="user.data.name" style="width: 500px; max-width: 80vw;"/>
+          </q-field>
+          <q-field label="Perfil:" style="width: 500px; max-width: 50vw;">
+            <q-select
+                style="width: 500px; max-width: 50vw; color: black; -webkit-text-fill-color: #2e3436;"
+                dark
+                class="q-mt-md"
+                v-model="user.data.profile"
+                separator
+                :options="this.profiles"
+              />
           </q-field>
           <q-field label="Correo:" style="width: 500px; max-width: 50vw;">
             <q-input v-model="user.data.email" :label="user.data.email" style="width: 500px; max-width: 80vw;"/>
@@ -29,8 +39,7 @@
         </div>
         <q-collapsible icon="fa-user" label="Permisos" v-if="this.$route.params.id" style="color: #2e3436; -webkit-text-fill-color: #2e3436;" color="primary">
           <div>
-            {{ this.permission.get }}
-            <q-input v-model="this.permission.entity_id" float-label="Permiso sobre:" :label="this.permission.entity_id" style="width: 300px; max-width: 80vw;"/>
+            <q-input v-model="permission.entity_id" float-label="Permiso sobre:" :label="permission" style="width: 300px; max-width: 80vw;"/>
             Derechos de lectura:
             <q-btn-toggle
               v-model="permission.get"
@@ -53,8 +62,8 @@
       ]"
               class="q-ma-md"
             />
-            <q-btn color="primary" @click="UpdatePermissions" :loading="loading" v-if="this.new">Actualizar Permisos</q-btn>
-            <q-btn color="primary" @click="CreatePermissions" :loading="loading" v-if="!this.new">Otorgar Permisos</q-btn>
+            <q-btn color="primary" @click="UpdatePermissions" :loading="loading" v-if="!this.new">Actualizar Permisos</q-btn>
+            <q-btn color="primary" @click="CreatePermissions" :loading="loading" v-if="this.new">Otorgar Permisos</q-btn>
           </div>
         </q-collapsible>
       </q-item-main>
@@ -67,54 +76,89 @@
 
 <script>
 import Connection from '../Connection'
+import { routes } from '../router/routes'
 export default {
   name: 'editUser',
   mounted () {
-    if (this.$route.params.id) {
-      this.getUserData()
-      this.getPermission()
-    }
+    this.load()
+  },
+  beforeRouteUpdate (to, from, next) {
+    // console.log(to.params.id)
+    this.load(to.params.id)
+    next()
   },
   data () {
     return {
       loading: false,
-      new: false,
+      new: true,
       user: {
         name: '',
         model: 'user',
         parent: 'users',
         data: {
           name: '',
+          profile: '',
           email: '',
           password: ''
         }
       },
       permission: {
+        user_id: '',
         entity_id: '',
         get: '',
         post: ''
-      }
+      },
+      profiles: [
+        {
+          value: 'admin',
+          label: 'Administrador'
+        },
+        {
+          value: 'editor',
+          label: 'Editor'
+        },
+        {
+          value: 'user',
+          label: 'Usuario'
+        }
+      ]
     }
   },
   methods: {
-    getUserData: async function () {
-      let userResult = await Connection.get(`/entity/${this.$route.params.id}/`)
+    load: function (id) {
+      if (id) {
+        this.getUserData(id)
+        this.getPermission(id)
+      } else {
+        this.getUserData()
+        this.getPermission()
+      }
+    },
+    getUserData: async function (id) {
+      let userId
+      if (!id) {
+        userId = this.$route.params.id
+      } else {
+        userId = id
+      }
+      let userResult = await Connection.get(`/entity/${userId}/`)
       if (userResult.success) {
         this.user = userResult.data
       }
     },
-    getPermission: async function () {
-      let permissionResult = await Connection.get(`/user/permissions/${this.$route.params.id}`)
+    getPermission: async function (id) {
+      let userId
+      if (!id) {
+        userId = this.$route.params.id
+      } else {
+        userId = id
+      }
+      let permissionResult = await Connection.get(`/user/permissions/${userId}`)
       if (permissionResult.success) {
-        this.permission = permissionResult.data[0]
-        console.log(permissionResult.data.length)
-        if (permissionResult.data.length > 0) {
-          this.new = true
-          console.log(this.new)
-        } else {
-          this.new = false
-          console.log(this.new)
-        }
+        this.new = false
+        this.permission = permissionResult.data
+      } else {
+        this.new = true
       }
     },
     Save: async function () {
@@ -134,7 +178,7 @@ export default {
       this.loading = false
       if (createResult.success) {
         this.notifySuccess(this.$t(`${this.user.name} created succesfully`))
-        setTimeout(() => this.$router.push(`/users/edit/${createResult.data.id}`), 1500)
+        setTimeout(() => this.$router.push({name: routes.usersEdit.name, params: {id: createResult.data.id}}), 1500)
       } else {
         this.notifyError(this.$t(`${this.user.name} failed at create`))
       }
@@ -152,22 +196,23 @@ export default {
     },
     UpdatePermissions: async function () {
       this.loading = true
-      let updateResult = await Connection.patch(`/user/${this.user.id}/permissions`)
+      let updateResult = await Connection.patch(`/user/permissions/${this.user.id}`, this.permission)
       this.loading = false
       if (updateResult.success) {
-        this.notifySuccess(this.$t(`${this.user.name} deactivated succesfully`))
-        setTimeout(() => this.$router.push(`/users`), 1500)
+        this.notifySuccess(this.$t(`${this.user.name}'s permissions were updated succesfully`))
+        setTimeout(() => this.load(), 1500)
       } else {
-        this.notifyError(this.$t(`${this.user.name} failed at delete`))
+        this.notifyError(this.$t(`failed at updating permissions for ${this.user.name} `))
       }
     },
     CreatePermissions: async function () {
       this.loading = true
-      let createResult = await Connection.post(`/user/permissions`)
+      this.permission.user_id = this.user.id
+      let createResult = await Connection.post(`/user/permissions`, this.permission)
       this.loading = false
       if (createResult.success) {
         this.notifySuccess(this.$t(`${this.user.name} was given permissions succesfully`))
-        setTimeout(() => this.$router.push(`/users/edit/${createResult.data.id}`), 1500)
+        setTimeout(() => this.load(), 1500)
       } else {
         this.notifyError(this.$t(`failed at creating permissions for ${this.user.name} `))
       }
