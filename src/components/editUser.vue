@@ -4,18 +4,15 @@
       <q-item-main style="color: #2e3436;">
         <div>
           <strong style="font-size: 25px;" v-if="this.$route.params.id">{{ user.data.name }}</strong>
-          <strong style="font-size: 25px;" v-if="!this.$route.params.id">Nuevo Usuario</strong>
-          <q-field label="Modelo:" style="width: 500px; max-width: 50vw;">
-            <q-input :autofocus="true" v-model="user.model" label="user" readonly="readonly" disabled style="width: 500px; max-width: 80vw;"/>
-          </q-field>
-          <q-field label="Nombre:" style="width: 500px; max-width: 50vw;">
-            <q-input v-model="user.name" :label="user.name" style="width: 500px; max-width: 80vw;"/>
-          </q-field>
-          <q-field label="Padre:" style="width: 500px; max-width: 50vw;">
-            <q-input v-model="user.parent" label="users" readonly="readonly" disabled style="width: 500px; max-width: 80vw;"/>
-          </q-field>
-          <q-field label="Nombre:" style="width: 500px; max-width: 50vw;">
-            <q-input v-model="user.data.name" :label="user.data.name" style="width: 500px; max-width: 80vw;"/>
+          <strong style="font-size: 25px;" v-if="!this.$route.params.id">Nuevo Usuario</strong>{{ this.kind }}
+          <q-field>
+            <div v-for="item in this.formItems"
+                 v-bind:key="item.label"
+                 :is="item.component"
+                 :field="item.field"
+                 :label="item.label"
+                 :params="item.params"
+                 :entity="user"></div>
           </q-field>
           <q-field label="Perfil:" style="width: 500px; max-width: 50vw;">
             <q-select
@@ -26,12 +23,6 @@
                 separator
                 :options="this.profiles"
               />
-          </q-field>
-          <q-field label="Correo:" style="width: 500px; max-width: 50vw;">
-            <q-input v-model="user.data.email" :label="user.data.email" style="width: 500px; max-width: 80vw;"/>
-          </q-field>
-          <q-field label="Contraseña:" style="width: 500px; max-width: 50vw;" v-if="!this.$route.params.id">
-            <q-input type="password" v-model="user.data.password" :label="user.data.password" style="width: 500px; max-width: 80vw;"/>
           </q-field>
           <q-btn color="primary" @click="Save" :loading="loading" class="q-ma-md" v-if="this.$route.params.id">Actualizar</q-btn>
           <q-btn color="negative" @click="Delete" :loading="loading" class="q-ma-md" v-if="this.$route.params.id">Desactivar</q-btn>
@@ -62,8 +53,8 @@
       ]"
               class="q-ma-md"
             />
-            <q-btn color="primary" @click="UpdatePermissions" :loading="loading" v-if="!this.new">Actualizar Permisos</q-btn>
-            <q-btn color="primary" @click="CreatePermissions" :loading="loading" v-if="this.new">Otorgar Permisos</q-btn>
+            <q-btn color="primary" @click="UpdatePermissions" :loading="loading" v-if="this.kind === 'update'">Actualizar Permisos</q-btn>
+            <q-btn color="primary" @click="CreatePermissions" :loading="loading" v-if="this.kind === 'recent'">Otorgar Permisos</q-btn>
           </div>
         </q-collapsible>
       </q-item-main>
@@ -75,6 +66,7 @@
 </style>
 
 <script>
+import Input from './formItems/input'
 import Connection from '../Connection'
 import { routes } from '../router/routes'
 export default {
@@ -90,7 +82,8 @@ export default {
   data () {
     return {
       loading: false,
-      new: true,
+      kind: '',
+      formItems: {},
       user: {
         name: '',
         model: 'user',
@@ -128,10 +121,8 @@ export default {
     load: function (id) {
       if (id) {
         this.getUserData(id)
-        this.getPermission(id)
       } else {
         this.getUserData()
-        this.getPermission()
       }
     },
     getUserData: async function (id) {
@@ -144,22 +135,21 @@ export default {
       let userResult = await Connection.get(`/entity/${userId}/`)
       if (userResult.success) {
         this.user = userResult.data
-      }
-    },
-    getPermission: async function (id) {
-      let userId
-      if (!id) {
-        userId = this.$route.params.id
+        this.getPermission(userId)
       } else {
-        userId = id
+        this.kind = 'new'
       }
+      this.formItems = kindEditor[this.kind]
+    },
+    getPermission: async function (userId) {
       let permissionResult = await Connection.get(`/user/permissions/${userId}`)
       if (permissionResult.success) {
-        this.new = false
+        this.kind = 'update'
         this.permission = permissionResult.data
       } else {
-        this.new = true
+        this.kind = 'recent'
       }
+      this.formItems = kindEditor[this.kind]
     },
     Save: async function () {
       this.loading = true
@@ -254,5 +244,23 @@ export default {
       })
     }
   }
+}
+const kindEditor = {
+  recent: [
+    { label: 'Titulo', field: 'name', component: Input },
+    { label: 'Nombre', field: 'data.name', component: Input },
+    { label: 'Correo', field: 'data.email', component: Input }
+  ],
+  new: [
+    { label: 'Titulo', field: 'name', component: Input },
+    { label: 'Nombre', field: 'data.name', component: Input },
+    { label: 'Correo', field: 'data.email', component: Input },
+    { label: 'Contraseña', field: 'data.password', component: Input, params: {type: 'password'} }
+  ],
+  update: [
+    { label: 'Titulo', field: 'name', component: Input },
+    { label: 'Nombre', field: 'data.name', component: Input },
+    { label: 'Correo', field: 'data.email', component: Input }
+  ]
 }
 </script>

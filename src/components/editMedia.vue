@@ -9,7 +9,6 @@
            :field="item.field"
            :label="item.label"
            :params="item.params"
-           :src="item.src"
            :entity="entityMedia"
            :action="add"></div>
       <img :src="src">
