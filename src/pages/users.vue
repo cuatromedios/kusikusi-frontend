@@ -30,15 +30,11 @@ export default {
     getUsers: async function () {
       let data
       let usersContainer
-      let containerResult = await Connection.get(`/entity/${this.$store.state.main.user.id}/ancestors`)
+      let containerResult = await Connection.get(`/entity/${this.$store.state.main.user.id}/parent?fields=e.id`)
       if (containerResult.success) {
-        for (let i = 0; i < containerResult.data.length; i++) {
-          if (containerResult.data[i].model === 'container') {
-            usersContainer = containerResult.data[1].id
-          }
-        }
+        usersContainer = containerResult.data.id
       }
-      let userResult = await Connection.get(`/entity/${usersContainer}/children`)
+      let userResult = await Connection.get(`/entity/${usersContainer}/children?fields=e.id,d.name`)
       if (userResult.success) {
         for (let i = 0; i < userResult.data.length; i++) {
           data = {'id': userResult.data[i].id, 'name': userResult.data[i].data.name}

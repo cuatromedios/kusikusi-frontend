@@ -1,8 +1,5 @@
 <template>
   <q-page class="flex flex-center">
-    <p>
-      media
-    </p>
   </q-page>
 </template>
 

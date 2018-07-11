@@ -6,7 +6,7 @@
 
 <script>
 export default {
-  name: 'entityInput',
+  name: 'Input',
   props: {
     field: {
       default: '',

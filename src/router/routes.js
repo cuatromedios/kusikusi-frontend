@@ -25,9 +25,19 @@ let loggedRoutes = {
       {path: '', component: () => import('pages/content')}
     ]
   },
-  media: {
+  gallery: {
     path: '/media',
-    component: () => import('pages/media')
+    component: () => import('components/gallery'),
+    children: [
+      {path: '', component: () => import('pages/media')}
+    ]
+  },
+  media: {
+    path: '/media/edit/:id?',
+    component: () => import('components/editMedia'),
+    children: [
+      {path: '', component: () => import('pages/media')}
+    ]
   },
   users: {
     path: '/users',

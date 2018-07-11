@@ -79,7 +79,8 @@ module.exports = function (ctx) {
         'QModalLayout',
         'QBreadcrumbs',
         'QBreadcrumbsEl',
-        'QCollapsible'
+        'QCollapsible',
+        'QUploader'
       ],
       directives: [
         'Ripple'

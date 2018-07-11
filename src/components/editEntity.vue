@@ -25,19 +25,6 @@
     />
     <q-btn class="q-ma-lg" color="primary" @click="saveEntity" :loading="loading">Actualizar</q-btn>
     <q-btn class="q-ma-lg" color="primary" @click="createEntity" :loading="loading">Guardar como hijo</q-btn>
-    <!--<q-select-->
-      <!--style="width: 300px; max-width: 90vw; color: black;"-->
-      <!--class="q-mt-md"-->
-      <!--dark-->
-      <!--inverted-light-->
-      <!--v-for="children in this.children"-->
-      <!--v-bind:key="children.id"-->
-      <!--v-model="selectChild"-->
-      <!--separator-->
-      <!--placeholder="Hijos:"-->
-      <!--:options="[{ label: children.name, value: children.id}]"-->
-      <!--@change="test"-->
-    <!--/>-->
     <q-item
       v-for="children in this.children"
       v-bind:key="children.id"
@@ -50,7 +37,7 @@
 
 <script>
 /* eslint-disable */
-import entityInput from './formItems/entityInput'
+import Input from './formItems/input'
 import Connection from '../Connection'
 import { routes } from '../router/routes'
 /* es-lint enable */
@@ -72,7 +59,6 @@ export default {
       models: [],
       ancestors: [],
       children: [],
-      // selectChild: '',
       entity: {
         contents: {},
         data: {},
@@ -125,12 +111,12 @@ export default {
       }
 
       // Get ancestors
-      let ancestorsResult = await Connection.get(`/entity/${this.entity.id}/ancestors`)
+      let ancestorsResult = await Connection.get(`/entity/${this.entity.id}/ancestors?fields=e.id,e.name`)
       if (ancestorsResult.success) {
         this.ancestors = ancestorsResult.data
       }
        //Get children
-      let childrenResult = await Connection.get(`/entity/${this.entity.id}/children`)
+      let childrenResult = await Connection.get(`/entity/${this.entity.id}/children?fields=e.id,e.name`)
       if (childrenResult.success) {
         this.children = childrenResult.data
       }
@@ -166,7 +152,7 @@ export default {
         let createResult = await Connection.post('/entity', this.newEntity)
         this.loading = false
         if (createResult.success) {
-          this.notifySuccess(this.$t(`New entity created succesfully`))
+          this.notifySuccess(this.$t(`New entity created successfully`))
           setTimeout(() => this.$router.push({name: routes.content.name, params: {id: createResult.data.id}}), 1500)
         } else {
           this.notifyError(this.$t(`Couldn´t create new entity`))
@@ -179,8 +165,6 @@ export default {
       let configModels = this.$store.state.main.config.models
       if (configModels[this.entityModel]) {
         let allowedChildren = configModels[this.entityModel].allowedChildren
-        console.log(this.entityModel)
-        console.log(this.entity.model)
         for (let i = 0; i < allowedChildren.length; i++) {
           if (allowedChildren[i] == this.entity.model) {
             this.auth = true
@@ -192,12 +176,6 @@ export default {
         this.auth = false
       }
     },
-    // child: async function () {
-    //   this.$router.push({name: routes.editEntity.name, params: {id: this.children[0].id}})
-    // },
-    // parent: async function () {
-    //   this.$router.push({name: routes.editEntity.name, params: {id: this.entity.parent}})
-    // },
     notifySuccess: function (message) {
        this.$q.notify({
          message: message,
@@ -238,20 +216,20 @@ export default {
 }
 const modelsEditor = {
   home: [
-    { label: 'Nombre', field: 'name', component: entityInput},
-    { label: 'Título', field: 'contents.title', component: entityInput },
-    { label: 'Descripción', field: 'contents.description', component: entityInput, params: {type: 'textarea', rows: 3} },
-    { label: 'Subtítulo', field: 'contents.summary', component: entityInput },
+    { label: 'Nombre', field: 'name', component: Input},
+    { label: 'Título', field: 'contents.title', component: Input },
+    { label: 'Descripción', field: 'contents.description', component: Input, params: {type: 'textarea', rows: 3} },
+    { label: 'Subtítulo', field: 'contents.summary', component: Input },
   ],
   section: [
-    { label: 'Nombre', field: 'name', component: entityInput},
-    { label: 'Título', field: 'contents.title', component: entityInput },
-    { label: 'Descripción', field: 'contents.description', component: entityInput, params: {type: 'textarea', rows: 3} },
+    { label: 'Nombre', field: 'name', component: Input},
+    { label: 'Título', field: 'contents.title', component: Input },
+    { label: 'Descripción', field: 'contents.description', component: Input, params: {type: 'textarea', rows: 3} },
   ],
   page: [
-    { label: 'Nombre', field: 'name', component: entityInput},
-    { label: 'Título', field: 'contents.title', component: entityInput },
-    { label: 'Descripción', field: 'contents.description', component: entityInput, params: {type: 'textarea', rows: 3} },
+    { label: 'Nombre', field: 'name', component: Input},
+    { label: 'Título', field: 'contents.title', component: Input },
+    { label: 'Descripción', field: 'contents.description', component: Input, params: {type: 'textarea', rows: 3} },
   ]
 }
 </script>
