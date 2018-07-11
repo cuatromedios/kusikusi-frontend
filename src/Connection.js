@@ -36,12 +36,12 @@ class Connection {
     let result = await Connection.call('get', path)
     return result
   }
-  static async post (path, body) {
-    let result = await Connection.call('post', path, body)
+  static async post (path, body, type) {
+    let result = await Connection.call('post', path, body, type)
     return result
   }
-  static async patch (path, body) {
-    let result = await Connection.call('patch', path, body)
+  static async patch (path, body, type) {
+    let result = await Connection.call('patch', path, body, type)
     return result
   }
   static async delete (path) {
@@ -49,14 +49,26 @@ class Connection {
     let result = await Connection.call('delete', path)
     return result
   }
-  static async call (method, path, body) {
+  static async call (method, path, body, type) {
     if (['get', 'post', 'patch', 'delete'].indexOf(method.toLowerCase()) < 0) {
       return {success: false, data: null, info: 'No method or method not allowed'}
     }
-    let jsonBody = body ? JSON.stringify(body) : null
+    // type in format:
+    // _type: {
+    // ___name: ''
+    // ___headerType: ''
+    // _}
+    let data
+    if (type) {
+      data = new FormData()
+      data.append(type.name, body, { type: type.headerType })
+    } else {
+      let jsonBody = body ? JSON.stringify(body) : null
+      data = jsonBody
+    }
     let result
     try {
-      result = await axios[method](baseUrl + path, jsonBody)
+      result = await axios[method](baseUrl + path, data)
     } catch (error) {
       return {success: false, data: null, info: 'An error ocurried in the external call'}
     }

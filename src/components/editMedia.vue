@@ -1,6 +1,6 @@
 <template>
   <q-page class="q-pa-md">
-    <strong style="font-size: 25px;" v-if="this.kind !== 'new'">{{ this.entityMedia.name }}</strong>
+    <strong style="font-size: 25px;" v-if="this.kind === 'update'">{{ this.entityMedia.name }}</strong>
     <strong style="font-size: 25px;" v-if="this.kind === 'new'">Nueva media</strong>
     <q-field>
       <div v-for="item in this.formItems"
@@ -14,7 +14,7 @@
            :action="add"></div>
       <img :src="src">
     </q-field>
-    <q-btn class="q-ma-lg" color="primary" @click="update" :loading="loading" v-if="this.kind !== 'new'">Actualizar datos</q-btn>
+    <q-btn class="q-ma-lg" color="primary" @click="update" :loading="loading" v-if="this.kind === 'update'">Actualizar datos</q-btn>
     <q-btn class="q-ma-lg" color="primary" @click="save" :loading="loading" v-if="this.kind === 'new'">Guardar</q-btn>
     <img src="">
   </q-page>
@@ -24,7 +24,6 @@
 import mediaUpload from './formItems/mediaUpload'
 import Input from './formItems/input'
 import Connection from '../Connection'
-import axios from 'axios'
 import config from '../config'
 import { routes } from '../router/routes'
 export default {
@@ -53,7 +52,11 @@ export default {
       url: '',
       extensions: ['.jpg', '.png', 'gif'],
       formItems: [],
-      files: {}
+      files: {},
+      type: {
+        name: 'file',
+        headerType: 'multipart/form-data'
+      }
     }
   },
   methods: {
@@ -78,10 +81,7 @@ export default {
           this.url = `${config.api.url}/media/${this.entityMedia.id}/upload`
           if (this.entityMedia.data) {
             this.src = `${config.media.url}/${this.entityMedia.id}/thumb`
-            console.log(this.src)
             this.kind = 'update'
-          } else {
-            this.kind = 'recent'
           }
         }
       } else {
@@ -99,25 +99,26 @@ export default {
       let saveResult = await Connection.post(`/media`, this.entityMedia)
       this.loading = false
       if (saveResult.success) {
-        this.notifySuccess(this.$t(`Media created successfully`))
-        setTimeout(() => this.$router.push({name: routes.media.name, params: {id: saveResult.data.id}}), 1500)
+        let uploadResult = await Connection.post(`/media/${saveResult.data.id}/upload`, this.files, this.type)
+        if (uploadResult.success) {
+          this.notifySuccess(this.$t(`Media created successfully`))
+          setTimeout(() => this.$router.push({name: routes.media.name, params: {id: saveResult.data.id}}), 1500)
+        } else {
+          this.notifyError(this.$t(`Media data created, but failed at uploading the file`))
+        }
       } else {
         this.notifyError(this.$t(`Failed at creating media`))
       }
     },
     update: async function () {
-      let data = new FormData()
       this.loading = true
       let updateResult = await Connection.patch(`/entity/${this.entityMedia.id}`, this.entityMedia)
       this.loading = false
       if (updateResult.success) {
-        data.set('file', this.files, { type: 'multipart/form-data' })
-        console.log(data)
-        console.log(this.files)
-        let uploadResult = axios.post(`${config.api.url}/media/${this.entityMedia.id}/upload`, data)
+        let uploadResult = await Connection.post(`/media/${this.entityMedia.id}/upload`, this.files, this.type)
         if (uploadResult.success) {
           this.notifySuccess(this.$t(`Media uploaded and updated successfully`))
-          setTimeout(() => this.getSelected(), 1500)
+          // setTimeout(() => this.$router.go(), 1500)
         } else {
           this.notifyError(this.$t(`Media data updated, but failed at uploading the file`))
         }
@@ -166,11 +167,7 @@ export default {
 const kindEditor = {
   new: [
     { label: 'Titulo', field: 'contents.title', component: Input },
-    { label: 'Descripcion', field: 'contents.description', component: Input, params: {type: 'textarea', rows: 3} }
-  ],
-  recent: [
-    { label: 'Titulo', field: 'contents.title', component: Input },
-    { label: 'Descripción', field: 'contents.description', component: Input, params: {type: 'textarea', rows: 3} },
+    { label: 'Descripcion', field: 'contents.description', component: Input, params: {type: 'textarea', rows: 3} },
     { label: 'Subir arcivos', component: mediaUpload }
   ],
   update: [
