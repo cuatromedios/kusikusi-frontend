@@ -2,6 +2,7 @@
   <q-uploader
     url=""
     @add="action"
+    @remove:cancel="trigger"
     :float-label="label"
     :extensions="extensions"
     hide-upload-button
@@ -17,7 +18,8 @@ export default {
       default: '',
       type: String
     },
-    action: {}
+    action: {},
+    trigger: {}
   },
   data () {
     return {

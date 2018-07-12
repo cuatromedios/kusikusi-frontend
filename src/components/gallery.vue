@@ -1,5 +1,6 @@
 <template>
   <q-page class="flex flex-center">
+    <q-btn class="q-ma-lg" color="primary" @click="$router.push(`/media/edit`)" :loading="loading">Nuevo medio</q-btn>
     <q-item class="q-ma-md"
             v-for="media in this.media"
             v-bind:key="media.id"
@@ -7,7 +8,6 @@
             style="color: #2e3436; cursor: pointer;">
       <img :src="media.src" :title="media.name">
     </q-item>
-    <q-btn class="q-ma-lg" color="primary" @click="$router.push(`/media/edit`)" :loading="loading">Nuevo medio</q-btn>
   </q-page>
 </template>
 

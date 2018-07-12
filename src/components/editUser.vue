@@ -4,7 +4,7 @@
       <q-item-main style="color: #2e3436;">
         <div>
           <strong style="font-size: 25px;" v-if="this.$route.params.id">{{ user.data.name }}</strong>
-          <strong style="font-size: 25px;" v-if="!this.$route.params.id">Nuevo Usuario</strong>{{ this.kind }}
+          <strong style="font-size: 25px;" v-if="!this.$route.params.id">Nuevo Usuario</strong>
           <q-field>
             <div v-for="item in this.formItems"
                  v-bind:key="item.label"

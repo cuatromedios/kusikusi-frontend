@@ -10,12 +10,14 @@
            :label="item.label"
            :params="item.params"
            :entity="entityMedia"
-           :action="add"></div>
+           :action="add"
+           :trigger="remove"></div>
       <img :src="src">
+      <q-btn class="q-ma-lg" round color="negative" @click="deleteMedia" icon="fa-times" size="sm" :loading="loading" v-if="this.src !== ''"></q-btn>
     </q-field>
     <q-btn class="q-ma-lg" color="primary" @click="update" :loading="loading" v-if="this.kind === 'update'">Actualizar datos</q-btn>
+    <q-btn class="q-ma-lg" color="negative" @click="deleteEntity" :loading="loading" v-if="this.kind === 'update'">Eliminar</q-btn>
     <q-btn class="q-ma-lg" color="primary" @click="save" :loading="loading" v-if="this.kind === 'new'">Guardar</q-btn>
-    <img src="">
   </q-page>
 </template>
 
@@ -36,6 +38,7 @@ export default {
   },
   data () {
     return {
+      // TODO: Agregar button group. Se ven mas chidos
       loading: false,
       kind: '',
       entityMedia: {
@@ -78,9 +81,9 @@ export default {
         if (Result.success) {
           this.entityMedia = Result.data
           this.url = `${config.api.url}/media/${this.entityMedia.id}/upload`
+          this.kind = 'update'
           if (this.entityMedia.data) {
             this.src = `${config.media.url}/${this.entityMedia.id}/thumb`
-            this.kind = 'update'
           }
         }
       } else {
@@ -90,6 +93,9 @@ export default {
     },
     add: function (files) {
       this.files = files[0]
+    },
+    remove: function () {
+      this.files = {}
     },
     save: async function () {
       this.loading = true
@@ -114,15 +120,51 @@ export default {
       let updateResult = await Connection.patch(`/entity/${this.entityMedia.id}`, this.entityMedia)
       this.loading = false
       if (updateResult.success) {
-        let uploadResult = await Connection.post(`/media/${this.entityMedia.id}/upload`, this.files, this.type)
-        if (uploadResult.success) {
-          this.notifySuccess(this.$t(`Media uploaded and updated successfully`))
-          // setTimeout(() => this.$router.go(), 1500)
+        if (this.files.name) {
+          let uploadResult = await Connection.post(`/media/${this.entityMedia.id}/upload`, this.files, this.type)
+          if (uploadResult.success) {
+            this.notifySuccess(this.$t(`Media uploaded and updated successfully`))
+            setTimeout(() => this.load(), 1500)
+          } else {
+            this.notifyError(this.$t(`Media data updated, but failed at uploading the file`))
+          }
         } else {
-          this.notifyError(this.$t(`Media data updated, but failed at uploading the file`))
+          this.notifySuccess(this.$t(`${this.entityMedia.name}'s data updated successfully`))
+          setTimeout(() => this.load(), 1500)
         }
       } else {
         this.notifyError(this.$t(`Failed at updating media data`))
+      }
+    },
+    deleteMedia: async function () {
+      this.loading = true
+      let deleteResult = await Connection.delete(`/media/${this.entityMedia.id}`)
+      this.loading = false
+      if (deleteResult.success) {
+        this.src = ''
+        this.notifySuccess(this.$t(`${this.entityMedia.name}'s media deleted successfully`))
+        setTimeout(() => this.load(), 1500)
+      } else {
+        this.notifyError(this.$t(`Failed at deleting ${this.entityMedia.name}'s media`))
+      }
+    },
+    deleteEntity: async function () {
+      this.loading = true
+      let deleteResult = await Connection.delete(`/media/${this.entityMedia.id}`)
+      if (deleteResult.success) {
+        this.src = ''
+        let deleteEntityResult = await Connection.delete(`/entity/${this.entityMedia.id}`)
+        if (deleteEntityResult.success) {
+          this.loading = false
+          this.notifySuccess(this.$t(`Media deleted successfully`))
+          setTimeout(() => this.$router.push({name: routes.gallery.name}), 1500)
+        } else {
+          this.loading = false
+          this.notifyError(this.$t(`Media deleted, but couldn't delete ${this.entityMedia.name}`))
+          setTimeout(() => this.load(), 1500)
+        }
+      } else {
+        this.notifyError(this.$t(`Failed at deleting ${this.entityMedia.name}'s media`))
       }
     },
     notifySuccess: function (message) {
