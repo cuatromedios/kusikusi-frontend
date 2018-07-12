@@ -12,8 +12,8 @@
           <p class="q-display-1 text-primary">{{ 'login.welcome' | translate }}</p>
         </div>
           <div class="card-content" style="width: 650px; max-width: 90vw;">
-            <q-input :autofocus="true" v-model="form.email" float-label="Correo Electrónico" />
-            <q-input v-model="form.pass" type="password"  float-label="Contraseña" />
+            <q-input :autofocus="true" v-model="form.email" :float-label="'login.email' | translate" />
+            <q-input v-model="form.pass" type="password"  :float-label="'login.password' | translate" />
             <q-btn class="q-ma-lg" color="primary" @click="handleLogin">{{ 'login.button' | translate }}</q-btn>
           </div>
         </q-card-main>
@@ -32,7 +32,7 @@ export default {
     this.$store.dispatch('main/resetUserData')
   },
   mounted () {
-    this.$store.commit('main/setTitle', this.$t('login.title'))
+    // this.$store.commit('main/setTitle', this.$t('login.title'))
   },
   data () {
     return {
@@ -57,7 +57,6 @@ export default {
         if (loginResult.success) {
           this.$store.commit('main/setAuthtoken', loginResult.data.token)
           this.$store.commit('main/setName', loginResult.data.entity.data.name)
-          this.$store.commit('main/setStoreName', loginResult.data.entity.data.metadata)
           this.$store.commit('main/setProfile', loginResult.data.entity.data.profile)
           this.$store.commit('main/setUserId', loginResult.data.entity.id)
           this.$store.commit('main/setConfig', configResult.data.models)

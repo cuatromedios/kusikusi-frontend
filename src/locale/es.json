@@ -15,35 +15,25 @@
     "button": "Ingresar",
     "invalid": "El correo electrónico o la contraseña son incorrectas"
   },
-  "selection": {
-    "title": "Cuadro básico",
-    "subtitle": "Los productos que has seleccionado",
-    "noProducts": "No has seleccionado productos de esta línea todavía"
+  "layout": {
+    "dashboard": "Tablero",
+    "content": "Contenido",
+    "media": "Medios",
+    "users": "Usuarios",
+    "configuration": "Configuración",
+    "logout": "Cerrar sesión"
   },
-  "products": {
-    "title": "Productos",
-    "subtitle": "Encuentra los productos disponibles",
-    "providers": "Proveedores:",
-    "selectProvider": "Selecciona un proveedor",
-    "categories": "Líneas:",
-    "selectCategory": "Selecciona una línea",
-    "searchProvider": "Buscar un proveedor",
-    "add": "Agregar a mi cuadro básico",
-    "remove": "Quitar de mi cuadro básico",
-    "maintain": "Mantener en mi cuadro básico",
-    "close": "cerrar",
-    "selectedOk": "El producto se modificó en el cuadro básico",
-    "deletedOk": "Se quitó cualquier instrucción del producto en el cuadro básico"
+  "form components": {
+    "name": "Nombre",
+    "title": "Título",
+    "description": "Descripción",
+    "subtitle": "Subtítiulo",
+    "upload files": "Subir archivos"
   },
   "content": {
-    "title": "Contenido"
-  },
-  "capacity": {
-    "title": "Capacidades",
-    "subtitle": "¿Cuántos productos puedes exhibir en tu tienda?"
-  },
-  "logout": {
-    "title": "Salir",
-    "subtitle": "Salir de la cuenta"
+    "update": "Actualizar",
+    "save child": "Guardar como hijo",
+    "children": "Hijos",
+    "saveEntitySuccess": "actualizada exitosamenta"
   }
 }

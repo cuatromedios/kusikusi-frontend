@@ -47,27 +47,27 @@
         </q-list-header>
         <q-item @click.native="$router.push('/dashboard')">
           <q-item-side icon="fa-tachometer-alt" />
-          <q-item-main label="Dashboard"/>
+          <q-item-main :label="'layout.dashboard' | translate"/>
         </q-item>
         <q-item @click.native="$router.push('/content/edit/ ')">
           <q-item-side icon="fa-list" />
-          <q-item-main label="Content"  />
+          <q-item-main :label="'layout.content' | translate"  />
         </q-item>
         <q-item @click.native="$router.push('/media')">
           <q-item-side icon="fa-image" />
-          <q-item-main label="Media" />
+          <q-item-main :label="'layout.media' | translate" />
         </q-item>
         <q-item @click.native="$router.push('/users')">
           <q-item-side icon="fa-users" />
-          <q-item-main label="Users" />
+          <q-item-main :label="'layout.users' | translate" />
         </q-item>
         <q-item @click.native="$router.push('/config')">
           <q-item-side icon="fa-cog" />
-          <q-item-main label="Config" />
+          <q-item-main :label="'layout.configuration' | translate" />
         </q-item>
         <q-item @click.native="$router.push('/login')">
           <q-item-side icon="fa-sign-out-alt" />
-          <q-item-main label="Log out" />
+          <q-item-main :label="'layout.logout' | translate" />
         </q-item>
       </q-list>
     </q-layout-drawer>

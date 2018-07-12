@@ -6,6 +6,7 @@
     :float-label="label"
     :extensions="extensions"
     hide-upload-button
+    auto-expand
     style="width: 500px; max-width: 90vw;"
     class="q-mt-md"/>
 </template>

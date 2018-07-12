@@ -23,14 +23,14 @@
       placeholder="Seleccione un modelo:"
       :options="this.models"
     />
-    <q-btn class="q-ma-lg" color="primary" @click="saveEntity" :loading="loading">Actualizar</q-btn>
-    <q-btn class="q-ma-lg" color="primary" @click="createEntity" :loading="loading">Guardar como hijo</q-btn>
+    <q-btn class="q-ma-lg" color="primary" @click="saveEntity" :loading="loading">{{ 'content.update' | translate }}</q-btn>
+    <q-btn class="q-ma-lg" color="primary" @click="createEntity" :loading="loading">{{ 'content.save child' | translate }}</q-btn>
     <q-item
       v-for="children in this.children"
       v-bind:key="children.id"
       @click.native="$router.push(`/content/edit/${children.id}`)"
       class="dark">
-      Children: {{ children.name }}
+      {{ 'content.children' | translate }}: {{ children.name }}
     </q-item>
   </q-page>
 </template>
@@ -40,6 +40,7 @@
 import Input from './formItems/input'
 import Connection from '../Connection'
 import { routes } from '../router/routes'
+import Notifications from './notifications.js'
 /* es-lint enable */
 
 export default {
@@ -77,11 +78,11 @@ export default {
   methods: {
     getEntity: async function (id) {
       // Get Entity
-      if (id == ' ') {
+      if (id === ' ') {
         this.$route.params.id = undefined
         id = undefined
       }
-      if (this.$route.params.id == ' ') {
+      if (this.$route.params.id === ' ') {
         this.$route.params.id = undefined
       }
       let entityId = id ? id : this.$route.params.id
@@ -135,15 +136,15 @@ export default {
       let saveResult = await Connection.patch(`/entity/${this.entity.id}`, this.entity)
       this.loading = false
       if (saveResult.success) {
-        this.notifySuccess(this.$t(`${this.entity.name} updated succesfully`))
+        Notifications.notifySuccess(this.$t(`${this.entity.name} updated succesfully`))
         setTimeout(() => this.getEntity(), 1500)
       } else {
-        this.notifyError(this.$t(`${this.entity.name} failed at update`))
+        Notifications.notifyError(this.$t(`${this.entity.name} failed at update`))
       }
     },
     createEntity: async function () {
       this.childAuth()
-      if (this.auth == true) {
+      if (this.auth === true) {
         this.loading = true
         this.newEntity.parent = this.entity.id
         this.newEntity.model = this.entity.model
@@ -152,13 +153,13 @@ export default {
         let createResult = await Connection.post('/entity', this.newEntity)
         this.loading = false
         if (createResult.success) {
-          this.notifySuccess(this.$t(`New entity created successfully`))
+          Notifications.notifySuccess(this.$t(`New entity created successfully`))
           setTimeout(() => this.$router.push({name: routes.content.name, params: {id: createResult.data.id}}), 1500)
         } else {
-          this.notifyError(this.$t(`Couldn´t create new entity`))
+          Notifications.notifyError(this.$t(`Couldn´t create new entity`))
         }
       } else {
-        this.notifyError(this.$t(`Child's model not allowed`))
+        Notifications.notifyWarning(this.$t(`Child's model not allowed`))
       }
     },
     childAuth: function () {
@@ -166,7 +167,7 @@ export default {
       if (configModels[this.entityModel]) {
         let allowedChildren = configModels[this.entityModel].allowedChildren
         for (let i = 0; i < allowedChildren.length; i++) {
-          if (allowedChildren[i] == this.entity.model) {
+          if (allowedChildren[i] === this.entity.model) {
             this.auth = true
             return
           }
@@ -175,42 +176,6 @@ export default {
       } else {
         this.auth = false
       }
-    },
-    notifySuccess: function (message) {
-       this.$q.notify({
-         message: message,
-         timeout: 1500,
-         type: 'positive',
-         textColor: 'white',
-         icon: 'fa-check',
-         position: 'top',
-         actions: [
-           {
-             label: '',
-             icon: 'fa-times', // optional
-             handler: () => {
-             }
-           }
-         ]
-       })
-     },
-    notifyError: function (message) {
-      this.$q.notify({
-        message: message,
-        timeout: 1500,
-        type: 'negative',
-        textColor: 'white',
-        icon: 'fa-exclamation-triangle',
-        position: 'top',
-        actions: [
-          {
-            label: '',
-            icon: 'fa-times', // optional
-            handler: () => {
-            }
-          }
-        ]
-      })
     }
   }
 }

@@ -69,6 +69,7 @@
 import Input from './formItems/input'
 import Connection from '../Connection'
 import { routes } from '../router/routes'
+import Notifications from './notifications.js'
 export default {
   name: 'editUser',
   mounted () {
@@ -156,10 +157,10 @@ export default {
       let saveResult = await Connection.patch(`/entity/${this.user.id}`, this.user)
       this.loading = false
       if (saveResult.success) {
-        this.notifySuccess(this.$t(`${this.user.name} updated succesfully`))
+        Notifications.notifySuccess(this.$t(`${this.user.name} updated succesfully`))
         setTimeout(() => this.getUserData(), 1500)
       } else {
-        this.notifyError(this.$t(`${this.user.name} failed at update`))
+        Notifications.notifyError(this.$t(`${this.user.name} failed at update`))
       }
     },
     Create: async function () {
@@ -167,10 +168,10 @@ export default {
       let createResult = await Connection.post(`/entity`, this.user)
       this.loading = false
       if (createResult.success) {
-        this.notifySuccess(this.$t(`${this.user.name} created succesfully`))
+        Notifications.notifySuccess(this.$t(`${this.user.name} created succesfully`))
         setTimeout(() => this.$router.push({name: routes.usersEdit.name, params: {id: createResult.data.id}}), 1500)
       } else {
-        this.notifyError(this.$t(`${this.user.name} failed at create`))
+        Notifications.notifyError(this.$t(`${this.user.name} failed at create`))
       }
     },
     Delete: async function () {
@@ -178,10 +179,10 @@ export default {
       let deleteResult = await Connection.delete(`/entity/${this.user.id}`)
       this.loading = false
       if (deleteResult.success) {
-        this.notifySuccess(this.$t(`${this.user.name} deactivated succesfully`))
+        Notifications.notifySuccess(this.$t(`${this.user.name} deactivated succesfully`))
         setTimeout(() => this.$router.push(`/users`), 1500)
       } else {
-        this.notifyError(this.$t(`${this.user.name} failed at delete`))
+        Notifications.notifyError(this.$t(`${this.user.name} failed at delete`))
       }
     },
     UpdatePermissions: async function () {
@@ -189,10 +190,10 @@ export default {
       let updateResult = await Connection.patch(`/user/permissions/${this.user.id}`, this.permission)
       this.loading = false
       if (updateResult.success) {
-        this.notifySuccess(this.$t(`${this.user.name}'s permissions were updated succesfully`))
+        Notifications.notifySuccess(this.$t(`${this.user.name}'s permissions were updated succesfully`))
         setTimeout(() => this.load(), 1500)
       } else {
-        this.notifyError(this.$t(`failed at updating permissions for ${this.user.name} `))
+        Notifications.notifyError(this.$t(`failed at updating permissions for ${this.user.name} `))
       }
     },
     CreatePermissions: async function () {
@@ -201,47 +202,11 @@ export default {
       let createResult = await Connection.post(`/user/permissions`, this.permission)
       this.loading = false
       if (createResult.success) {
-        this.notifySuccess(this.$t(`${this.user.name} was given permissions succesfully`))
+        Notifications.notifySuccess(this.$t(`${this.user.name} was given permissions succesfully`))
         setTimeout(() => this.load(), 1500)
       } else {
-        this.notifyError(this.$t(`failed at creating permissions for ${this.user.name} `))
+        Notifications.notifyError(this.$t(`failed at creating permissions for ${this.user.name} `))
       }
-    },
-    notifySuccess: function (message) {
-      this.$q.notify({
-        message: message,
-        timeout: 1500,
-        type: 'positive',
-        textColor: 'white',
-        icon: 'fa-check',
-        position: 'top',
-        actions: [
-          {
-            label: '',
-            icon: 'fa-times', // optional
-            handler: () => {
-            }
-          }
-        ]
-      })
-    },
-    notifyError: function (message) {
-      this.$q.notify({
-        message: message,
-        timeout: 1500,
-        type: 'negative',
-        textColor: 'white',
-        icon: 'fa-exclamation-triangle',
-        position: 'top',
-        actions: [
-          {
-            label: '',
-            icon: 'fa-times', // optional
-            handler: () => {
-            }
-          }
-        ]
-      })
     }
   }
 }
