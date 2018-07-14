@@ -1,6 +1,15 @@
 <template>
-  <q-field :label="label" style="width: 600px; max-width: 90vw;" class="q-mt-md">
-    <q-input ref="field" v-model="fieldReference" :type="params.type" :rows="params.rows" class="q-mt-md" style="width: 500px; max-width: 90vw;"/>
+  <q-field :label="label" style="width: 600px; max-width: 90vw;" class="q-my-md">
+    <q-select
+      style="width: 30vw; max-width: 90vw;"
+      class="q-my-md"
+      inverted
+      dark
+      v-model="fieldReference"
+      separator
+      :placeholder="params.placeholder"
+      :options="options"
+    />
   </q-field>
 </template>
 
@@ -16,6 +25,9 @@ export default {
       default: '',
       type: String
     },
+    options: {
+      default: []
+    },
     entity: {
       default: () => {
         return {}
@@ -25,8 +37,8 @@ export default {
     params: {
       default: () => {
         return {
-          type: 'text',
-          rows: 3
+          placeholder: '',
+          options: []
         }
       },
       type: Object

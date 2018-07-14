@@ -32,8 +32,10 @@
   },
   "content": {
     "update": "Actualizar",
-    "save child": "Guardar como hijo",
+    "save child": "Crear hijo",
+    "delete": "Eliminar",
     "children": "Hijos",
-    "saveEntitySuccess": "actualizada exitosamenta"
+    "saveEntitySuccess": "actualizada exitosamenta",
+    "media": "Agregar"
   }
 }

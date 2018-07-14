@@ -12,7 +12,7 @@
            :entity="entityMedia"
            :action="add"
            :trigger="remove"></div>
-      <img :src="src">
+      <img :src="src" class="q-my-lg">
       <q-btn class="q-ma-lg" round color="negative" @click="deleteMedia" icon="fa-times" size="sm" :loading="loading" v-if="this.src !== ''"></q-btn>
     </q-field>
     <q-btn class="q-ma-lg" color="primary" @click="update" :loading="loading" v-if="this.kind === 'update'">Actualizar datos</q-btn>

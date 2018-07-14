@@ -1,6 +1,11 @@
 <template>
-  <q-field :label="label" style="width: 600px; max-width: 90vw;" class="q-mt-md">
-    <q-input ref="field" v-model="fieldReference" :type="params.type" :rows="params.rows" class="q-mt-md" style="width: 500px; max-width: 90vw;"/>
+  <q-field :label="label" style="width: 600px; max-width: 90vw;" class="q-my-md">
+    <q-datetime
+      type="datetime"
+      v-model="fieldReference"
+      color="primary"
+      format="YYYY-MM-DD hh:mm:ss"
+    />
   </q-field>
 </template>
 
@@ -25,8 +30,6 @@ export default {
     params: {
       default: () => {
         return {
-          type: 'text',
-          rows: 3
         }
       },
       type: Object
