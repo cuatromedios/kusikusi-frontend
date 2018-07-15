@@ -28,35 +28,34 @@
           <q-btn color="negative" @click="Delete" :loading="loading" class="q-ma-md" v-if="this.$route.params.id">Desactivar</q-btn>
           <q-btn color="primary" @click="Create" :loading="loading" class="q-ma-md" v-if="!this.$route.params.id">Crear</q-btn>
         </div>
-        <q-collapsible icon="fa-user" label="Permisos" v-if="this.$route.params.id" style="color: #2e3436; -webkit-text-fill-color: #2e3436;" color="primary">
+
           <div>
             <q-input v-model="permission.entity_id" float-label="Permiso sobre:" :label="permission" style="width: 300px; max-width: 80vw;"/>
             Derechos de lectura:
             <q-btn-toggle
-              v-model="permission.get"
+              v-model="permission.read"
               toggle-color="primary"
               :options="[
-        {label: 'none', value: 'none'},
-        {label: 'own', value: 'own'},
-        {label: 'any', value: 'any'}
+        {label: 'No', value: 'none'},
+        {label: 'Propios', value: 'own'},
+        {label: 'Cualquiera', value: 'any'}
       ]"
               class="q-ma-md"
             />
             Derechos de edicion:
             <q-btn-toggle
-              v-model="permission.post"
+              v-model="permission.write"
               toggle-color="primary"
               :options="[
-        {label: 'none', value: 'none'},
-        {label: 'own', value: 'own'},
-        {label: 'any', value: 'any'}
+        {label: 'No', value: 'none'},
+        {label: 'Propios', value: 'own'},
+        {label: 'Cualquiera', value: 'any'}
       ]"
               class="q-ma-md"
             />
             <q-btn color="primary" @click="UpdatePermissions" :loading="loading" v-if="this.kind === 'update'">Actualizar Permisos</q-btn>
             <q-btn color="primary" @click="CreatePermissions" :loading="loading" v-if="this.kind === 'recent'">Otorgar Permisos</q-btn>
           </div>
-        </q-collapsible>
       </q-item-main>
     </q-item>
   </q-page>
