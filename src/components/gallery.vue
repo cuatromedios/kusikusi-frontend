@@ -1,12 +1,24 @@
 <template>
   <q-page class="flex flex-center">
-    <q-btn class="q-ma-lg" color="primary" @click="$router.push(`/media/edit`)" :loading="loading">Nuevo medio</q-btn>
-    <q-item class="q-ma-md"
-            v-for="media in this.media"
-            v-bind:key="media.id"
-            @click.native="$router.push(`/media/edit/${media.id}`)"
-            style="color: #2e3436; cursor: pointer;">
-      <img :src="media.src" :title="media.name">
+    <q-item>
+      <q-item-main>
+        <q-card
+          v-for="media in media"
+          v-bind:key="media.id"
+        >
+          <q-card-media @click.native="$router.push(`/media/edit/${media.id}`)">
+            <img :src="media.src" :title="media.name" style="cursor: pointer;">
+          </q-card-media>
+          <q-card-separator />
+          <q-card-title @click.native="$router.push(`/media/edit/${media.id}`)" style="color: #0071bc; cursor: pointer;">
+            {{ media.name }}
+          </q-card-title>
+        </q-card>
+        <br>
+      </q-item-main>
+      <q-side>
+        <q-btn class="q-ma-lg" color="primary" @click="$router.push(`/media/create`)" :loading="loading">Nuevo medio</q-btn>
+      </q-side>
     </q-item>
   </q-page>
 </template>

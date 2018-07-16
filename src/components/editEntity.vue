@@ -14,7 +14,7 @@
               </q-item>
             </q-list>
           </q-btn-dropdown>
-          <q-btn push color="red" :loading="loading">{{ 'content.delete' | translate }}</q-btn>
+          <q-btn push color="red" :loading="loading" @click="deleteEntitiesArray(checkDelete)" :disable="disable">{{ 'content.delete' | translate }}</q-btn>
         </q-btn-group>
         <q-list
           v-for="children in this.children"
@@ -23,7 +23,7 @@
           class="dark">
           <q-item>
             <q-item-side>
-              <q-checkbox v-model="checkDelete" color="blue" :val="children.id"/>
+              <q-checkbox v-model="checkDelete" color="blue" :val="children.id" @input="disableButton"/>
             </q-item-side>
             <q-item-main>
               <strong style="color: #0071bc;">- {{ children.name }}</strong>
@@ -78,8 +78,8 @@
       <p><strong>¡Esto eliminará también a todos sus descendientes!</strong></p>
       <q-btn push color="tertiary" @click="deleteEntity(entity.id)" :loading="loading" >{{ 'content.delete' | translate }}</q-btn>
     </q-modal>
-    <q-modal v-model="createMedia" :content-css="{minWidth: '80vw', minHeight: '80vh', maxWidth: '50vw'}" @hide="createMedia = false">
-      <EditMedia></EditMedia>
+    <q-modal v-model="createMedia" :content-css="{minWidth: '80vw', minHeight: '80vh'}" @hide="createMedia = false">
+      <EditMedia :relation="entity.id"></EditMedia>
       <q-btn class="q-ma-lg absolute-top-right" round color="negative" @click="createMedia = false" icon="fa-times" size="xs"></q-btn>
     </q-modal>
   </q-page>
@@ -108,7 +108,6 @@ export default {
     this.getEntity()
   },
   beforeRouteUpdate (to, from, next) {
-    // console.log(to.params.id)
     this.getEntity(to.params.id)
     next()
   },
@@ -118,6 +117,7 @@ export default {
       auth: true,
       deleteConfirm: false,
       createMedia: false,
+      disable: true,
       checkDelete: [],
       models: [],
       ancestors: [],
@@ -156,6 +156,8 @@ export default {
         this.$route.params.id = undefined
       }
       this.media = []
+      this.formItems = []
+      this.disable = true
       let entityId = id ? id : this.$route.params.id
       if (!entityId) {
         let relations
@@ -211,7 +213,6 @@ export default {
       this.loading = false
     },
     saveEntity: async function () {
-      //TODO: Right now you can´t update a field when it hasn´t been stated first.
       this.loading = true
       let saveResult = await Connection.patch(`/entity/${this.entity.id}`, this.entity)
       this.loading = false
@@ -229,7 +230,7 @@ export default {
         this.loading = true
         this.newEntity.parent = this.entity.id
         this.newEntity.model = model
-        this.newEntity.name = 'Nuevo hijo'
+        this.newEntity.name = 'entidad'
         this.newEntity.created_by = this.entity.id
         this.newEntity.updated_by = this.entity.id
         let createResult = await Connection.post('/entity', this.newEntity)
@@ -243,6 +244,30 @@ export default {
       } else {
         Notifications.notifyWarning(this.$t(`Child's model not allowed`))
       }
+    },
+    deleteEntitiesArray: async function (entity) {
+      for (let i = 0; i < entity.length; i++) {
+        this.loading = true
+        let descendantsResult = await Connection.get(`/entity/${entity[i]}/descendants?fields=e.id`)
+        if (descendantsResult.success) {
+          for (let i = 0; i < descendantsResult.data.length; i++) {
+            let deleteDescendantsResult = await Connection.delete(`/entity/${descendantsResult.data[i].id}`)
+            if (!deleteDescendantsResult.success) {
+              Notifications.notifyError(this.$t(`An error was thrown while deleting a descendant`))
+              return;
+            }
+          }
+        }
+        let deleteEntityResult = await Connection.delete(`/entity/${entity[i]}`)
+        this.loading = false
+        if (deleteEntityResult.success) {
+          Notifications.notifySuccess(this.$t(`Entity and it's descendants were deleted successfully`))
+        } else {
+          Notifications.notifyError(this.$t(`Couldn't delete the selected entity`))
+        }
+      }
+      this.checkDelete = []
+      setTimeout(() => this.getEntity(), 1500)
     },
     deleteEntity: async function (entity) {
       this.deleteConfirm = false
@@ -265,6 +290,10 @@ export default {
       } else {
         Notifications.notifyError(this.$t(`Couldn't delete the selected entity`))
       }
+    },
+    disableButton: function () {
+      this.checkDelete.length === 0 ? this.disable = true : this.disable = false
+      console.log(this.disable)
     },
     childAuth: function (model) {
       let configModels = this.$store.state.main.config.models

@@ -37,6 +37,12 @@ export default {
     this.load(to.params.id)
     next()
   },
+  props: {
+    relation: {
+      default: '',
+      type: String
+    }
+  },
   data () {
     return {
       // TODO: Agregar button group. Se ven mas chidos
@@ -59,11 +65,24 @@ export default {
       type: {
         name: 'file',
         headerType: 'multipart/form-data'
+      },
+      called: {
+        kind: 'medium',
+        id: ''
       }
     }
   },
   methods: {
     load: function (id) {
+      this.entityMedia = {
+        name: '',
+        model: '',
+        parent: '',
+        contents: {
+          title: '',
+          description: ''
+        }
+      }
       if (id) {
         this.getSelected(id)
       } else {
@@ -107,8 +126,20 @@ export default {
       if (saveResult.success) {
         let uploadResult = await Connection.post(`/media/${saveResult.data.id}/upload`, this.files, this.type)
         if (uploadResult.success) {
-          Notifications.notifySuccess(this.$t(`Media created successfully`))
-          setTimeout(() => this.$router.push({name: routes.media.name, params: {id: saveResult.data.id}}), 1500)
+          if (this.relation) {
+            this.called.id = saveResult.data.id
+            let relationResult = await Connection.post(`/entity/${this.relation}/relations`, this.called)
+            if (relationResult.success) {
+              Notifications.notifySuccess(this.$t(`Media created and related successfully`))
+              setTimeout(() => this.$router.push({name: routes.content.name, params: {id: this.relation}}), 1500)
+            } else {
+              Notifications.notifyWarning(this.$t(`Media created but could´t create the relation`))
+              setTimeout(() => this.$router.push({name: routes.mediaEdit.name, params: {id: saveResult.data.id}}), 1500)
+            }
+          } else {
+            Notifications.notifySuccess(this.$t(`Media created successfully`))
+            setTimeout(() => this.$router.push({name: routes.mediaEdit.name, params: {id: saveResult.data.id}}), 1500)
+          }
         } else {
           Notifications.notifyError(this.$t(`Media data created, but failed at uploading the file`))
         }
