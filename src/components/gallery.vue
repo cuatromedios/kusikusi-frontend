@@ -17,7 +17,7 @@
         <br>
       </q-item-main>
       <q-side>
-        <q-btn class="q-ma-lg" color="primary" @click="$router.push(`/media/create`)" :loading="loading">Nuevo medio</q-btn>
+        <q-btn class="q-ma-lg" color="primary" @click="$router.push(`/media/edit`)" :loading="loading">Nuevo medio</q-btn>
       </q-side>
     </q-item>
   </q-page>

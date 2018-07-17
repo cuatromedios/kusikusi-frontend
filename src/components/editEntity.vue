@@ -14,7 +14,7 @@
               </q-item>
             </q-list>
           </q-btn-dropdown>
-          <q-btn push color="red" :loading="loading" @click="deleteEntitiesArray(checkDelete)" :disable="disable">{{ 'content.delete' | translate }}</q-btn>
+          <q-btn push color="red" :loading="loading" @click="deleteEntitiesArray(checkDeleteContent)" :disable="disableContent">{{ 'content.delete' | translate }}</q-btn>
         </q-btn-group>
         <q-list
           v-for="children in this.children"
@@ -23,7 +23,7 @@
           class="dark">
           <q-item>
             <q-item-side>
-              <q-checkbox v-model="checkDelete" color="blue" :val="children.id" @input="disableButton"/>
+              <q-checkbox v-model="checkDeleteContent" color="primary" :val="children.id" @input="disableContentButton"/>
             </q-item-side>
             <q-item-main>
               <strong style="color: #0071bc;">- {{ children.name }}</strong>
@@ -49,37 +49,49 @@
              :label="item.label"
              :params="item.params"
              :entity="entity"></div>
-        <!--<q-toggle-->
-          <!--v-model="this.checked.value"-->
-        <!--/>-->
+        Estado:
+        <q-toggle
+          v-model="toggle"
+          color="primary"
+          true-value="Activo"
+          false-value="Inactivo"
+          :label="toggle"
+          @input="updateActiveValue"
+        />
       </q-collapsible>
       <q-collapsible icon="fa-image" label="Medios" header-class="bg-primary text-white icon-white" style="width: 80vw; max-width: 80vw;" class="q-my-md" v-if="formItems.collapsible.media">
-        <q-btn push class="q-my-md" color="primary" @click="createMedia = true" :loading="loading" >{{ 'content.media' | translate }}</q-btn>
+        <q-btn-group push class="q-ma-lg">
+          <q-btn push color="primary" @click="createMedia = true" :loading="loading" >{{ 'content.media' | translate }}</q-btn>
+          <q-btn push color="red" :loading="loading" @click="deleteMedia(checkDeleteMedia)" :disable="disableMedia">{{ 'content.delete' | translate }}</q-btn>
+        </q-btn-group>
         <q-list v-if="this.media !== []">
           <q-item
             v-for="media in this.media"
             v-bind:key="media.id"
             class="dark">
-            <q-item-main @click.native="$router.push(`/media/edit/${media.id}`)">
-              <img :src="media.src" :title="media.name">
-              <q-item-tile>{{ media.name }}</q-item-tile>
-            </q-item-main>
+            <div>
+              <q-item-main @click.native="$router.push(`/media/edit/${media.id}`)">
+                <img :src="media.src" :title="media.name">
+                <q-item-tile>{{ media.name }}</q-item-tile>
+              </q-item-main>
+              <q-checkbox class="q-ma-md absolute-top-left" v-model="checkDeleteMedia" :val="media.id" @input="disableMediaButton"/>
+            </div>
           </q-item>
         </q-list>
       </q-collapsible>
     </div>
     <q-btn-group push class="q-ma-lg">
-      <q-btn push color="primary" @click="saveEntity" :loading="loading" >{{ 'content.update' | translate }}</q-btn>
+      <q-btn push color="tertiary" @click="saveEntity" :loading="loading" >{{ 'content.update' | translate }}</q-btn>
       <q-btn push color="red" @click="deleteConfirm = true" :loading="loading" >{{ 'content.delete' | translate }}</q-btn>
     </q-btn-group>
     <q-modal v-model="deleteConfirm" minimized :content-css="{padding: '50px'}" @hide="deleteConfirm = false">
       <q-btn class="q-ma-lg absolute-top-right" round color="negative" @click="deleteConfirm = false" icon="fa-times" size="xs"></q-btn>
       <div class="q-display-1 q-mb-md">¿Deseas Eliminar esta entidad?</div>
       <p><strong>¡Esto eliminará también a todos sus descendientes!</strong></p>
-      <q-btn push color="tertiary" @click="deleteEntity(entity.id)" :loading="loading" >{{ 'content.delete' | translate }}</q-btn>
+      <q-btn push color="red" @click="deleteEntity(entity.id)" :loading="loading" >{{ 'content.delete' | translate }}</q-btn>
     </q-modal>
     <q-modal v-model="createMedia" :content-css="{minWidth: '80vw', minHeight: '80vh'}" @hide="createMedia = false">
-      <EditMedia :relation="entity.id"></EditMedia>
+      <EditMedia :relation="entity.id" :reload="getEntity" :close="deleteConfirm"></EditMedia>
       <q-btn class="q-ma-lg absolute-top-right" round color="negative" @click="createMedia = false" icon="fa-times" size="xs"></q-btn>
     </q-modal>
   </q-page>
@@ -99,7 +111,6 @@ import select from './formItems/select'
 /* es-lint enable */
 
 export default {
-  // TODO: is active button toggle
   components: {
     EditMedia
   },
@@ -115,19 +126,18 @@ export default {
     return {
       loading: false,
       auth: true,
+      toggle: 'Activo',
       deleteConfirm: false,
       createMedia: false,
-      disable: true,
-      checkDelete: [],
+      disableContent: true,
+      disableMedia: true,
+      checkDeleteContent: [],
+      checkDeleteMedia: [],
       models: [],
       ancestors: [],
       children: [],
       media: [],
-      entity: {
-        contents: {},
-        data: {},
-        relations: []
-      },
+      entity: {},
       entityModel: '',
       newEntity: {
         model: '',
@@ -266,7 +276,8 @@ export default {
           Notifications.notifyError(this.$t(`Couldn't delete the selected entity`))
         }
       }
-      this.checkDelete = []
+      this.checkDeleteContent = []
+      this.disableContent = true
       setTimeout(() => this.getEntity(), 1500)
     },
     deleteEntity: async function (entity) {
@@ -291,9 +302,35 @@ export default {
         Notifications.notifyError(this.$t(`Couldn't delete the selected entity`))
       }
     },
-    disableButton: function () {
-      this.checkDelete.length === 0 ? this.disable = true : this.disable = false
-      console.log(this.disable)
+    deleteMedia: async function (entity) {
+      for (let i = 0; i < entity.length; i++) {
+        this.loading = true
+        let deleteResult = await Connection.delete(`/media/${entity[i]}`)
+        if (deleteResult.success) {
+          let deleteEntityResult = await Connection.delete(`/entity/${entity[i]}`)
+          if (deleteEntityResult.success) {
+            this.loading = false
+            Notifications.notifySuccess(this.$t(`Media deleted successfully`))
+          } else {
+            this.loading = false
+            Notifications.notifyError(this.$t(`Media deleted, but couldn't delete the entity itself`))
+          }
+        } else {
+          Notifications.notifyError(this.$t(`Failed at deleting ${this.entityMedia.name}'s media`))
+        }
+      }
+      this.checkDeleteMedia = []
+      this.disableMedia = true
+      setTimeout(() => this.getEntity(), 1500)
+    },
+    updateActiveValue: function () {
+      this.toggle === 'Activo' ? this.entity.isActive = 1 : this.entity.isActive = 0
+    },
+    disableContentButton: function () {
+      this.checkDeleteContent.length === 0 ? this.disableContent = true : this.disableContent = false
+    },
+    disableMediaButton: function () {
+      this.checkDeleteMedia.length === 0 ? this.disableMedia = true : this.disableMedia = false
     },
     childAuth: function (model) {
       let configModels = this.$store.state.main.config.models
@@ -371,6 +408,14 @@ const modelsEditor = {
       info: true,
       publication: true,
       media: true,
+    }
+  },
+  root: {
+    collapsible: {
+      content: true,
+      info: false,
+      publication: false,
+      media: false,
     }
   }
 }

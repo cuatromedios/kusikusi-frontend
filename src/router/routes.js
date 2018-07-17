@@ -32,14 +32,7 @@ let loggedRoutes = {
       {path: '', component: () => import('pages/media')}
     ]
   },
-  mediaCreate: {
-    path: '/media/create',
-    component: () => import('components/editMedia'),
-    children: [
-      {path: '', component: () => import('pages/media')}
-    ]
-  },
-  mediaEdit: {
+  media: {
     path: '/media/edit/:id?',
     component: () => import('components/editMedia'),
     children: [

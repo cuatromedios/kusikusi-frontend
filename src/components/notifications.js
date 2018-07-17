@@ -23,7 +23,7 @@ class Notifications {
     Notify.create({
       message: message,
       timeout: 1500,
-      type: 'warning',
+      type: 'yellow',
       textColor: 'black',
       icon: 'fa-exclamation-triangle',
       position: 'top',

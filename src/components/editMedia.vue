@@ -1,7 +1,7 @@
 <template>
   <q-page class="q-pa-md">
     <strong style="font-size: 25px;" v-if="this.kind === 'update'">{{ this.entityMedia.name }}</strong>
-    <strong style="font-size: 25px;" v-if="this.kind === 'new'">Nueva media</strong>
+    <strong style="font-size: 25px;" v-if="this.kind === 'new'">Nuevo medio</strong>
     <q-field>
       <div v-for="item in this.formItems"
            v-bind:key="item.label"
@@ -41,7 +41,9 @@ export default {
     relation: {
       default: '',
       type: String
-    }
+    },
+    close: {},
+    reload: {}
   },
   data () {
     return {
@@ -74,15 +76,6 @@ export default {
   },
   methods: {
     load: function (id) {
-      this.entityMedia = {
-        name: '',
-        model: '',
-        parent: '',
-        contents: {
-          title: '',
-          description: ''
-        }
-      }
       if (id) {
         this.getSelected(id)
       } else {
@@ -99,11 +92,15 @@ export default {
       if (userId) {
         let Result = await Connection.get(`/entity/${userId}`)
         if (Result.success) {
-          this.entityMedia = Result.data
-          this.url = `${config.api.url}/media/${this.entityMedia.id}/upload`
-          this.kind = 'update'
-          if (this.entityMedia.data) {
-            this.src = `${config.media.url}/${this.entityMedia.id}/thumb`
+          if (Result.data.model === 'medium') {
+            this.entityMedia = Result.data
+            this.url = `${config.api.url}/media/${this.entityMedia.id}/upload`
+            this.kind = 'update'
+            if (this.entityMedia.data) {
+              this.src = `${config.media.url}/${this.entityMedia.id}/thumb`
+            }
+          } else {
+            this.kind = 'new'
           }
         }
       } else {
@@ -131,14 +128,14 @@ export default {
             let relationResult = await Connection.post(`/entity/${this.relation}/relations`, this.called)
             if (relationResult.success) {
               Notifications.notifySuccess(this.$t(`Media created and related successfully`))
-              setTimeout(() => this.$router.push({name: routes.content.name, params: {id: this.relation}}), 1500)
+              setTimeout(() => this.closeModalWhenIsComponent(), 1500)
             } else {
               Notifications.notifyWarning(this.$t(`Media created but could´t create the relation`))
-              setTimeout(() => this.$router.push({name: routes.mediaEdit.name, params: {id: saveResult.data.id}}), 1500)
+              setTimeout(() => this.$router.push({name: routes.media.name, params: {id: saveResult.data.id}}), 1500)
             }
           } else {
             Notifications.notifySuccess(this.$t(`Media created successfully`))
-            setTimeout(() => this.$router.push({name: routes.mediaEdit.name, params: {id: saveResult.data.id}}), 1500)
+            setTimeout(() => this.$router.push({name: routes.media.name, params: {id: saveResult.data.id}}), 1500)
           }
         } else {
           Notifications.notifyError(this.$t(`Media data created, but failed at uploading the file`))
@@ -146,6 +143,10 @@ export default {
       } else {
         Notifications.notifyError(this.$t(`Failed at creating media`))
       }
+    },
+    closeModalWhenIsComponent: function () {
+      this.close = true
+      this.reload()
     },
     update: async function () {
       this.loading = true
