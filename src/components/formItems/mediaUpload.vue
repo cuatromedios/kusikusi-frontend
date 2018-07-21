@@ -24,7 +24,7 @@ export default {
   },
   data () {
     return {
-      extensions: ['.jpg', '.png', '.gif']
+      extensions: ''
     }
   }
 }
