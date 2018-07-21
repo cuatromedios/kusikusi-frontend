@@ -5,12 +5,12 @@
       <q-breadcrumbs-el :model="this.entity" :label="this.entity.name" />
     </q-breadcrumbs>
     <div>
-      <q-collapsible icon="fa-list" label="Contenido" opened header-class="bg-primary text-white icon-white" style="width: 80vw; max-width: 80vw;" class="q-my-md" v-if="formItems.collapsible.content">
+      <q-collapsible icon="fa-list" label="Contenido" opened header-class="bg-primary text-white icon-white" style="width: 80vw; max-width: 80vw;" class="q-my-md" v-if="formItems.content">
         <q-btn-group push class="q-ma-lg">
           <q-btn-dropdown push color="tertiary" :label="'content.save child' | translate" :loading="loading">
             <q-list link>
-              <q-item v-for="model in this.models" :key="model.value" @click.native="createEntity(model.value)">
-                <q-item-tile label style="color: #000000;">{{ model.label }}</q-item-tile>
+              <q-item v-for="model in this.modelsData.allowedChild" :key="model.value" @click.native="createEntity(model.value)">
+                <q-item-tile label style="color: #000000;">{{ model.value }}</q-item-tile>
               </q-item>
             </q-list>
           </q-btn-dropdown>
@@ -31,17 +31,16 @@
           </q-item>
         </q-list>
       </q-collapsible>
-      <q-collapsible icon="fa-info" label="Información" opened header-class="bg-primary text-white icon-white" style="width: 80vw; max-width: 80vw;" class="q-my-md" v-if="formItems.collapsible.info">
+      <q-collapsible icon="fa-info" label="Información" opened header-class="bg-primary text-white icon-white" style="width: 80vw; max-width: 80vw;" class="q-my-md" v-if="formItems.info">
         <div v-for="item in this.formItems.info"
              v-bind:key="item.label"
              :is="item.component"
              :field="item.field"
              :label="item.label"
              :params="item.params"
-             :entity="entity"
-             :options="models"></div>
+             :entity="entity"></div>
       </q-collapsible>
-      <q-collapsible icon="fa-globe" label="Publicación" header-class="bg-primary text-white icon-white" style="width: 80vw; max-width: 80vw;" class="q-my-md" v-if="formItems.collapsible.publication">
+      <q-collapsible icon="fa-globe" label="Publicación" header-class="bg-primary text-white icon-white" style="width: 80vw; max-width: 80vw;" class="q-my-md" v-if="formItems.publication">
         <div v-for="item in this.formItems.publication"
              v-bind:key="item.label"
              :is="item.component"
@@ -59,9 +58,9 @@
           @input="updateActiveValue"
         />
       </q-collapsible>
-      <q-collapsible icon="fa-image" label="Medios" header-class="bg-primary text-white icon-white" style="width: 80vw; max-width: 80vw;" class="q-my-md" v-if="formItems.collapsible.media">
+      <q-collapsible icon="fa-image" label="Medios" header-class="bg-primary text-white icon-white" style="width: 80vw; max-width: 80vw;" class="q-my-md" v-if="formItems.media">
         <q-btn-group push class="q-ma-lg">
-          <q-btn push color="primary" @click="createMedia = true" :loading="loading" >{{ 'content.media' | translate }}</q-btn>
+          <q-btn push color="tertiary" @click="createMedia = true" :loading="loading" >{{ 'content.media' | translate }}</q-btn>
           <q-btn push color="red" :loading="loading" @click="deleteMedia(checkDeleteMedia)" :disable="disableMedia">{{ 'content.delete' | translate }}</q-btn>
         </q-btn-group>
         <q-list v-if="this.media !== []">
@@ -99,33 +98,32 @@
 
 <script>
 /* eslint-disable */
-import Input from './formItems/input'
 import Connection from '../Connection'
 import { routes } from '../router/routes'
 import config from '../config'
 import EditMedia from './editMedia'
 import Notifications from './notifications.js'
+import textInput from './formItems/textInput'
 import wysiwyg from './formItems/editorWYSIWYG'
 import datetime from './formItems/datetime'
-import select from './formItems/select'
+import selectInput from './formItems/selectInput'
 /* es-lint enable */
 
 export default {
   components: {
-    EditMedia
+    EditMedia, textInput, wysiwyg, datetime, selectInput
   },
   name: 'EditEntity',
   mounted () {
-    this.getEntity()
+    this.load(this.$route.params.id)
   },
   beforeRouteUpdate (to, from, next) {
-    this.getEntity(to.params.id)
+    this.load(to.params.id)
     next()
   },
   data () {
     return {
       loading: false,
-      auth: true,
       toggle: 'Activo',
       deleteConfirm: false,
       createMedia: false,
@@ -133,12 +131,13 @@ export default {
       disableMedia: true,
       checkDeleteContent: [],
       checkDeleteMedia: [],
-      models: [],
+      modelsData: {
+        allowedChild: [],
+      },
       ancestors: [],
       children: [],
       media: [],
       entity: {},
-      entityModel: '',
       newEntity: {
         model: '',
         name: '',
@@ -150,22 +149,29 @@ export default {
           summary: '',
           title: '',
           url: '/'
-        }
+        },
+        data: {}
       },
       formItems: []
     }
   },
   methods: {
-    getEntity: async function (id) {
-      // Get Entity
-      if (id === ' ') {
+    load: function (id) {
+      if (id === ' ' || id === undefined) {
         this.$route.params.id = undefined
         id = undefined
       }
       if (this.$route.params.id === ' ') {
         this.$route.params.id = undefined
       }
+      this.getEntity(id)
+    },
+    getEntity: async function (id) {
+      // Get Entity
       this.media = []
+      this.modelsData = {
+        'allowedChild': []
+      }
       this.formItems = []
       this.disable = true
       let entityId = id ? id : this.$route.params.id
@@ -213,12 +219,8 @@ export default {
           this.media.push(mediums)
         }
       }
-
-       //Set models
-      this.models = this.$store.state.main.config.models.list
-      this.entityModel = this.entity.model
-
-      this.formItems = modelsEditor[this.entity.model]
+      //Set models
+      this.modelData()
 
       this.loading = false
     },
@@ -235,24 +237,19 @@ export default {
     },
 
     createEntity: async function (model) {
-      this.childAuth(model)
-      if (this.auth === true) {
-        this.loading = true
-        this.newEntity.parent = this.entity.id
-        this.newEntity.model = model
-        this.newEntity.name = 'entidad'
-        this.newEntity.created_by = this.entity.id
-        this.newEntity.updated_by = this.entity.id
-        let createResult = await Connection.post('/entity', this.newEntity)
-        this.loading = false
-        if (createResult.success) {
-          Notifications.notifySuccess(this.$t(`New entity created successfully`))
-          setTimeout(() => this.$router.push({name: routes.content.name, params: {id: createResult.data.id}}), 1500)
-        } else {
-          Notifications.notifyError(this.$t(`Couldn´t create new entity`))
-        }
+      this.loading = true
+      this.newEntity.parent = this.entity.id
+      this.newEntity.model = model
+      this.newEntity.name = 'entidad'
+      this.newEntity.created_by = this.entity.id
+      this.newEntity.updated_by = this.entity.id
+      let createResult = await Connection.post('/entity', this.newEntity)
+      this.loading = false
+      if (createResult.success) {
+        Notifications.notifySuccess(this.$t(`New entity created successfully`))
+        setTimeout(() => this.$router.push({name: routes.content.name, params: {id: createResult.data.id}}), 1500)
       } else {
-        Notifications.notifyWarning(this.$t(`Child's model not allowed`))
+        Notifications.notifyError(this.$t(`Couldn´t create new entity`))
       }
     },
     deleteEntitiesArray: async function (entity) {
@@ -332,90 +329,21 @@ export default {
     disableMediaButton: function () {
       this.checkDeleteMedia.length === 0 ? this.disableMedia = true : this.disableMedia = false
     },
-    childAuth: function (model) {
+    modelData: async function () {
+      let data
       let configModels = this.$store.state.main.config.models
-      if (configModels[this.entityModel]) {
-        let allowedChildren = configModels[this.entityModel].allowedChildren
+      if (configModels[this.entity.model]) {
+        let allowedChildren = configModels[this.entity.model].children.allowed
         for (let i = 0; i < allowedChildren.length; i++) {
-          if (allowedChildren[i] === model) {
-            this.auth = true
-            return
-          }
+          data = {'value': allowedChildren[i]}
+          this.modelsData.allowedChild.push(data)
         }
-        this.auth = false
+        this.formItems = configModels[this.entity.model].editor
       } else {
-        this.auth = false
+        this.modelsData = {
+          'allowedChild': []
+        }
       }
-    }
-  }
-}
-const modelsEditor = {
-  home: {
-    info: [
-      {label: 'Título:', field: 'contents.title', component: Input},
-      {label: 'Dirección de acceso:', field: 'contents.url', component: Input, params: {type: 'url'} },
-      {label: 'Reseña:', field: 'contents.summary', component: Input, params: {type: 'textarea', rows: 3}},
-      {label: 'Descripción:', field: 'contents.description', component: wysiwyg},
-      {label: 'Modelo:', field: 'model', component: select, params: {placeholder: 'Seleccione un model:', options: this.models} },
-    ],
-    publication: [
-      {label: 'Posición:', field: 'position', component: Input, params: {type: 'number'}},
-      {label: 'Publicado:', field: 'created_at', component: datetime},
-      {label: 'Actualizado:', field: 'updated_at', component: datetime},
-    ],
-    collapsible: {
-      content: true,
-      info: true,
-      publication: true,
-      media: true,
-    }
-  },
-  section: {
-    info: [
-      {label: 'Título:', field: 'contents.title', component: Input},
-      {label: 'Dirección de acceso:', field: 'contents.url', component: Input, params: {type: 'url'} },
-      {label: 'Reseña:', field: 'contents.summary', component: Input, params: {type: 'textarea', rows: 3}},
-      {label: 'Descripción:', field: 'contents.description', component: wysiwyg},
-      {label: 'Modelo:', field: 'model', component: select, params: {placeholder: 'Seleccione un model:', options: this.models} },
-    ],
-    publication: [
-      {label: 'Posición:', field: 'position', component: Input, params: {type: 'number'}},
-      {label: 'Publicado:', field: 'created_at', component: datetime},
-      {label: 'Actualizado:', field: 'updated_at', component: datetime},
-    ],
-    collapsible: {
-      content: true,
-      info: true,
-      publication: true,
-      media: true,
-    }
-  },
-  page: {
-    info: [
-      {label: 'Título:', field: 'contents.title', component: Input},
-      {label: 'Dirección de acceso:', field: 'contents.url', component: Input, params: {type: 'url'} },
-      {label: 'Reseña:', field: 'contents.summary', component: Input, params: {type: 'textarea', rows: 3}},
-      {label: 'Descripción:', field: 'contents.description', component: wysiwyg},
-      {label: 'Modelo:', field: 'model', component: select, params: {placeholder: 'Seleccione un model:', options: this.models} },
-    ],
-    publication: [
-      {label: 'Posición:', field: 'position', component: Input, params: {type: 'number'}},
-      {label: 'Publicado:', field: 'created_at', component: datetime},
-      {label: 'Actualizado:', field: 'updated_at', component: datetime},
-    ],
-    collapsible: {
-      content: false,
-      info: true,
-      publication: true,
-      media: true,
-    }
-  },
-  root: {
-    collapsible: {
-      content: true,
-      info: false,
-      publication: false,
-      media: false,
     }
   }
 }

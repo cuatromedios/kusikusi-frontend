@@ -40,7 +40,6 @@ export default {
         email: '',
         pass: ''
       },
-      models: [],
       loading: false
     }
   },
@@ -54,18 +53,13 @@ export default {
           'password': this.form.pass
         })
         let configResult = await Connection.get('/config/cms')
-        let models
-        for (let i = 0; i < configResult.data.models.length; i++) {
-          models = {'label': configResult.data.models[i], 'value': configResult.data.models[i]}
-          this.models.push(models)
-        }
         this.loading = false
         if (loginResult.success) {
           this.$store.commit('main/setAuthtoken', loginResult.data.token)
           this.$store.commit('main/setName', loginResult.data.entity.data.name)
           this.$store.commit('main/setProfile', loginResult.data.entity.data.profile)
           this.$store.commit('main/setUserId', loginResult.data.entity.id)
-          this.$store.commit('main/setConfig', this.models)
+          this.$store.commit('main/setConfig', configResult.data)
           this.$router.push({name: routes.home.name})
         } else {
           this.notifyError(this.$t('login.invalid'))

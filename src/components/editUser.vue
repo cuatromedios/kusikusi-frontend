@@ -65,7 +65,7 @@
 </style>
 
 <script>
-import Input from './formItems/input'
+import Input from './formItems/textInput'
 import Connection from '../Connection'
 import { routes } from '../router/routes'
 import Notifications from './notifications.js'

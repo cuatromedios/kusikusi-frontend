@@ -23,7 +23,7 @@
 
 <script>
 import mediaUpload from './formItems/mediaUpload'
-import Input from './formItems/input'
+import Input from './formItems/textInput'
 import Connection from '../Connection'
 import config from '../config'
 import { routes } from '../router/routes'

@@ -18,7 +18,7 @@ export const setName = (state, newName) => {
 }
 export const setConfig = (state, newConfig) => {
   store.set('config', newConfig)
-  state.config.models = newConfig
+  state.config = newConfig
 }
 export const setProfile = (state, newProfile) => {
   store.set('profile', newProfile) // local data in the browser

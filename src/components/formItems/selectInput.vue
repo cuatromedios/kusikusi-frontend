@@ -8,7 +8,7 @@
       v-model="fieldReference"
       separator
       :placeholder="params.placeholder"
-      :options="options"
+      :options="params.options"
     />
   </q-field>
 </template>
@@ -24,9 +24,6 @@ export default {
     label: {
       default: '',
       type: String
-    },
-    options: {
-      default: []
     },
     entity: {
       default: () => {
