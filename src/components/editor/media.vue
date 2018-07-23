@@ -1,10 +1,10 @@
 <template>
-  <q-collapsible icon="fa-image" label="Medios" header-class="bg-primary text-white icon-white" style="width: 80vw; max-width: 80vw;" class="q-my-md" v-if="formItems.media">
+  <q-collapsible icon="fa-image" label="Medios" header-class="bg-primary text-white icon-white" class="q-my-md">
     <q-btn-group push class="q-ma-lg">
       <q-btn push color="tertiary" @click="createMedia = true" :loading="loading" >{{ 'content.media' | translate }}</q-btn>
-      <q-btn push color="red" :loading="loading" @click="deleteMedia(checkDeleteMedia)" :disable="disableMedia">{{ 'content.delete' | translate }}</q-btn>
+      <q-btn push color="red" :loading="loading" @click="deleteMedia(checkDeleteMedia)" :disable="disable">{{ 'content.delete' | translate }}</q-btn>
     </q-btn-group>
-    <q-list v-if="this.media !== []">
+    <q-list>
       <q-item
           v-for="media in this.media"
           v-bind:key="media.id"
@@ -18,59 +18,77 @@
         </div>
       </q-item>
     </q-list>
+    <q-modal v-model="createMedia" :content-css="{minWidth: '80vw', minHeight: '80vh'}" @hide="createMedia = false">
+      <EditMedia :relation="entity.id" :reload="getEntity" :close="deleteConfirm"></EditMedia>
+      <q-btn class="q-ma-lg absolute-top-right" round color="negative" @click="createMedia = false" icon="fa-times" size="xs"></q-btn>
+    </q-modal>
   </q-collapsible>
 </template>
 
 <script>
+import EditMedia from '../editMedia'
+import Connection from '../../Connection'
+import config from '../../config'
+import Notifications from '../notifications.js'
 export default {
   name: 'Input',
+  mounted () {
+    this.getMediaRelated()
+  },
+  components: {
+    EditMedia
+  },
   props: {
-    field: {
-      default: '',
-      type: String
-    },
-    label: {
-      default: '',
-      type: String
-    },
     entity: {
       default: () => {
         return {}
-      },
-      type: Object
-    },
-    params: {
-      default: () => {
-        return {
-          type: 'text',
-          rows: 3
-        }
       },
       type: Object
     }
   },
   data () {
     return {
+      loading: false,
+      disable: true,
+      createMedia: false,
+      checkDeleteMedia: [],
+      media: []
     }
   },
-  computed: {
-    fieldReference: {
-      get: function () {
-        let fieldParts = this.field.split('.')
-        if (fieldParts.length === 1) {
-          return this.entity[fieldParts[0]]
-        } else {
-          return this.entity[fieldParts[0]][fieldParts[1]]
-        }
-      },
-      set: function (value) {
-        let fieldParts = this.field.split('.')
-        if (fieldParts.length === 1) {
-          this.entity[fieldParts[0]] = value
-        } else {
-          this.entity[fieldParts[0]][fieldParts[1]] = value
+  methods: {
+    getMediaRelated: async function () {
+      let mediums
+      let mediaResult = await Connection.get(`/entity/${this.entity.id}/relations/medium?fields=e.id,e.name`)
+      if (mediaResult.success) {
+        for (let i = 0; i < mediaResult.data.length; i++) {
+          mediums = {'id': mediaResult.data[i].id, 'name': mediaResult.data[i].name, 'src': `${config.media.url}/${mediaResult.data[i].id}/thumb`}
+          this.media.push(mediums)
         }
       }
+    },
+    deleteMedia: async function (entity) {
+      for (let i = 0; i < entity.length; i++) {
+        this.loading = true
+        let deleteResult = await Connection.delete(`/media/${entity[i]}`)
+        if (deleteResult.success) {
+          let deleteEntityResult = await Connection.delete(`/entity/${entity[i]}`)
+          if (deleteEntityResult.success) {
+            this.loading = false
+            Notifications.notifySuccess(this.$t(`Media deleted successfully`))
+          } else {
+            this.loading = false
+            Notifications.notifyError(this.$t(`Media deleted, but couldn't delete the entity itself`))
+          }
+        } else {
+          Notifications.notifyError(this.$t(`Failed at deleting ${this.entityMedia.name}'s media`))
+        }
+      }
+      this.checkDeleteMedia = []
+      this.disableMedia = true
+      setTimeout(() => this.getEntity(), 1500)
+    },
+    disableMediaButton: function () {
+      this.checkDeleteMedia.length === 0 ? this.disable = true : this.disable = false
     }
   }
 }

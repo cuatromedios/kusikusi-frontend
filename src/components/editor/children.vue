@@ -1,14 +1,14 @@
 <template>
-  <q-collapsible icon="fa-list" label="Contenido" opened header-class="bg-primary text-white icon-white" style="width: 80vw; max-width: 80vw;" class="q-my-md" v-if="formItems.content">
+  <q-collapsible icon="fa-list" label="Contenido" header-class="bg-primary text-white icon-white" class="q-my-md">
     <q-btn-group push class="q-ma-lg">
       <q-btn-dropdown push color="tertiary" :label="'content.save child' | translate" :loading="loading">
         <q-list link>
-          <q-item v-for="model in this.modelsData.allowedChild" :key="model.value" @click.native="createEntity(model.value)">
-            <q-item-tile label style="color: #000000;">{{ model.value }}</q-item-tile>
+          <q-item v-for="model in this.allowed" :key="model" @click.native="createEntity(model)">
+            <q-item-tile label style="color: #000000;">{{ model }}</q-item-tile>
           </q-item>
         </q-list>
       </q-btn-dropdown>
-      <q-btn push color="red" :loading="loading" @click="deleteEntitiesArray(checkDeleteContent)" :disable="disableContent">{{ 'content.delete' | translate }}</q-btn>
+      <q-btn push color="red" :loading="loading" @click="deleteEntities(checkDeleteContent)" :disable="disable">{{ 'content.delete' | translate }}</q-btn>
     </q-btn-group>
     <q-list
             v-for="children in this.children"
@@ -28,55 +28,97 @@
 </template>
 
 <script>
+import Connection from '../../Connection'
+import { routes } from '../../router/routes'
+import Notifications from '../notifications.js'
 export default {
   name: 'Input',
+  mounted () {
+    this.getChildren()
+  },
   props: {
-    field: {
-      default: '',
-      type: String
-    },
-    label: {
-      default: '',
-      type: String
+    allowed: {
+      default: []
     },
     entity: {
       default: () => {
         return {}
       },
       type: Object
-    },
-    params: {
-      default: () => {
-        return {
-          type: 'text',
-          rows: 3
-        }
-      },
-      type: Object
     }
   },
   data () {
     return {
+      loading: false,
+      disable: true,
+      checkDeleteContent: [],
+      children: [],
+      newEntity: {
+        model: '',
+        name: '',
+        parent: '',
+        created_by: '',
+        updated_by: '',
+        contents: {
+          description: '',
+          summary: '',
+          title: '',
+          url: '/'
+        },
+        data: {}
+      }
     }
   },
-  computed: {
-    fieldReference: {
-      get: function () {
-        let fieldParts = this.field.split('.')
-        if (fieldParts.length === 1) {
-          return this.entity[fieldParts[0]]
-        } else {
-          return this.entity[fieldParts[0]][fieldParts[1]]
+  methods: {
+    getChildren: async function () {
+      let childrenResult = await Connection.get(`/entity/${this.entity.id}/children?fields=e.id,e.name`)
+      if (childrenResult.success) {
+        this.children = childrenResult.data
+      }
+    },
+    createEntity: async function (model) {
+      this.loading = true
+      this.newEntity.parent = this.entity.id
+      this.newEntity.model = model
+      this.newEntity.name = 'entidad'
+      this.newEntity.created_by = this.entity.id
+      this.newEntity.updated_by = this.entity.id
+      let createResult = await Connection.post('/entity', this.newEntity)
+      this.loading = false
+      if (createResult.success) {
+        Notifications.notifySuccess(this.$t(`New entity created successfully`))
+        setTimeout(() => this.$router.push({name: routes.content.name, params: {id: createResult.data.id}}), 1500)
+      } else {
+        Notifications.notifyError(this.$t(`Couldn´t create new entity`))
+      }
+    },
+    deleteEntities: async function (entity) {
+      for (let i = 0; i < entity.length; i++) {
+        this.loading = true
+        let descendantsResult = await Connection.get(`/entity/${entity[i]}/descendants?fields=e.id`)
+        if (descendantsResult.success) {
+          for (let i = 0; i < descendantsResult.data.length; i++) {
+            let deleteDescendantsResult = await Connection.delete(`/entity/${descendantsResult.data[i].id}`)
+            if (!deleteDescendantsResult.success) {
+              Notifications.notifyError(this.$t(`An error was thrown while deleting a descendant`))
+              return
+            }
+          }
         }
-      },
-      set: function (value) {
-        let fieldParts = this.field.split('.')
-        if (fieldParts.length === 1) {
-          this.entity[fieldParts[0]] = value
+        let deleteEntityResult = await Connection.delete(`/entity/${entity[i]}`)
+        this.loading = false
+        if (deleteEntityResult.success) {
+          Notifications.notifySuccess(this.$t(`Entity and it's descendants were deleted successfully`))
         } else {
-          this.entity[fieldParts[0]][fieldParts[1]] = value
+          Notifications.notifyError(this.$t(`Couldn't delete the selected entity`))
         }
       }
+      this.checkDeleteContent = []
+      this.disable = true
+      setTimeout(() => this.getEntity(), 1500)
+    },
+    disableContentButton: function () {
+      this.checkDeleteContent.length === 0 ? this.disable = true : this.disable = false
     }
   }
 }

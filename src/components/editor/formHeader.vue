@@ -1,5 +1,5 @@
 <template>
-  <div :is="tag">{{ text }}</div>
+  <div :is="tag">{{ text || entityData }}</div>
 </template>
 
 <script>
@@ -7,9 +7,16 @@ export default {
   name: 'formHeader',
   props: {
     text: String,
+    field: String,
     level: {
       type: Number,
       default: 2
+    },
+    entity: {
+      default: () => {
+        return {}
+      },
+      type: Object
     }
   },
   data () {
@@ -23,6 +30,16 @@ export default {
         headerLevel = 2
       }
       return ('h' + String(headerLevel))
+    },
+    entityData: {
+      get: function () {
+        let fieldParts = this.field.split('.')
+        if (fieldParts.length === 1) {
+          return this.entity[fieldParts[0]]
+        } else {
+          return this.entity[fieldParts[0]][fieldParts[1]]
+        }
+      }
     }
   }
 }

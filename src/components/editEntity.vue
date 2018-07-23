@@ -1,31 +1,39 @@
 <template>
   <q-page class="q-ma-md">
-    <q-breadcrumbs>
-      <q-breadcrumbs-el v-for="ancest in this.ancestors" :key="ancest.id" :label="ancest.name" @click.native="$router.push(`/content/edit/${ancest.id}`)" style="cursor: pointer;"/>
-      <q-breadcrumbs-el :model="this.entity" :label="this.entity.name" />
-    </q-breadcrumbs>
     <div>
-      <div v-for="item in this.editorItems"
-           v-bind:key="item.index"
-           :is="item.component"
-           v-bind="item.props"
-           :entity="entity">
+      <q-breadcrumbs>
+        <q-breadcrumbs-el v-for="ancest in this.ancestors" :key="ancest.id" :label="ancest.name" @click.native="$router.push(`/content/edit/${ancest.id}`)" style="cursor: pointer;"/>
+        <q-breadcrumbs-el :model="this.entity" :label="this.entity.name" />
+      </q-breadcrumbs>
+    </div>
+    <div v-if="!edit">
+      <q-btn color="tertiary" size="md" class="q-ma-md float-right" @click="edit = true"><q-icon name="fa-edit" color="white" /></q-btn>
+      <div v-for="item in this.displayItems"
+        v-bind:key="item.index"
+        :is="item.component"
+        v-bind="item.props"
+        :entity="entity">
       </div>
     </div>
-    <q-btn-group push class="q-ma-lg">
-      <q-btn push color="tertiary" @click="saveEntity" :loading="loading" >{{ 'content.update' | translate }}</q-btn>
-      <q-btn push color="red" @click="deleteConfirm = true" :loading="loading" >{{ 'content.delete' | translate }}</q-btn>
-    </q-btn-group>
-    <q-modal v-model="deleteConfirm" minimized :content-css="{padding: '50px'}" @hide="deleteConfirm = false">
-      <q-btn class="q-ma-lg absolute-top-right" round color="negative" @click="deleteConfirm = false" icon="fa-times" size="xs"></q-btn>
-      <div class="q-display-1 q-mb-md">¿Deseas Eliminar esta entidad?</div>
-      <p><strong>¡Esto eliminará también a todos sus descendientes!</strong></p>
-      <q-btn push color="red" @click="deleteEntity(entity.id)" :loading="loading" >{{ 'content.delete' | translate }}</q-btn>
-    </q-modal>
-    <q-modal v-model="createMedia" :content-css="{minWidth: '80vw', minHeight: '80vh'}" @hide="createMedia = false">
-      <EditMedia :relation="entity.id" :reload="getEntity" :close="deleteConfirm"></EditMedia>
-      <q-btn class="q-ma-lg absolute-top-right" round color="negative" @click="createMedia = false" icon="fa-times" size="xs"></q-btn>
-    </q-modal>
+    <div v-if="edit">
+      <div v-for="item in this.editorItems"
+         v-bind:key="item.index"
+         :is="item.component"
+         v-bind="item.props"
+         :entity="entity">
+      </div>
+      <q-btn-group push class="q-ma-lg">
+        <q-btn push color="tertiary" @click="saveEntity" :loading="loading" >{{ 'content.update' | translate }}</q-btn>
+        <q-btn push color="red" @click="edit = false" :loading="loading" >CANCELAR</q-btn>
+        <q-btn push color="negative" @click="deleteConfirm = true" :loading="loading" >{{ 'content.delete' | translate }}</q-btn>
+      </q-btn-group>
+      <q-modal v-model="deleteConfirm" minimized :content-css="{padding: '50px'}" @hide="deleteConfirm = false">
+        <q-btn class="q-ma-lg absolute-top-right" round color="red" @click="deleteConfirm = false" icon="fa-times" size="xs"></q-btn>
+        <div class="q-display-1 q-mb-md">¿Deseas Eliminar esta entidad?</div>
+        <p><strong>¡Esto eliminará también a todos sus descendientes!</strong></p>
+        <q-btn push color="red" @click="deleteEntity(entity.id)" :loading="loading" >{{ 'content.delete' | translate }}</q-btn>
+      </q-modal>
+    </div>
   </q-page>
 </template>
 
@@ -34,7 +42,6 @@
 import Connection from '../Connection'
 import { routes } from '../router/routes'
 import config from '../config'
-import EditMedia from './editMedia'
 import Notifications from './notifications.js'
 import textInput from './editor/textInput'
 import wysiwyg from './editor/editorWYSIWYG'
@@ -43,11 +50,14 @@ import selectInput from './editor/selectInput'
 import formHeader from './editor/formHeader'
 import children from './editor/children'
 import titleSummaryContent from './editor/titleSummaryContent'
+import entityCard from './editor/entityCard'
+import publication from './editor/publication'
+import media from './editor/media'
 /* es-lint enable */
 
 export default {
   components: {
-    EditMedia, textInput, wysiwyg, datetime, selectInput, formHeader, children, titleSummaryContent
+    textInput, wysiwyg, datetime, selectInput, formHeader, children, titleSummaryContent, entityCard, publication, media
   },
   name: 'EditEntity',
   mounted () {
@@ -60,35 +70,12 @@ export default {
   data () {
     return {
       loading: false,
-      toggle: 'Activo',
+      edit: false,
       deleteConfirm: false,
-      createMedia: false,
-      disableContent: true,
-      disableMedia: true,
-      checkDeleteContent: [],
-      checkDeleteMedia: [],
-      modelsData: {
-        allowedChild: [],
-      },
       ancestors: [],
-      children: [],
-      media: [],
       entity: {},
-      newEntity: {
-        model: '',
-        name: '',
-        parent: '',
-        created_by: '',
-        updated_by: '',
-        contents: {
-          description: '',
-          summary: '',
-          title: '',
-          url: '/'
-        },
-        data: {}
-      },
-      editorItems: []
+      editorItems: [],
+      displayItems: []
     }
   },
   methods: {
@@ -141,22 +128,9 @@ export default {
       if (ancestorsResult.success) {
         this.ancestors = ancestorsResult.data
       }
-       //Get children
-      let childrenResult = await Connection.get(`/entity/${this.entity.id}/children?fields=e.id,e.name`)
-      if (childrenResult.success) {
-        this.children = childrenResult.data
-      }
-      //Get medias
-      let mediums
-      let mediaResult = await Connection.get(`/entity/${this.entity.id}/relations/medium?fields=e.id,e.name`)
-      if (mediaResult.success) {
-        for (let i = 0; i < mediaResult.data.length; i++) {
-          mediums = {'id': mediaResult.data[i].id, 'name': mediaResult.data[i].name, 'src': `${config.media.url}/${mediaResult.data[i].id}/thumb`}
-          this.media.push(mediums)
-        }
-      }
+
       //Set models
-      this.modelData()
+      this.modelEditor()
 
       this.loading = false
     },
@@ -188,31 +162,6 @@ export default {
         Notifications.notifyError(this.$t(`Couldn´t create new entity`))
       }
     },
-    deleteEntitiesArray: async function (entity) {
-      for (let i = 0; i < entity.length; i++) {
-        this.loading = true
-        let descendantsResult = await Connection.get(`/entity/${entity[i]}/descendants?fields=e.id`)
-        if (descendantsResult.success) {
-          for (let i = 0; i < descendantsResult.data.length; i++) {
-            let deleteDescendantsResult = await Connection.delete(`/entity/${descendantsResult.data[i].id}`)
-            if (!deleteDescendantsResult.success) {
-              Notifications.notifyError(this.$t(`An error was thrown while deleting a descendant`))
-              return;
-            }
-          }
-        }
-        let deleteEntityResult = await Connection.delete(`/entity/${entity[i]}`)
-        this.loading = false
-        if (deleteEntityResult.success) {
-          Notifications.notifySuccess(this.$t(`Entity and it's descendants were deleted successfully`))
-        } else {
-          Notifications.notifyError(this.$t(`Couldn't delete the selected entity`))
-        }
-      }
-      this.checkDeleteContent = []
-      this.disableContent = true
-      setTimeout(() => this.getEntity(), 1500)
-    },
     deleteEntity: async function (entity) {
       this.deleteConfirm = false
       this.loading = true
@@ -235,51 +184,12 @@ export default {
         Notifications.notifyError(this.$t(`Couldn't delete the selected entity`))
       }
     },
-    deleteMedia: async function (entity) {
-      for (let i = 0; i < entity.length; i++) {
-        this.loading = true
-        let deleteResult = await Connection.delete(`/media/${entity[i]}`)
-        if (deleteResult.success) {
-          let deleteEntityResult = await Connection.delete(`/entity/${entity[i]}`)
-          if (deleteEntityResult.success) {
-            this.loading = false
-            Notifications.notifySuccess(this.$t(`Media deleted successfully`))
-          } else {
-            this.loading = false
-            Notifications.notifyError(this.$t(`Media deleted, but couldn't delete the entity itself`))
-          }
-        } else {
-          Notifications.notifyError(this.$t(`Failed at deleting ${this.entityMedia.name}'s media`))
-        }
-      }
-      this.checkDeleteMedia = []
-      this.disableMedia = true
-      setTimeout(() => this.getEntity(), 1500)
-    },
-    updateActiveValue: function () {
-      this.toggle === 'Activo' ? this.entity.isActive = 1 : this.entity.isActive = 0
-    },
-    disableContentButton: function () {
-      this.checkDeleteContent.length === 0 ? this.disableContent = true : this.disableContent = false
-    },
-    disableMediaButton: function () {
-      this.checkDeleteMedia.length === 0 ? this.disableMedia = true : this.disableMedia = false
-    },
-    modelData: async function () {
+    modelEditor: async function () {
       let data
       let configModels = this.$store.state.main.config.models
       if (configModels[this.entity.model]) {
-        /*let allowedChildren = configModels[this.entity.model].children.allowed
-        for (let i = 0; i < allowedChildren.length; i++) {
-          data = {'value': allowedChildren[i]}
-          this.modelsData.allowedChild.push(data)
-        }*/
         this.editorItems = configModels[this.entity.model].editor
-        console.log(this.editorItems)
-      } else {
-        this.modelsData = {
-          'allowedChild': []
-        }
+        this.displayItems = configModels[this.entity.model].display
       }
     }
   }
