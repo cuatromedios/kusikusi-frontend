@@ -5,79 +5,12 @@
       <q-breadcrumbs-el :model="this.entity" :label="this.entity.name" />
     </q-breadcrumbs>
     <div>
-      <q-collapsible icon="fa-list" label="Contenido" opened header-class="bg-primary text-white icon-white" style="width: 80vw; max-width: 80vw;" class="q-my-md" v-if="formItems.content">
-        <q-btn-group push class="q-ma-lg">
-          <q-btn-dropdown push color="tertiary" :label="'content.save child' | translate" :loading="loading">
-            <q-list link>
-              <q-item v-for="model in this.modelsData.allowedChild" :key="model.value" @click.native="createEntity(model.value)">
-                <q-item-tile label style="color: #000000;">{{ model.value }}</q-item-tile>
-              </q-item>
-            </q-list>
-          </q-btn-dropdown>
-          <q-btn push color="red" :loading="loading" @click="deleteEntitiesArray(checkDeleteContent)" :disable="disableContent">{{ 'content.delete' | translate }}</q-btn>
-        </q-btn-group>
-        <q-list
-          v-for="children in this.children"
-          v-bind:key="children.id"
-          @click.native="$router.push(`/content/edit/${children.id}`)"
-          class="dark">
-          <q-item>
-            <q-item-side>
-              <q-checkbox v-model="checkDeleteContent" color="primary" :val="children.id" @input="disableContentButton"/>
-            </q-item-side>
-            <q-item-main>
-              <strong style="color: #0071bc;">- {{ children.name }}</strong>
-            </q-item-main>
-          </q-item>
-        </q-list>
-      </q-collapsible>
-      <q-collapsible icon="fa-info" label="Información" opened header-class="bg-primary text-white icon-white" style="width: 80vw; max-width: 80vw;" class="q-my-md" v-if="formItems.info">
-        <div v-for="item in this.formItems.info"
-             v-bind:key="item.label"
-             :is="item.component"
-             :field="item.field"
-             :label="item.label"
-             :params="item.params"
-             :entity="entity"></div>
-      </q-collapsible>
-      <q-collapsible icon="fa-globe" label="Publicación" header-class="bg-primary text-white icon-white" style="width: 80vw; max-width: 80vw;" class="q-my-md" v-if="formItems.publication">
-        <div v-for="item in this.formItems.publication"
-             v-bind:key="item.label"
-             :is="item.component"
-             :field="item.field"
-             :label="item.label"
-             :params="item.params"
-             :entity="entity"></div>
-        Estado:
-        <q-toggle
-          v-model="toggle"
-          color="primary"
-          true-value="Activo"
-          false-value="Inactivo"
-          :label="toggle"
-          @input="updateActiveValue"
-        />
-      </q-collapsible>
-      <q-collapsible icon="fa-image" label="Medios" header-class="bg-primary text-white icon-white" style="width: 80vw; max-width: 80vw;" class="q-my-md" v-if="formItems.media">
-        <q-btn-group push class="q-ma-lg">
-          <q-btn push color="tertiary" @click="createMedia = true" :loading="loading" >{{ 'content.media' | translate }}</q-btn>
-          <q-btn push color="red" :loading="loading" @click="deleteMedia(checkDeleteMedia)" :disable="disableMedia">{{ 'content.delete' | translate }}</q-btn>
-        </q-btn-group>
-        <q-list v-if="this.media !== []">
-          <q-item
-            v-for="media in this.media"
-            v-bind:key="media.id"
-            class="dark">
-            <div>
-              <q-item-main @click.native="$router.push(`/media/edit/${media.id}`)">
-                <img :src="media.src" :title="media.name">
-                <q-item-tile>{{ media.name }}</q-item-tile>
-              </q-item-main>
-              <q-checkbox class="q-ma-md absolute-top-left" v-model="checkDeleteMedia" :val="media.id" @input="disableMediaButton"/>
-            </div>
-          </q-item>
-        </q-list>
-      </q-collapsible>
+      <div v-for="item in this.editorItems"
+           v-bind:key="item.index"
+           :is="item.component"
+           v-bind="item.props"
+           :entity="entity">
+      </div>
     </div>
     <q-btn-group push class="q-ma-lg">
       <q-btn push color="tertiary" @click="saveEntity" :loading="loading" >{{ 'content.update' | translate }}</q-btn>
@@ -103,15 +36,18 @@ import { routes } from '../router/routes'
 import config from '../config'
 import EditMedia from './editMedia'
 import Notifications from './notifications.js'
-import textInput from './formItems/textInput'
-import wysiwyg from './formItems/editorWYSIWYG'
-import datetime from './formItems/datetime'
-import selectInput from './formItems/selectInput'
+import textInput from './editor/textInput'
+import wysiwyg from './editor/editorWYSIWYG'
+import datetime from './editor/datetime'
+import selectInput from './editor/selectInput'
+import formHeader from './editor/formHeader'
+import children from './editor/children'
+import titleSummaryContent from './editor/titleSummaryContent'
 /* es-lint enable */
 
 export default {
   components: {
-    EditMedia, textInput, wysiwyg, datetime, selectInput
+    EditMedia, textInput, wysiwyg, datetime, selectInput, formHeader, children, titleSummaryContent
   },
   name: 'EditEntity',
   mounted () {
@@ -152,7 +88,7 @@ export default {
         },
         data: {}
       },
-      formItems: []
+      editorItems: []
     }
   },
   methods: {
@@ -172,7 +108,7 @@ export default {
       this.modelsData = {
         'allowedChild': []
       }
-      this.formItems = []
+      this.editorItems = []
       this.disable = true
       let entityId = id ? id : this.$route.params.id
       if (!entityId) {
@@ -333,12 +269,13 @@ export default {
       let data
       let configModels = this.$store.state.main.config.models
       if (configModels[this.entity.model]) {
-        let allowedChildren = configModels[this.entity.model].children.allowed
+        /*let allowedChildren = configModels[this.entity.model].children.allowed
         for (let i = 0; i < allowedChildren.length; i++) {
           data = {'value': allowedChildren[i]}
           this.modelsData.allowedChild.push(data)
-        }
-        this.formItems = configModels[this.entity.model].editor
+        }*/
+        this.editorItems = configModels[this.entity.model].editor
+        console.log(this.editorItems)
       } else {
         this.modelsData = {
           'allowedChild': []

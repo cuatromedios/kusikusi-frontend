@@ -22,8 +22,8 @@
 </template>
 
 <script>
-import mediaUpload from './formItems/mediaUpload'
-import Input from './formItems/textInput'
+import mediaUpload from './editor/mediaUpload'
+import Input from './editor/textInput'
 import Connection from '../Connection'
 import config from '../config'
 import { routes } from '../router/routes'
