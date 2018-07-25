@@ -1,10 +1,10 @@
 <template>
   <div>
     <q-field label="Titulo:" class="q-mt-md">
-      <q-input v-model="entity.contents.title" type="text" rows="1" class="q-mt-md"/>
+      <q-input v-model="entity.contents.title" type="text" rows=1 class="q-mt-md"/>
     </q-field>
     <q-field label="Reseña:" class="q-mt-md">
-      <q-input v-model="entity.contents.summary" type="text" :rows="3" class="q-mt-md"/>
+      <q-input v-model="entity.contents.summary" type="text" rows=3 class="q-mt-md"/>
     </q-field>
     <q-field label="Descripcion:" class="q-mt-md">
       <q-editor

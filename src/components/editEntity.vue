@@ -7,12 +7,13 @@
       </q-breadcrumbs>
     </div>
     <div v-if="!edit">
-      <q-btn color="tertiary" size="md" class="q-ma-md float-right" @click="edit = true"><q-icon name="fa-edit" color="white" /></q-btn>
       <div v-for="item in this.displayItems"
         v-bind:key="item.index"
         :is="item.component"
         v-bind="item.props"
-        :entity="entity">
+        :entity="entity"
+        :reload="getEntity"
+        :edit.sync="edit">
       </div>
     </div>
     <div v-if="edit">
@@ -20,7 +21,8 @@
          v-bind:key="item.index"
          :is="item.component"
          v-bind="item.props"
-         :entity="entity">
+         :entity="entity"
+         :reload="getEntity">
       </div>
       <q-btn-group push class="q-ma-lg">
         <q-btn push color="tertiary" @click="saveEntity" :loading="loading" >{{ 'content.update' | translate }}</q-btn>
@@ -53,11 +55,13 @@ import titleSummaryContent from './editor/titleSummaryContent'
 import entityCard from './editor/entityCard'
 import publication from './editor/publication'
 import media from './editor/media'
+import urlAccess from './editor/urlAccess'
+import toggleButton from './editor/toggleButton'
 /* es-lint enable */
 
 export default {
   components: {
-    textInput, wysiwyg, datetime, selectInput, formHeader, children, titleSummaryContent, entityCard, publication, media
+    textInput, wysiwyg, datetime, selectInput, formHeader, children, titleSummaryContent, entityCard, publication, media, urlAccess, toggleButton
   },
   name: 'EditEntity',
   mounted () {
@@ -91,12 +95,8 @@ export default {
     },
     getEntity: async function (id) {
       // Get Entity
-      this.media = []
-      this.modelsData = {
-        'allowedChild': []
-      }
       this.editorItems = []
-      this.disable = true
+      this.edit = false
       let entityId = id ? id : this.$route.params.id
       if (!entityId) {
         let relations
@@ -197,7 +197,7 @@ export default {
 </script>
 <style>
   .dark{
-    color: #2e3436;
+    color: #000000;
     cursor: pointer;
   }
 </style>

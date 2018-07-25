@@ -3,7 +3,7 @@
     <q-field label="Posición:" class="q-mt-md">
       <q-input v-model="entity.position" type="number" class="q-mt-md"/>
     </q-field>
-    <q-field label="label" class="q-mt-md">
+    <q-field label="Creado en:" class="q-mt-md">
       <q-datetime
          type="datetime"
          v-model="entity.created_at"
@@ -11,7 +11,7 @@
          format="YYYY-MM-DD hh:mm:ss"
       />
     </q-field>
-    <q-field label="label" class="q-mt-md">
+    <q-field label="Actualizado en:" class="q-mt-md">
       <q-datetime
          type="datetime"
          v-model="entity.updated_at"
@@ -19,21 +19,25 @@
          format="YYYY-MM-DD hh:mm:ss"
       />
     </q-field>
-    Estado:
-    <q-toggle
-       v-model="toggle"
-       color="primary"
-       true-value="Activo"
-       false-value="Inactivo"
-       :label="toggle"
-       @input="updateActiveValue"
-    />
+    <q-field label="Estado:" class="q-mt-md">
+      <q-toggle
+         v-model="toggle"
+         color="primary"
+         true-value="Activo"
+         false-value="Inactivo"
+         :label="toggle"
+         @input="updateActiveValue"
+      />
+    </q-field>
   </div>
 </template>
 
 <script>
 export default {
   name: 'Publication',
+  mounted () {
+    this.entity.isActive === 1 ? this.toggle = 'Activo' : this.toggle = 'Inactivo'
+  },
   props: {
     entity: {
       default: () => {

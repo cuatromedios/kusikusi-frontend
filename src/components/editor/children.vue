@@ -71,7 +71,14 @@ export default {
   },
   methods: {
     getChildren: async function () {
-      let childrenResult = await Connection.get(`/entity/${this.entity.id}/children?fields=e.id,e.name`)
+      let entityId
+      if (this.$route.params.id === ' ' || this.$route.params.id === undefined) {
+        entityId = this.entity.id
+      } else {
+        entityId = this.$route.params.id
+      }
+      this.children = []
+      let childrenResult = await Connection.get(`/entity/${entityId}/children?fields=e.id,e.name`)
       if (childrenResult.success) {
         this.children = childrenResult.data
       }
@@ -81,6 +88,7 @@ export default {
       this.newEntity.parent = this.entity.id
       this.newEntity.model = model
       this.newEntity.name = 'entidad'
+      this.newEntity.contents.title = 'entidad'
       this.newEntity.created_by = this.entity.id
       this.newEntity.updated_by = this.entity.id
       let createResult = await Connection.post('/entity', this.newEntity)
@@ -115,10 +123,15 @@ export default {
       }
       this.checkDeleteContent = []
       this.disable = true
-      setTimeout(() => this.getEntity(), 1500)
+      setTimeout(() => this.getChildren(), 1500)
     },
     disableContentButton: function () {
       this.checkDeleteContent.length === 0 ? this.disable = true : this.disable = false
+    }
+  },
+  watch: {
+    $route (to, from) {
+      setTimeout(() => this.getChildren(), 900)
     }
   }
 }

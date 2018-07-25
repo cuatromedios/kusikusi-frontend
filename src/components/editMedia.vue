@@ -131,7 +131,7 @@ export default {
               setTimeout(() => this.closeModalWhenIsComponent(), 1500)
             } else {
               Notifications.notifyWarning(this.$t(`Media created but could´t create the relation`))
-              setTimeout(() => this.$router.push({name: routes.media.name, params: {id: saveResult.data.id}}), 1500)
+              setTimeout(() => this.closeModalWhenIsComponent(), 1500)
             }
           } else {
             Notifications.notifySuccess(this.$t(`Media created successfully`))

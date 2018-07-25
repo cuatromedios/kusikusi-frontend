@@ -1,5 +1,6 @@
 <template>
   <q-list>
+  <q-btn color="tertiary" size="md" class="q-ma-md float-right" v-model="localEdit" @click="localEdit = true"><q-icon name="fa-edit" color="white" /></q-btn>
     <q-item>
       <q-item-main style="color: black;">
         <q-item-tile>
@@ -21,6 +22,7 @@ export default {
       type: Number,
       default: 3
     },
+    edit: {},
     entity: {
       default: () => {
         return {}
@@ -39,6 +41,14 @@ export default {
         headerLevel = 2
       }
       return ('h' + String(headerLevel))
+    },
+    localEdit: {
+      get: function () {
+        return this.edit
+      },
+      set: function (update) {
+        this.$emit('update:edit', update)
+      }
     }
   }
 }

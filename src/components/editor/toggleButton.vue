@@ -1,47 +1,45 @@
 <template>
-  <q-field :label="label" class="q-my-md">
-    <q-select
-      class="q-my-md"
-      inverted
-      dark
-      v-model="fieldReference"
-      separator
-      :placeholder="params.placeholder"
-      :options="params.options"
-    />
-  </q-field>
+  <div class="q-my-md">
+    <q-field :label="label" class="q-mt-md">
+      <q-toggle
+         v-model="toggle"
+         color="primary"
+         :true-value="trueValue.label"
+         :false-value="falseValue.label"
+         :label="toggle"
+         @input="updateValue"
+      />
+    </q-field>
+  </div>
 </template>
 
 <script>
 export default {
-  name: 'Input',
+  name: 'ToggleButton',
+  mounted () {
+    this.fieldReference = this.trueValue.value
+  },
   props: {
-    field: {
-      default: '',
-      type: String
-    },
     label: {
       default: '',
       type: String
     },
+    field: {
+      default: '',
+      type: String
+    },
+    trueValue: {},
+    falseValue: {},
     entity: {
       default: () => {
         return {}
-      },
-      type: Object
-    },
-    params: {
-      default: () => {
-        return {
-          placeholder: '',
-          options: []
-        }
       },
       type: Object
     }
   },
   data () {
     return {
+      toggle: this.trueValue.label
     }
   },
   computed: {
@@ -62,6 +60,11 @@ export default {
           this.entity[fieldParts[0]][fieldParts[1]] = value
         }
       }
+    }
+  },
+  methods: {
+    updateValue: function () {
+      this.toggle === this.trueValue.label ? this.fieldReference = this.trueValue.value : this.fieldReference = this.falseValue.value
     }
   }
 }

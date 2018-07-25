@@ -1,5 +1,5 @@
 <template>
-  <q-collapsible icon="fa-image" label="Medios" header-class="bg-primary text-white icon-white" class="q-my-md">
+  <q-collapsible icon="fa-image" label="Medios" opened header-class="bg-primary text-white icon-white" class="q-my-md">
     <q-btn-group push class="q-ma-lg">
       <q-btn push color="tertiary" @click="createMedia = true" :loading="loading" >{{ 'content.media' | translate }}</q-btn>
       <q-btn push color="red" :loading="loading" @click="deleteMedia(checkDeleteMedia)" :disable="disable">{{ 'content.delete' | translate }}</q-btn>
@@ -15,11 +15,22 @@
             <q-item-tile>{{ media.name }}</q-item-tile>
           </q-item-main>
           <q-checkbox class="q-ma-md absolute-top-left" v-model="checkDeleteMedia" :val="media.id" @input="disableMediaButton"/>
+          <q-select
+            multiple
+            chips
+            inverted
+            dark
+            color="primary"
+            float-label="Etiquetas:"
+            v-model="media.tags"
+            :options="selectableTags"
+            @input="updateTag(media.id, media.tags)"
+          />
         </div>
       </q-item>
     </q-list>
     <q-modal v-model="createMedia" :content-css="{minWidth: '80vw', minHeight: '80vh'}" @hide="createMedia = false">
-      <EditMedia :relation="entity.id" :reload="getEntity" :close="deleteConfirm"></EditMedia>
+      <EditMedia :relation="entity.id" :close="createMedia" :reload="reload"></EditMedia>
       <q-btn class="q-ma-lg absolute-top-right" round color="negative" @click="createMedia = false" icon="fa-times" size="xs"></q-btn>
     </q-modal>
   </q-collapsible>
@@ -44,7 +55,9 @@ export default {
         return {}
       },
       type: Object
-    }
+    },
+    tags: {},
+    reload: {}
   },
   data () {
     return {
@@ -52,18 +65,24 @@ export default {
       disable: true,
       createMedia: false,
       checkDeleteMedia: [],
-      media: []
+      media: [],
+      selectableTags: []
     }
   },
   methods: {
     getMediaRelated: async function () {
       let mediums
-      let mediaResult = await Connection.get(`/entity/${this.entity.id}/relations/medium?fields=e.id,e.name`)
+      let tag
+      let mediaResult = await Connection.get(`/entity/${this.entity.id}/relations/medium?fields=e.id,e.name,r.tags`)
       if (mediaResult.success) {
         for (let i = 0; i < mediaResult.data.length; i++) {
-          mediums = {'id': mediaResult.data[i].id, 'name': mediaResult.data[i].name, 'src': `${config.media.url}/${mediaResult.data[i].id}/thumb`}
+          mediums = {'id': mediaResult.data[i].id, 'name': mediaResult.data[i].name, 'src': `${config.media.url}/${mediaResult.data[i].id}/thumb`, 'tags': mediaResult.data[i].relation.tags}
           this.media.push(mediums)
         }
+      }
+      for (let t = 0; t < this.tags.length; t++) {
+        tag = {'label': this.tags[t], 'value': this.tags[t]}
+        this.selectableTags.push(tag)
       }
     },
     deleteMedia: async function (entity) {
@@ -85,10 +104,22 @@ export default {
       }
       this.checkDeleteMedia = []
       this.disableMedia = true
-      setTimeout(() => this.getEntity(), 1500)
+      setTimeout(() => this.reload(), 1500)
     },
     disableMediaButton: function () {
       this.checkDeleteMedia.length === 0 ? this.disable = true : this.disable = false
+    },
+    updateTag: async function (id, tags) {
+      // console.log(tags)
+      let data = {
+        'kind': 'medium',
+        'id': id,
+        'tags': tags
+      }
+      let updateTagsResult = await Connection.post(`/entity/${this.entity.id}/relations`, data)
+      if (!updateTagsResult.success) {
+        Notifications.notifyError(this.$t(`Fail at updating tags`))
+      }
     }
   }
 }
