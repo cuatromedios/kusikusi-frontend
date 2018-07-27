@@ -1,18 +1,17 @@
 <template>
-  <q-collapsible icon="fa-vector-square" :label="label" opened header-class="bg-primary text-white icon-white" class="q-my-md">
-    <q-btn push color="tertiary" @click="createRelation = true" class="q-ma-lg absolute-top-right">{{ 'content.media' | translate }}</q-btn>
+  <div class="q-my-md">
+    <h4>{{ label }}</h4>
+    <q-btn push color="tertiary" @click="createRelation = true">{{ 'content.media' | translate }}</q-btn>
     <q-modal v-model="createRelation" :content-css="{minWidth: '80vw', minHeight: '80vh'}" @hide="createRelation = false">
       <q-list>
         <q-item
           v-for="relation in this.relations"
-          v-bind:key="relation.id"
-          class="dark">
+          v-bind:key="relation.id">
           <q-item-side>
-            <q-btn color="red" round icon="fa-times" size="xs" @click="quickDelete(relation.id, relation.kind)" />
+            <q-btn color="negative" round icon="fa-times" size="xs" @click="quickDelete(relation.id, relation.kind)" />
           </q-item-side>
-          <q-item-main
-            @click.native="$router.push(`/content/edit/${relation.id}`)">
-            <strong style="color: #0071bc;">- {{ relation.name }}</strong>
+          <q-item-main>
+            <strong style="color: #0071bc;">- {{ relation.name }} ({{ relation.kind }})</strong>
           </q-item-main>
           <q-item-side>
             <q-select
@@ -82,7 +81,7 @@
       </q-list>
       <q-btn class="q-ma-lg absolute-top-right" round color="negative" @click="createRelation = false" icon="fa-times" size="xs"></q-btn>
     </q-modal>
-  </q-collapsible>
+  </div>
 </template>
 
 <script>

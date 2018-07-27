@@ -1,5 +1,6 @@
 <template>
-  <q-collapsible icon="fa-list" :label="label" header-class="bg-primary text-white icon-white" class="q-my-md">
+  <div class="q-my-md">
+    <h4>{{ label }}</h4>
     <q-btn-group push class="q-ma-lg">
       <q-btn-dropdown push color="tertiary" :label="'content.save child' | translate" :loading="loading">
         <q-list link>
@@ -24,7 +25,7 @@
         </q-item-main>
       </q-item>
     </q-list>
-  </q-collapsible>
+  </div>
 </template>
 
 <script>

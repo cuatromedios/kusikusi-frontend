@@ -1,7 +1,7 @@
 <template>
   <q-field label="Direccion de acceso:" class="q-mt-md">
-    <q-input v-model="entity.contents.url" type="url" rows=1 class="q-mt-md" label="si" :disable="check" />
-    <q-checkbox v-model="check" left-label label="Url automatica:" color="primary" @input="automaticUrl" />
+    <q-input v-model="entity.contents.url" type="url" rows=1 class="q-mt-md" :disable="check" />
+    <q-checkbox v-model="check" left-label label="Url automatica:" color="primary" @input="automaticUrl"/>
   </q-field>
 </template>
 
@@ -38,9 +38,14 @@ export default {
       this.automaticUrl()
     },
     automaticUrl: async function () {
-      // Set automatic self url
-      let title = this.entity.contents.title.replace(/ /g, '-')
-      this.autoUrl = `/${title.toLowerCase()}`
+      // áíóúñÑÜÖÿùûòöôÉÅÄìîïèëêçåàäâéü
+      let trim = this.entity.contents.title.trim()
+      let noAccents = trim.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+      let onlyAlphanumericAndSpace = noAccents.replace(/[^0-9a-zA-Z\s]+/g, '')
+      let noMultiSpace = onlyAlphanumericAndSpace.replace(/\s\s+/g, ' ')
+      let spaceAsLine = noMultiSpace.replace(/ /g, '-')
+      let filterFinal = spaceAsLine.toLowerCase()
+      this.autoUrl = `/${filterFinal}`
       this.check ? this.entity.contents.url = this.parentUrl + this.autoUrl : this.entity.contents.url = this.entity.contents.url
     }
   }

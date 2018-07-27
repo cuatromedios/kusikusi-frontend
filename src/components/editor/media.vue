@@ -1,5 +1,6 @@
 <template>
-  <q-collapsible icon="fa-image" label="Medios" header-class="bg-primary text-white icon-white" class="q-my-md">
+  <div class="q-my-md">
+    <h4>{{ label }}</h4>
     <q-btn-group push class="q-ma-lg">
       <q-btn push color="tertiary" @click="createMedia = true" :loading="loading" >{{ 'content.media' | translate }}</q-btn>
       <q-btn push color="red" :loading="loading" @click="deleteMedia(checkDeleteMedia)" :disable="disable">{{ 'content.delete' | translate }}</q-btn>
@@ -33,7 +34,7 @@
       <EditMedia :relation="entity.id" :close="createMedia" :reload="reload" :filter="filter"></EditMedia>
       <q-btn class="q-ma-lg absolute-top-right" round color="negative" @click="createMedia = false" icon="fa-times" size="xs"></q-btn>
     </q-modal>
-  </q-collapsible>
+  </div>
 </template>
 
 <script>
@@ -50,6 +51,10 @@ export default {
     EditMedia
   },
   props: {
+    label: {
+      default: 'Medios',
+      type: String
+    },
     entity: {
       default: () => {
         return {}
