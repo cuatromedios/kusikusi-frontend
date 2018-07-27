@@ -1,5 +1,5 @@
 <template>
-  <q-collapsible icon="fa-list" label="Contenido" header-class="bg-primary text-white icon-white" class="q-my-md">
+  <q-collapsible icon="fa-list" :label="label" header-class="bg-primary text-white icon-white" class="q-my-md">
     <q-btn-group push class="q-ma-lg">
       <q-btn-dropdown push color="tertiary" :label="'content.save child' | translate" :loading="loading">
         <q-list link>
@@ -32,14 +32,19 @@ import Connection from '../../Connection'
 import { routes } from '../../router/routes'
 import Notifications from '../notifications.js'
 export default {
-  name: 'Input',
+  name: 'Children',
   mounted () {
     this.getChildren()
   },
   props: {
+    label: {
+      default: '',
+      tye: String
+    },
     allowed: {
       default: []
     },
+    filter: {},
     entity: {
       default: () => {
         return {}
@@ -59,12 +64,7 @@ export default {
         parent: '',
         created_by: '',
         updated_by: '',
-        contents: {
-          description: '',
-          summary: '',
-          title: '',
-          url: '/'
-        },
+        contents: [],
         data: {}
       }
     }
@@ -78,7 +78,14 @@ export default {
         entityId = this.$route.params.id
       }
       this.children = []
-      let childrenResult = await Connection.get(`/entity/${entityId}/children?fields=e.id,e.name`)
+
+      let childrenResult
+      // CHECK FILTER
+      if (this.filter === undefined) {
+        childrenResult = await Connection.get(`/entity/${entityId}/children?fields=e.id,e.name`)
+      } else {
+        childrenResult = await Connection.get(`/entity/${entityId}/children?fields=e.id,e.name&filter=${this.filter}`)
+      }
       if (childrenResult.success) {
         this.children = childrenResult.data
       }
@@ -88,9 +95,8 @@ export default {
       this.newEntity.parent = this.entity.id
       this.newEntity.model = model
       this.newEntity.name = 'entidad'
-      this.newEntity.contents.title = 'entidad'
-      this.newEntity.created_by = this.entity.id
-      this.newEntity.updated_by = this.entity.id
+      this.newEntity.created_by = this.$store.state.main.user.id
+      this.newEntity.updated_by = this.$store.state.main.user.id
       let createResult = await Connection.post('/entity', this.newEntity)
       this.loading = false
       if (createResult.success) {

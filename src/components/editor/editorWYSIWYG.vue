@@ -1,5 +1,5 @@
 <template>
-  <q-field :label="label" style="width: 60vw; max-width: 90vw;" class="q-mt-md">
+  <q-field :label="label" class="q-mt-md">
     <q-editor
       class="q-mt-md"
       ref="field"
@@ -16,7 +16,7 @@
 
 <script>
 export default {
-  name: 'Input',
+  name: 'EditorWYSIWYG',
   props: {
     field: {
       default: '',

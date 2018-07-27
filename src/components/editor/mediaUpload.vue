@@ -13,8 +13,12 @@
 
 <script>
 export default {
-  name: 'Input',
+  name: 'MediaUpload',
+  mounted () {
+    this.checkFilters()
+  },
   props: {
+    filter: {},
     label: {
       default: '',
       type: String
@@ -25,6 +29,13 @@ export default {
   data () {
     return {
       extensions: ''
+    }
+  },
+  methods: {
+    checkFilters: function () {
+      if (this.filter !== {}) {
+        this.extensions = this.filter
+      }
     }
   }
 }

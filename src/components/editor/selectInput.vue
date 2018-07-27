@@ -6,15 +6,15 @@
       dark
       v-model="fieldReference"
       separator
-      :placeholder="params.placeholder"
-      :options="params.options"
+      :placeholder="placeholder"
+      :options="options"
     />
   </q-field>
 </template>
 
 <script>
 export default {
-  name: 'Input',
+  name: 'SelectInput',
   props: {
     field: {
       default: '',
@@ -24,18 +24,16 @@ export default {
       default: '',
       type: String
     },
+    placeholder: {
+      default: '',
+      type: String
+    },
+    options: {
+      default: []
+    },
     entity: {
       default: () => {
         return {}
-      },
-      type: Object
-    },
-    params: {
-      default: () => {
-        return {
-          placeholder: '',
-          options: []
-        }
       },
       type: Object
     }

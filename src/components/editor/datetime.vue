@@ -11,7 +11,7 @@
 
 <script>
 export default {
-  name: 'Input',
+  name: 'Datetime',
   props: {
     field: {
       default: '',

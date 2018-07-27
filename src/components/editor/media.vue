@@ -1,5 +1,5 @@
 <template>
-  <q-collapsible icon="fa-image" label="Medios" opened header-class="bg-primary text-white icon-white" class="q-my-md">
+  <q-collapsible icon="fa-image" label="Medios" header-class="bg-primary text-white icon-white" class="q-my-md">
     <q-btn-group push class="q-ma-lg">
       <q-btn push color="tertiary" @click="createMedia = true" :loading="loading" >{{ 'content.media' | translate }}</q-btn>
       <q-btn push color="red" :loading="loading" @click="deleteMedia(checkDeleteMedia)" :disable="disable">{{ 'content.delete' | translate }}</q-btn>
@@ -30,7 +30,7 @@
       </q-item>
     </q-list>
     <q-modal v-model="createMedia" :content-css="{minWidth: '80vw', minHeight: '80vh'}" @hide="createMedia = false">
-      <EditMedia :relation="entity.id" :close="createMedia" :reload="reload"></EditMedia>
+      <EditMedia :relation="entity.id" :close="createMedia" :reload="reload" :filter="filter"></EditMedia>
       <q-btn class="q-ma-lg absolute-top-right" round color="negative" @click="createMedia = false" icon="fa-times" size="xs"></q-btn>
     </q-modal>
   </q-collapsible>
@@ -42,7 +42,7 @@ import Connection from '../../Connection'
 import config from '../../config'
 import Notifications from '../notifications.js'
 export default {
-  name: 'Input',
+  name: 'Media',
   mounted () {
     this.getMediaRelated()
   },
@@ -57,6 +57,7 @@ export default {
       type: Object
     },
     tags: {},
+    filter: {},
     reload: {}
   },
   data () {
@@ -86,6 +87,7 @@ export default {
       }
     },
     deleteMedia: async function (entity) {
+      // TODO: delete relation as well
       for (let i = 0; i < entity.length; i++) {
         this.loading = true
         let deleteResult = await Connection.delete(`/media/${entity[i]}`)

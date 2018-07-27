@@ -11,7 +11,8 @@
            :params="item.params"
            :entity="entityMedia"
            :action="add"
-           :trigger="remove"></div>
+           :trigger="remove"
+           :filter="filter"></div>
       <img :src="src" class="q-my-lg">
       <q-btn class="q-ma-lg" round color="negative" @click="deleteMedia" icon="fa-times" size="sm" :loading="loading" v-if="this.src !== ''"></q-btn>
     </q-field>
@@ -43,6 +44,7 @@ export default {
       type: String
     },
     close: {},
+    filter: {},
     reload: {}
   },
   data () {
@@ -54,6 +56,7 @@ export default {
         name: '',
         model: '',
         parent: '',
+        created_by: '',
         contents: {
           title: '',
           description: ''
@@ -61,7 +64,6 @@ export default {
       },
       src: '',
       url: '',
-      extensions: ['.jpg', '.png', 'gif'],
       formItems: [],
       files: {},
       type: {
@@ -118,6 +120,7 @@ export default {
       this.loading = true
       this.entityMedia.model = 'medium'
       this.entityMedia.parent = 'media'
+      this.entityMedia.created_by = this.$store.state.main.user.id
       let saveResult = await Connection.post(`/media`, this.entityMedia)
       this.loading = false
       if (saveResult.success) {

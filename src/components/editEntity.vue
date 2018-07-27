@@ -22,7 +22,8 @@
          :is="item.component"
          v-bind="item.props"
          :entity="entity"
-         :reload="getEntity">
+         :reload="getEntity"
+         :lang.sync="selectedLang">
       </div>
       <q-btn-group push class="q-ma-lg">
         <q-btn push color="tertiary" @click="saveEntity" :loading="loading" >{{ 'content.update' | translate }}</q-btn>
@@ -32,7 +33,6 @@
       <q-modal v-model="deleteConfirm" minimized :content-css="{padding: '50px'}" @hide="deleteConfirm = false">
         <q-btn class="q-ma-lg absolute-top-right" round color="red" @click="deleteConfirm = false" icon="fa-times" size="xs"></q-btn>
         <div class="q-display-1 q-mb-md">¿Deseas Eliminar esta entidad?</div>
-        <p><strong>¡Esto eliminará también a todos sus descendientes!</strong></p>
         <q-btn push color="red" @click="deleteEntity(entity.id)" :loading="loading" >{{ 'content.delete' | translate }}</q-btn>
       </q-modal>
     </div>
@@ -57,11 +57,13 @@ import publication from './editor/publication'
 import media from './editor/media'
 import urlAccess from './editor/urlAccess'
 import toggleButton from './editor/toggleButton'
+import multiLang from './editor/multiLang'
+import relation from './editor/relation'
 /* es-lint enable */
 
 export default {
   components: {
-    textInput, wysiwyg, datetime, selectInput, formHeader, children, titleSummaryContent, entityCard, publication, media, urlAccess, toggleButton
+    textInput, wysiwyg, datetime, selectInput, formHeader, children, titleSummaryContent, entityCard, publication, media, urlAccess, toggleButton, multiLang, relation
   },
   name: 'EditEntity',
   mounted () {
@@ -76,8 +78,10 @@ export default {
       loading: false,
       edit: false,
       deleteConfirm: false,
+      selectedLang: '',
       ancestors: [],
       entity: {},
+      contents: [],
       editorItems: [],
       displayItems: []
     }
@@ -91,12 +95,13 @@ export default {
       if (this.$route.params.id === ' ') {
         this.$route.params.id = undefined
       }
+      this.edit = false
+      this.selectedLang = this.$store.state.main.config.models.langs[0]
       this.getEntity(id)
     },
     getEntity: async function (id) {
       // Get Entity
       this.editorItems = []
-      this.edit = false
       let entityId = id ? id : this.$route.params.id
       if (!entityId) {
         let relations
@@ -118,7 +123,7 @@ export default {
       if (!entityId) {
         return
       }
-      let entityResult = await Connection.get(`/entity/${entityId}`)
+      let entityResult = await Connection.get(`/entity/${entityId}?lang=${this.selectedLang}`)
       if (entityResult.success) {
         this.entity = entityResult.data
       }
@@ -136,6 +141,15 @@ export default {
     },
     saveEntity: async function () {
       this.loading = true
+
+      //CHECK FOR LANG
+      let data
+      let contents = this.entity.contents
+      this.entity.contents = []
+      for (let i = 0; i < Object.keys(contents).length; i++) {
+        data = {'lang': this.selectedLang, 'field': Object.keys(contents)[i], 'value': Object.values(contents)[i]}
+        this.entity.contents.push(data)
+      }
       let saveResult = await Connection.patch(`/entity/${this.entity.id}`, this.entity)
       this.loading = false
       if (saveResult.success) {
@@ -145,40 +159,23 @@ export default {
         Notifications.notifyError(this.$t(`${this.entity.name} failed at update`))
       }
     },
-
-    createEntity: async function (model) {
-      this.loading = true
-      this.newEntity.parent = this.entity.id
-      this.newEntity.model = model
-      this.newEntity.name = 'entidad'
-      this.newEntity.created_by = this.entity.id
-      this.newEntity.updated_by = this.entity.id
-      let createResult = await Connection.post('/entity', this.newEntity)
-      this.loading = false
-      if (createResult.success) {
-        Notifications.notifySuccess(this.$t(`New entity created successfully`))
-        setTimeout(() => this.$router.push({name: routes.content.name, params: {id: createResult.data.id}}), 1500)
-      } else {
-        Notifications.notifyError(this.$t(`Couldn´t create new entity`))
-      }
-    },
     deleteEntity: async function (entity) {
       this.deleteConfirm = false
       this.loading = true
-      let descendantsResult = await Connection.get(`/entity/${entity}/descendants?fields=e.id`)
-      if (descendantsResult.success) {
-        for (let i = 0; i < descendantsResult.data.length; i++) {
-          let deleteDescendantsResult = await Connection.delete(`/entity/${descendantsResult.data[i].id}`)
-          if (!deleteDescendantsResult.success) {
-            Notifications.notifyError(this.$t(`An error was thrown while deleting a descendant`))
-            return;
-          }
-        }
-      }
+      // let descendantsResult = await Connection.get(`/entity/${entity}/descendants?fields=e.id`)
+      // if (descendantsResult.success) {
+      //  for (let i = 0; i < descendantsResult.data.length; i++) {
+      //     let deleteDescendantsResult = await Connection.delete(`/entity/${descendantsResult.data[i].id}`)
+      //     if (!deleteDescendantsResult.success) {
+      //       Notifications.notifyError(this.$t(`An error was thrown while deleting a descendant`))
+      //       return;
+      //     }
+      //   }
+      // }
       let deleteEntityResult = await Connection.delete(`/entity/${entity}`)
       this.loading = false
       if (deleteEntityResult.success) {
-        Notifications.notifySuccess(this.$t(`The entity and it's descendants were deleted successfully`))
+        Notifications.notifySuccess(this.$t(`The entity was deleted successfully`))
         setTimeout(() => this.$router.push({name: routes.content.name, params: {id: this.entity.parent}}), 1500)
       } else {
         Notifications.notifyError(this.$t(`Couldn't delete the selected entity`))

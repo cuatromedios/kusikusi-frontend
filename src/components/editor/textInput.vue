@@ -6,7 +6,7 @@
 
 <script>
 export default {
-  name: 'Input',
+  name: 'TextInput',
   props: {
     field: {
       default: '',

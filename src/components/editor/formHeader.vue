@@ -4,7 +4,7 @@
 
 <script>
 export default {
-  name: 'formHeader',
+  name: 'FormHeader',
   props: {
     text: String,
     field: String,

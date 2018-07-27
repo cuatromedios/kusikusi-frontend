@@ -23,7 +23,7 @@
 
 <script>
 export default {
-  name: 'Input',
+  name: 'TitleSummaryContent',
   props: {
     entity: {
       default: () => {
