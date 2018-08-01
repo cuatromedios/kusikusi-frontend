@@ -41,7 +41,7 @@ export default {
   methods: {
     getLangs: function () {
       let data
-      let langs = this.$store.state.main.config.models.langs
+      let langs = this.$store.state.main.config.langs
       for (let i = 0; i < langs.length; i++) {
         data = {'label': langs[i], 'value': langs[i]}
         this.languages.push(data)

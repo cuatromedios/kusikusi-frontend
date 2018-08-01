@@ -59,11 +59,13 @@ import urlAccess from './editor/urlAccess'
 import toggleButton from './editor/toggleButton'
 import multiLang from './editor/multiLang'
 import relation from './editor/relation'
+import userBasicData from './editor/userBasicData'
+import displayMedia from './editor/displayMedia'
 /* es-lint enable */
 
 export default {
   components: {
-    textInput, wysiwyg, datetime, selectInput, formHeader, children, titleSummaryContent, entityCard, publication, media, urlAccess, toggleButton, multiLang, relation
+    textInput, wysiwyg, datetime, selectInput, formHeader, children, titleSummaryContent, entityCard, publication, media, urlAccess, toggleButton, multiLang, relation, userBasicData, displayMedia
   },
   name: 'EditEntity',
   mounted () {
@@ -96,7 +98,7 @@ export default {
         this.$route.params.id = undefined
       }
       this.edit = false
-      this.selectedLang = this.$store.state.main.config.models.langs[0]
+      this.selectedLang = this.$store.state.main.config.langs[0]
       this.getEntity(id)
     },
     getEntity: async function (id) {

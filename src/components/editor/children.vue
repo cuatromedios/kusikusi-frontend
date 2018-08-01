@@ -40,7 +40,7 @@ export default {
   props: {
     label: {
       default: '',
-      tye: String
+      type: String
     },
     allowed: {
       default: []
