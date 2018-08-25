@@ -29,6 +29,8 @@ module.exports = function (ctx) {
       // analyze: true,
       // extractCSS: false,
       // useNotifier: false,
+      publicPath:'/cms/',
+      distDir: 'dist/cms',
       extendWebpack (cfg) {
         cfg.module.rules.push({
           enforce: 'pre',
