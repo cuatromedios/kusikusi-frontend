@@ -1,11 +1,20 @@
 <template>
   <q-field label="Código QR" class="q-mt-md">
-     <q-checkbox
+     <q-toggle
       v-model="checked"
       color="primary"
     />
-    <VueQrcode v-if="checked == true" :value="qrCode" :options="{ size: 200 }" tag="img" id="myid" ref="myid"></VueQrcode>
-    <div> </div>
+    <div v-if="checked == true">
+      <q-field class="q-mt-md">
+        <VueQrcode :value="qrCode" :options="{ size: 200 }" tag="img" id="myid" ref="myid"></VueQrcode>
+        <q-checkbox
+          v-model="select"
+          color="tertiary"
+          @input="fullCode"
+        />
+        <q-input v-if="select == true" v-model="generatedCode" readonly class="q-mt-md" />
+      </q-field>
+    </div>
   </q-field>
 </template>
 
@@ -34,13 +43,17 @@ export default {
   data () {
     return {
       checked: false,
-      qrCode: ''
+      select: false,
+      qrCode: '',
+      generatedCode: ''
     }
   },
   methods: {
     setQRCode: function () {
       this.qrCode = this.prefix + this.entity.id
-      // setTimeout(() => console.log(this.$refs.myid.$el.src), 200)
+    },
+    fullCode: function () {
+      this.generatedCode = this.$refs.myid.$el.src
     }
   }
 }
