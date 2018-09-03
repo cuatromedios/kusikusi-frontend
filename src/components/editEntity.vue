@@ -61,11 +61,12 @@ import multiLang from './editor/multiLang'
 import relation from './editor/relation'
 import userBasicData from './editor/userBasicData'
 import displayMedia from './editor/displayMedia'
+import qrCode from './editor/qrCode'
 /* es-lint enable */
 
 export default {
   components: {
-    textInput, wysiwyg, datetime, selectInput, formHeader, children, titleSummaryContent, entityCard, publication, media, urlAccess, toggleButton, multiLang, relation, userBasicData, displayMedia
+    textInput, wysiwyg, datetime, selectInput, formHeader, children, titleSummaryContent, entityCard, publication, media, urlAccess, toggleButton, multiLang, relation, userBasicData, displayMedia, qrCode
   },
   name: 'EditEntity',
   mounted () {

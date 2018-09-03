@@ -45,7 +45,7 @@ export default {
       let noMultiSpace = onlyAlphanumericAndSpace.replace(/\s\s+/g, ' ')
       let spaceAsLine = noMultiSpace.replace(/ /g, '-')
       let filterFinal = spaceAsLine.toLowerCase()
-      this.autoUrl = `/${filterFinal}`
+      this.autoUrl = `${filterFinal}/`
       this.check ? this.entity.contents.url = this.parentUrl + this.autoUrl : this.entity.contents.url = this.entity.contents.url
     }
   }

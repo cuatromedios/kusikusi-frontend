@@ -110,20 +110,10 @@ export default {
     deleteEntities: async function (entity) {
       for (let i = 0; i < entity.length; i++) {
         this.loading = true
-        let descendantsResult = await Connection.get(`/entity/${entity[i]}/descendants?fields=e.id`)
-        if (descendantsResult.success) {
-          for (let i = 0; i < descendantsResult.data.length; i++) {
-            let deleteDescendantsResult = await Connection.delete(`/entity/${descendantsResult.data[i].id}`)
-            if (!deleteDescendantsResult.success) {
-              Notifications.notifyError(this.$t(`An error was thrown while deleting a descendant`))
-              return
-            }
-          }
-        }
         let deleteEntityResult = await Connection.delete(`/entity/${entity[i]}`)
         this.loading = false
         if (deleteEntityResult.success) {
-          Notifications.notifySuccess(this.$t(`Entity and it's descendants were deleted successfully`))
+          Notifications.notifySuccess(this.$t(`The selected entity was deleted successfully`))
         } else {
           Notifications.notifyError(this.$t(`Couldn't delete the selected entity`))
         }
