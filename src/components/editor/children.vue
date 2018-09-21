@@ -14,15 +14,27 @@
     <q-list
             v-for="children in this.children"
             v-bind:key="children.id"
-            @click.native="$router.push(`/content/edit/${children.id}`)"
             class="dark">
       <q-item>
         <q-item-side>
           <q-checkbox v-model="checkDeleteContent" color="primary" :val="children.id" @input="disableContentButton"/>
         </q-item-side>
-        <q-item-main>
+        <q-item-main @click.native="$router.push(`/content/edit/${children.id}`)">
           <strong style="color: #0071bc;">- {{ children.name }}</strong>
         </q-item-main>
+        <q-item-side right>
+          <q-select
+             multiple
+             chips
+             inverted
+             dark
+             color="primary"
+             float-label="Etiquetas:"
+             v-model="children.tags.tags"
+             :options="selectableTags"
+             @input="updateTag(children.id, children.tags.tags)"
+           />
+        </q-item-side>
       </q-item>
     </q-list>
   </div>
@@ -46,6 +58,7 @@ export default {
       default: []
     },
     filter: {},
+    tags: {},
     entity: {
       default: () => {
         return {}
@@ -58,7 +71,9 @@ export default {
       loading: false,
       disable: true,
       checkDeleteContent: [],
+      selectableTags: [],
       children: [],
+      relationChild: [],
       newEntity: {
         model: '',
         name: '',
@@ -79,8 +94,12 @@ export default {
         entityId = this.$route.params.id
       }
       this.children = []
+      this.selectableTags = []
 
       let childrenResult
+      let tag
+      let relationsTags
+      let relationChildResult
       // CHECK FILTER
       if (this.filter === undefined) {
         childrenResult = await Connection.get(`/entity/${entityId}/children?fields=e.id,e.name`)
@@ -89,6 +108,26 @@ export default {
       }
       if (childrenResult.success) {
         this.children = childrenResult.data
+        for (let c = 0; c < this.children.length; c++) {
+          relationChildResult = await Connection.get(`/entity/${this.children[c].id}/relations/ancestor?fields=e.id,r.tags`)
+          if (relationChildResult.success) {
+            for (let r = 0; r < relationChildResult.data.length; r++) {
+              if (entityId === relationChildResult.data[r].id) {
+                relationsTags = {'tags': relationChildResult.data[r].relation.tags}
+                this.children[c].tags = relationsTags
+                if (this.children[c].tags.tags[0] === '') {
+                  this.children[c].tags.tags = []
+                }
+              }
+            }
+          }
+        }
+      }
+      if (this.tags !== undefined) {
+        for (let t = 0; t < this.tags.length; t++) {
+          tag = {'label': this.tags[t], 'value': this.tags[t]}
+          this.selectableTags.push(tag)
+        }
       }
     },
     createEntity: async function (model) {
@@ -124,6 +163,18 @@ export default {
     },
     disableContentButton: function () {
       this.checkDeleteContent.length === 0 ? this.disable = true : this.disable = false
+    },
+    updateTag: async function (id, tags) {
+      let data = {
+        'kind': 'ancestor',
+        'id': this.entity.id,
+        'tags': tags,
+        'depth': 1
+      }
+      let updateTagsResult = await Connection.post(`/entity/${id}/relations`, data)
+      if (!updateTagsResult.success) {
+        Notifications.notifyError(this.$t(`Fail at updating tags`))
+      }
     }
   },
   watch: {
