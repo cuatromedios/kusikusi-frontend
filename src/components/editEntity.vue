@@ -132,7 +132,7 @@ export default {
       }
 
       // Get ancestors
-      let ancestorsResult = await Connection.get(`/entity/${this.entity.id}/ancestors?fields=e.id,e.name`)
+      let ancestorsResult = await Connection.get(`/entity/${this.entity.id}/ancestors?fields=e.id,e.name,r.depth&order=r.depth:desc`)
       if (ancestorsResult.success) {
         this.ancestors = ancestorsResult.data
       }
