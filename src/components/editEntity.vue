@@ -140,6 +140,9 @@ export default {
       //Set models
       this.modelEditor()
 
+      if (this.entity.name === '') {
+        this.edit = true
+      }
       this.loading = false
     },
     saveEntity: async function () {

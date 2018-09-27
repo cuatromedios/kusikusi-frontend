@@ -134,7 +134,7 @@ export default {
       this.loading = true
       this.newEntity.parent = this.entity.id
       this.newEntity.model = model
-      this.newEntity.name = 'entidad'
+      this.newEntity.name = ''
       this.newEntity.created_by = this.$store.state.main.user.id
       this.newEntity.updated_by = this.$store.state.main.user.id
       let createResult = await Connection.post('/entity', this.newEntity)

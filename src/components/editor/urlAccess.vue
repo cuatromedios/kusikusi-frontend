@@ -2,6 +2,7 @@
   <q-field label="Direccion de acceso:" class="q-mt-md">
     <q-input v-model="entity.contents.url" type="url" rows=1 class="q-mt-md" :disable="check" />
     <q-checkbox v-model="check" left-label label="Url automatica:" color="primary" @input="automaticUrl"/>
+    <q-input v-model="entity.contents.title" disabled @change="automaticUrl" style="display: none;" />
   </q-field>
 </template>
 
@@ -11,6 +12,9 @@ export default {
   name: 'UrlAccess',
   mounted () {
     this.getParentUrl()
+  },
+  updated () {
+    this.automaticUrl()
   },
   props: {
     entity: {
@@ -36,6 +40,9 @@ export default {
         this.parentUrl = ''
       }
       this.automaticUrl()
+      if (this.entity.name === '') {
+        this.check = true
+      }
     },
     automaticUrl: async function () {
       // áíóúñÑÜÖÿùûòöôÉÅÄìîïèëêçåàäâéü
