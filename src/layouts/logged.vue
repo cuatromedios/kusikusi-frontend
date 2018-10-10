@@ -45,10 +45,10 @@
             <q-icon name="fa-times" class="lt-lg" color="white" />
           </q-btn>
         </q-list-header>
-        <q-item @click.native="$router.push('/dashboard')">
+        <!--<q-item @click.native="$router.push('/dashboard')">
           <q-item-side icon="fa-tachometer-alt" />
           <q-item-main :label="'layout.dashboard' | translate"/>
-        </q-item>
+        </q-item>-->
         <q-item @click.native="$router.push('/content/edit/ ')">
           <q-item-side icon="fa-list" />
           <q-item-main :label="'layout.content' | translate"  />
