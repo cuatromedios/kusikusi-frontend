@@ -66,7 +66,23 @@ import qrCode from './editor/qrCode'
 
 export default {
   components: {
-    textInput, wysiwyg, datetime, selectInput, formHeader, children, titleSummaryContent, entityCard, publication, media, urlAccess, toggleButton, multiLang, relation, userBasicData, displayMedia, qrCode
+    textInput,
+    wysiwyg,
+    datetime,
+    selectInput,
+    formHeader,
+    children,
+    titleSummaryContent,
+    entityCard,
+    publication,
+    media,
+    urlAccess,
+    toggleButton,
+    multiLang,
+    relation,
+    userBasicData,
+    displayMedia,
+    qrCode
   },
   name: 'EditEntity',
   mounted () {
@@ -105,24 +121,28 @@ export default {
     getEntity: async function (id) {
       // Get Entity
       this.editorItems = []
+      let home
       let entityId = id ? id : this.$route.params.id
-      if (!entityId) {
-        let relations
-        let relationsResult
-        if (this.$store.state.main.user.id) {
-          relationsResult = await Connection.get(`/entity/${this.$store.state.main.user.id}/relations?fields=e.id,r.kind`)
-        }
-        if (relationsResult.success) {
-          relations = relationsResult.data
-          for (let r = 0; r < relations.length; r++) {
-            if (relations[r].relation.kind === 'home') {
+
+      let relations
+      let relationsResult
+      if (this.$store.state.main.user.id) {
+        relationsResult = await Connection.get(`/entity/${this.$store.state.main.user.id}/relations?fields=e.id,r.kind`)
+      }
+      if (relationsResult.success) {
+        relations = relationsResult.data
+        for (let r = 0; r < relations.length; r++) {
+          if (relations[r].relation.kind === 'home') {
+            if (!entityId) {
               entityId = relations[r].id
             }
+            home = relations[r].id
           }
-        } else {
-          this.loading = false
         }
+      } else {
+        this.loading = false
       }
+
       if (!entityId) {
         return
       }
@@ -132,9 +152,22 @@ export default {
       }
 
       // Get ancestors
+      let homeDepth
       let ancestorsResult = await Connection.get(`/entity/${this.entity.id}/ancestors?fields=e.id,e.name,r.depth&order=r.depth:desc`)
       if (ancestorsResult.success) {
-        this.ancestors = ancestorsResult.data
+        this.ancestors = []
+        if (home !== this.entity.id) {
+          for (let a = 0;a < ancestorsResult.data.length;a++) {
+            if (ancestorsResult.data[a].id === home){
+              homeDepth = ancestorsResult.data[a].relation.depth
+              for (let d = 0;d < ancestorsResult.data.length;d++) {
+                if (ancestorsResult.data[d].relation.depth <= homeDepth) {
+                  this.ancestors.push(ancestorsResult.data[d])
+                }
+              }
+            }
+          }
+        }
       }
 
       //Set models
