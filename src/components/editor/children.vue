@@ -24,15 +24,16 @@
         </q-item-main>
         <q-item-side right>
           <q-select
+             v-if="tags"
              multiple
              chips
              inverted
              dark
              color="primary"
              float-label="Etiquetas:"
-             v-model="children.tags.tags"
+             v-model="children.relation.tags"
              :options="selectableTags"
-             @input="updateTag(children.id, children.tags.tags)"
+             @input="updateTag(children.id, children.relation.tags)"
            />
         </q-item-side>
       </q-item>
@@ -95,33 +96,16 @@ export default {
       }
       this.children = []
       this.selectableTags = []
-
       let childrenResult
       let tag
-      let relationsTags
-      let relationChildResult
       // CHECK FILTER
       if (this.filter === undefined) {
-        childrenResult = await Connection.get(`/entity/${entityId}/children?fields=e.id,e.name`)
+        childrenResult = await Connection.get(`/entity/${entityId}/children?fields=e.id,e.name,r.tags`)
       } else {
-        childrenResult = await Connection.get(`/entity/${entityId}/children?fields=e.id,e.name&filter=${this.filter}`)
+        childrenResult = await Connection.get(`/entity/${entityId}/children?fields=e.id,e.name,r.tags&filter=${this.filter}`)
       }
       if (childrenResult.success) {
         this.children = childrenResult.data
-        for (let c = 0; c < this.children.length; c++) {
-          relationChildResult = await Connection.get(`/entity/${this.children[c].id}/relations/ancestor?fields=e.id,r.tags`)
-          if (relationChildResult.success) {
-            for (let r = 0; r < relationChildResult.data.length; r++) {
-              if (entityId === relationChildResult.data[r].id) {
-                relationsTags = {'tags': relationChildResult.data[r].relation.tags}
-                this.children[c].tags = relationsTags
-                if (this.children[c].tags.tags[0] === '') {
-                  this.children[c].tags.tags = []
-                }
-              }
-            }
-          }
-        }
       }
       if (this.tags !== undefined) {
         for (let t = 0; t < this.tags.length; t++) {
