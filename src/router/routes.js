@@ -21,6 +21,7 @@ let loggedRoutes = {
   content: {
     path: '/content/edit/:id?',
     component: () => import('components/editEntity'),
+    props: {isNew: false},
     children: [
       {path: '', component: () => import('pages/content')}
     ]
