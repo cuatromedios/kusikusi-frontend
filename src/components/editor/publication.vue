@@ -3,21 +3,25 @@
     <q-field label="Posición:" class="q-mt-md">
       <q-input v-model="entity.position" type="number" class="q-mt-md"/>
     </q-field>
-    <q-field label="Creado en:" class="q-mt-md">
-      <q-datetime
-         type="datetime"
-         v-model="entity.created_at"
-         color="primary"
-         format="YYYY-MM-DD hh:mm:ss"
-      />
+    <q-field label="Publicado" class="q-mt-md">
+      <q-field label="Desde:" class="q-mt-md">
+        <q-datetime
+           type="datetime"
+           v-model="entity.publicated_at"
+           color="primary"
+           format="YYYY-MM-DD hh:mm:ss"
+        />
+      </q-field>
+      <q-field label="Hasta:" class="q-mt-md">
+        <q-datetime
+           v-if="!check"
+           type="datetime"
+           v-model="entity.unpublicated_at"
+           color="primary"
+           format="YYYY-MM-DD hh:mm:ss"
+        />
+        <q-checkbox v-model="check" left-label label="Nunca:" color="primary" @input="unPublishedNever"/>
     </q-field>
-    <q-field label="Actualizado en:" class="q-mt-md">
-      <q-datetime
-         type="datetime"
-         v-model="entity.updated_at"
-         color="primary"
-         format="YYYY-MM-DD hh:mm:ss"
-      />
     </q-field>
     <q-field label="Estado:" class="q-mt-md">
       <q-toggle
@@ -37,6 +41,7 @@ export default {
   name: 'Publication',
   mounted () {
     this.entity.isActive === 1 ? this.toggle = 'Activo' : this.toggle = 'Inactivo'
+    this.entity.unpublicated_at === '9999-12-31 23:59:59' ? this.check = true : this.check = false
   },
   props: {
     entity: {
@@ -48,7 +53,8 @@ export default {
   },
   data () {
     return {
-      toggle: 'Activo'
+      toggle: 'Activo',
+      check: false
     }
   },
   computed: {
@@ -74,6 +80,11 @@ export default {
   methods: {
     updateActiveValue: function () {
       this.toggle === 'Activo' ? this.entity.isActive = 1 : this.entity.isActive = 0
+    },
+    unPublishedNever: function () {
+      if (this.check) {
+        this.entity.unpublicated_at = '9999-12-31 23:59:59'
+      }
     }
   }
 }
