@@ -27,7 +27,7 @@
       </div>
       <q-btn-group push class="q-ma-lg">
         <q-btn push color="tertiary" @click="saveEntity" :loading="loading" >{{ 'content.update' | translate }}</q-btn>
-        <q-btn push color="red" @click="edit = false" :loading="loading" >CANCELAR</q-btn>
+        <q-btn push color="red" @click="cancel()" :loading="loading" >CANCELAR</q-btn>
         <q-btn push color="negative" @click="deleteConfirm = true" :loading="loading" >{{ 'content.delete' | translate }}</q-btn>
       </q-btn-group>
       <q-modal v-model="deleteConfirm" minimized :content-css="{padding: '50px'}" @hide="deleteConfirm = false">
@@ -173,7 +173,7 @@ export default {
       //Set models
       this.modelEditor()
 
-      if (this.entity.name === '') {
+      if (this.$route.query.isNew === true) {
         this.edit = true
       }
       this.loading = false
@@ -193,24 +193,20 @@ export default {
       this.loading = false
       if (saveResult.success) {
         Notifications.notifySuccess(this.$t(`${this.entity.name} updated succesfully`))
+        this.$route.query.isNew = false
         setTimeout(() => this.getEntity(), 1500)
       } else {
         Notifications.notifyError(this.$t(`${this.entity.name} failed at update`))
       }
     },
+    cancel: function () {
+      this.$route.query.isNew = false
+      this.edit = false
+    },
     deleteEntity: async function (entity) {
+      this.$route.query.isNew = false
       this.deleteConfirm = false
       this.loading = true
-      // let descendantsResult = await Connection.get(`/entity/${entity}/descendants?fields=e.id`)
-      // if (descendantsResult.success) {
-      //  for (let i = 0; i < descendantsResult.data.length; i++) {
-      //     let deleteDescendantsResult = await Connection.delete(`/entity/${descendantsResult.data[i].id}`)
-      //     if (!deleteDescendantsResult.success) {
-      //       Notifications.notifyError(this.$t(`An error was thrown while deleting a descendant`))
-      //       return;
-      //     }
-      //   }
-      // }
       let deleteEntityResult = await Connection.delete(`/entity/${entity}`)
       this.loading = false
       if (deleteEntityResult.success) {

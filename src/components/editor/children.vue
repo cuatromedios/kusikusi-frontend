@@ -4,7 +4,7 @@
     <q-btn-group push class="q-ma-lg">
       <q-btn-dropdown push color="tertiary" :label="'content.save child' | translate" :loading="loading">
         <q-list link>
-          <q-item v-for="model in this.allowed" :key="model" @click.native="createEntity(model)">
+          <q-item v-for="model in this.allowed" :key="model" @click.native="createModal(model)">
             <q-item-tile label style="color: #000000;">{{ model }}</q-item-tile>
           </q-item>
         </q-list>
@@ -38,6 +38,16 @@
         </q-item-side>
       </q-item>
     </q-list>
+    <q-modal v-model="createConfirm" minimized :content-css="{padding: '50px'}" @hide="createConfirm = false">
+        <q-btn class="q-ma-lg absolute-top-right" round color="red" @click="createConfirm = false" icon="fa-times" size="xs"></q-btn>
+        <q-field label="Título:" class="q-mt-md">
+          <q-input v-model="newEntityTitle" autofocus="true" class="q-mt-md" />
+        </q-field>
+        <q-btn-group push class="q-ma-lg">
+          <q-btn push color="tertiary" :loading="loading" @click="createEntity(model, newEntityTitle)">{{ 'content.save child' | translate }}</q-btn>
+          <q-btn push color="red" :loading="loading" @click="createConfirm = false">CANCELAR</q-btn>
+        </q-btn-group>
+      </q-modal>
   </div>
 </template>
 
@@ -71,6 +81,9 @@ export default {
     return {
       loading: false,
       disable: true,
+      createConfirm: false,
+      newEntityTitle: '',
+      model: '',
       checkDeleteContent: [],
       selectableTags: [],
       children: [],
@@ -81,7 +94,9 @@ export default {
         parent: '',
         created_by: '',
         updated_by: '',
-        contents: [],
+        contents: {
+          title: ''
+        },
         data: {}
       }
     }
@@ -114,18 +129,23 @@ export default {
         }
       }
     },
-    createEntity: async function (model) {
+    createModal: function (model) {
+      this.model = model
+      this.createConfirm = true
+    },
+    createEntity: async function (model, title) {
       this.loading = true
       this.newEntity.parent = this.entity.id
       this.newEntity.model = model
-      this.newEntity.name = ''
+      this.newEntity.name = title
+      this.newEntity.contents.title = title
       this.newEntity.created_by = this.$store.state.main.user.id
       this.newEntity.updated_by = this.$store.state.main.user.id
       let createResult = await Connection.post('/entity', this.newEntity)
       this.loading = false
       if (createResult.success) {
         Notifications.notifySuccess(this.$t(`New entity created successfully`))
-        setTimeout(() => this.$router.push({name: routes.content.name, params: {id: createResult.data.id}}), 1500)
+        setTimeout(() => this.$router.push({name: routes.content.name, params: {id: createResult.data.id}, query: {isNew: true}}), 1500)
       } else {
         Notifications.notifyError(this.$t(`Couldn´t create new entity`))
       }
