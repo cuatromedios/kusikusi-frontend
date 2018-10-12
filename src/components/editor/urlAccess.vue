@@ -40,20 +40,23 @@ export default {
         this.parentUrl = ''
       }
       this.automaticUrl()
-      if (this.entity.name === '') {
+      if (this.$route.query.isNew === true) {
         this.check = true
+        this.automaticUrl()
       }
     },
     automaticUrl: async function () {
-      // áíóúñÑÜÖÿùûòöôÉÅÄìîïèëêçåàäâéü
-      let trim = this.entity.contents.title.trim()
-      let noAccents = trim.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
-      let onlyAlphanumericAndSpace = noAccents.replace(/[^0-9a-zA-Z\s]+/g, '')
-      let noMultiSpace = onlyAlphanumericAndSpace.replace(/\s\s+/g, ' ')
-      let spaceAsLine = noMultiSpace.replace(/ /g, '-')
-      let filterFinal = spaceAsLine.toLowerCase()
-      this.autoUrl = `${filterFinal}/`
-      this.check ? this.entity.contents.url = this.parentUrl + this.autoUrl : this.entity.contents.url = this.entity.contents.url
+      if (this.entity.contents.title !== undefined) {
+        // áíóúñÑÜÖÿùûòöôÉÅÄìîïèëêçåàäâéü
+        let trim = this.entity.contents.title.trim()
+        let noAccents = trim.normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+        let onlyAlphanumericAndSpace = noAccents.replace(/[^0-9a-zA-Z\s]+/g, '')
+        let noMultiSpace = onlyAlphanumericAndSpace.replace(/\s\s+/g, ' ')
+        let spaceAsLine = noMultiSpace.replace(/ /g, '-')
+        let filterFinal = spaceAsLine.toLowerCase()
+        this.autoUrl = `${filterFinal}/`
+        this.check ? this.entity.contents.url = this.parentUrl + this.autoUrl : this.entity.contents.url = this.entity.contents.url
+      }
     }
   }
 }

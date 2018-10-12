@@ -20,7 +20,7 @@
           <q-checkbox v-model="checkDeleteContent" color="primary" :val="children.id" @input="disableContentButton"/>
         </q-item-side>
         <q-item-main @click.native="$router.push(`/content/edit/${children.id}`)">
-          <strong style="color: #0071bc;">- {{ children.name }}</strong>
+          <strong style="color: #0071bc;">{{ children.name }}</strong>
         </q-item-main>
         <q-item-side right>
           <q-select

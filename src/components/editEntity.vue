@@ -149,6 +149,9 @@ export default {
       let entityResult = await Connection.get(`/entity/${entityId}?lang=${this.selectedLang}`)
       if (entityResult.success) {
         this.entity = entityResult.data
+        if (this.entity.contents.description === undefined) {
+          this.entity.contents.description = ''
+        }
       }
 
       // Get ancestors
@@ -186,13 +189,15 @@ export default {
       let contents = this.entity.contents
       this.entity.contents = []
       for (let i = 0; i < Object.keys(contents).length; i++) {
-        data = {'lang': this.selectedLang, 'field': Object.keys(contents)[i], 'value': Object.values(contents)[i]}
-        this.entity.contents.push(data)
+        if (Object.values(contents)[i] !== undefined && Object.values(contents)[i] !== null && Object.values(contents)[i] !== '') {
+          data = {'lang': this.selectedLang, 'field': Object.keys(contents)[i], 'value': Object.values(contents)[i]}
+          this.entity.contents.push(data)
+        }
       }
       let saveResult = await Connection.patch(`/entity/${this.entity.id}`, this.entity)
       this.loading = false
       if (saveResult.success) {
-        Notifications.notifySuccess(this.$t(`${this.entity.name} updated succesfully`))
+        Notifications.notifySuccess(this.$t(`${this.entity.name} updated successfully`))
         this.$route.query.isNew = false
         setTimeout(() => this.getEntity(), 1500)
       } else {
