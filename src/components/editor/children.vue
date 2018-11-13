@@ -1,6 +1,7 @@
 <template>
   <div class="q-my-md">
     <h4>{{ label }}</h4>
+    <h5 v-if="loading">Cargando...</h5>
     <q-btn-group push class="q-ma-lg">
       <q-btn-dropdown push color="tertiary" :label="'content.save child' | translate" :loading="loading">
         <q-list link>
@@ -19,7 +20,7 @@
         <q-item-side>
           <q-checkbox v-model="checkDeleteContent" color="primary" :val="children.id" @input="disableContentButton"/>
         </q-item-side>
-        <q-item-main @click.native="$router.push(`/content/edit/${children.id}`)">
+        <q-item-main @click.native="goToContent(children.id)">
           <strong style="color: #0071bc;">{{ children.name }}</strong>
         </q-item-main>
         <q-item-side right>
@@ -102,6 +103,10 @@ export default {
     }
   },
   methods: {
+    goToContent: function (id) {
+      this.children = []
+      this.$router.push(`/content/edit/${id}`)
+    },
     getChildren: async function () {
       let entityId
       if (this.$route.params.id === ' ' || this.$route.params.id === undefined) {
@@ -111,6 +116,7 @@ export default {
       }
       this.children = []
       this.selectableTags = []
+      this.loading = true
       let childrenResult
       let tag
       // CHECK FILTER
@@ -128,6 +134,7 @@ export default {
           this.selectableTags.push(tag)
         }
       }
+      this.loading = false
     },
     createModal: function (model) {
       this.model = model

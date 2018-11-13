@@ -34,7 +34,7 @@ export default {
   methods: {
     getParentUrl: async function () {
       let parentUrlResult = await Connection.get(`/entity/${this.entity.parent}?fields=c.url`)
-      if (parentUrlResult.data.contents.url) {
+      if (parentUrlResult && parentUrlResult.data && parentUrlResult.data.contents.url) {
         this.parentUrl = parentUrlResult.data.contents.url
       } else {
         this.parentUrl = ''
