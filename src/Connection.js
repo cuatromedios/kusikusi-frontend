@@ -70,7 +70,7 @@ class Connection {
     try {
       result = await axios[method](baseUrl + path, data)
     } catch (error) {
-      return {success: false, data: null, info: 'An error ocurried in the external call'}
+      return {success: false, data: null, info: 'An error occurred in the external call'}
     }
     return result.data
   }

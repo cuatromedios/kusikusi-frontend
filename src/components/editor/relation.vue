@@ -8,7 +8,7 @@
           v-for="relation in this.relations"
           v-bind:key="relation.id">
           <q-item-side>
-            <q-btn color="negative" round icon="fa-times" size="xs" @click="quickDelete(relation.id, relation.kind)" />
+            <q-btn color="negative" round icon="fa fa-times" size="xs" @click="quickDelete(relation.id, relation.kind)" />
           </q-item-side>
           <q-item-main>
             <strong style="color: #0071bc;">- {{ relation.name }} ({{ relation.kind }})</strong>
@@ -79,7 +79,7 @@
           </q-item-side>
         </q-item>
       </q-list>
-      <q-btn class="q-ma-lg absolute-top-right" round color="negative" @click="createRelation = false" icon="fa-times" size="xs"></q-btn>
+      <q-btn class="q-ma-lg absolute-top-right" round color="negative" @click="createRelation = false" icon="fa fa-times" size="xs"></q-btn>
     </q-modal>
   </div>
 </template>

@@ -32,7 +32,7 @@
     </q-list>
     <q-modal v-model="createMedia" :content-css="{minWidth: '80vw', minHeight: '80vh'}" @hide="createMedia = false">
       <EditMedia :relation="entity.id" :close="createMedia" :reload="reload" :filter="filter"></EditMedia>
-      <q-btn class="q-ma-lg absolute-top-right" round color="negative" @click="createMedia = false" icon="fa-times" size="xs"></q-btn>
+      <q-btn class="q-ma-lg absolute-top-right" round color="negative" @click="createMedia = false" icon="fa fa-times" size="xs"></q-btn>
     </q-modal>
   </div>
 </template>

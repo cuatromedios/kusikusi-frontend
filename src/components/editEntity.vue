@@ -31,7 +31,7 @@
         <q-btn push color="negative" @click="deleteConfirm = true" :loading="loading" >{{ 'content.delete' | translate }}</q-btn>
       </q-btn-group>
       <q-modal v-model="deleteConfirm" minimized :content-css="{padding: '50px'}" @hide="deleteConfirm = false">
-        <q-btn class="q-ma-lg absolute-top-right" round color="red" @click="deleteConfirm = false" icon="fa-times" size="xs"></q-btn>
+        <q-btn class="q-ma-lg absolute-top-right" round color="red" @click="deleteConfirm = false" icon="fa fa-times" size="xs"></q-btn>
         <div class="q-display-1 q-mb-md">¿Deseas Eliminar esta entidad?</div>
         <q-btn push color="red" @click="deleteEntity(entity.id)" :loading="loading" >{{ 'content.delete' | translate }}</q-btn>
       </q-modal>

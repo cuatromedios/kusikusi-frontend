@@ -7,12 +7,12 @@ class Notifications {
       timeout: 1500,
       type: 'positive',
       textColor: 'white',
-      icon: 'fa-check',
+      icon: 'fa fa-check',
       position: 'top',
       actions: [
         {
           label: '',
-          icon: 'fa-times', // optional
+          icon: 'fa fa-times', // optional
           handler: () => {
           }
         }
@@ -25,12 +25,12 @@ class Notifications {
       timeout: 1500,
       type: 'yellow',
       textColor: 'black',
-      icon: 'fa-exclamation-triangle',
+      icon: 'fa fa-exclamation-triangle',
       position: 'top',
       actions: [
         {
           label: '',
-          icon: 'fa-times', // optional
+          icon: 'fa fa-times', // optional
           handler: () => {
           }
         }
@@ -43,12 +43,12 @@ class Notifications {
       timeout: 1500,
       type: 'negative',
       textColor: 'white',
-      icon: 'fa-exclamation-triangle',
+      icon: 'fa fa-exclamation-triangle',
       position: 'top',
       actions: [
         {
           label: '',
-          icon: 'fa-times', // optional
+          icon: 'fa fa-times', // optional
           handler: () => {
           }
         }

@@ -1,6 +1,6 @@
 <template>
   <q-list>
-  <q-btn color="tertiary" size="md" class="q-ma-md float-right" v-model="localEdit" @click="localEdit = true"><q-icon name="fa-edit" color="white" /></q-btn>
+  <q-btn color="tertiary" size="md" class="q-ma-md float-right" v-model="localEdit" @click="localEdit = true"><q-icon name="fa fa-edit" color="white" /></q-btn>
     <q-item>
       <q-item-main style="color: black;">
         <q-item-tile>

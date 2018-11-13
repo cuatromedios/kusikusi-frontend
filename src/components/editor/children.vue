@@ -40,7 +40,7 @@
       </q-item>
     </q-list>
     <q-modal v-model="createConfirm" minimized :content-css="{padding: '50px'}" @hide="createConfirm = false">
-        <q-btn class="q-ma-lg absolute-top-right" round color="red" @click="createConfirm = false" icon="fa-times" size="xs"></q-btn>
+        <q-btn class="q-ma-lg absolute-top-right" round color="red" @click="createConfirm = false" icon="fa fa-times" size="xs"></q-btn>
         <q-field label="Título:" class="q-mt-md">
           <q-input v-model="newEntityTitle" autofocus="true" class="q-mt-md" />
         </q-field>

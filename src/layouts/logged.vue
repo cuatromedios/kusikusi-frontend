@@ -12,7 +12,7 @@
           aria-label="Menu"
           v-if="!leftDrawerOpen"
         >
-            <q-icon name="fa-bars" />
+            <q-icon name="fa fa-bars" />
         </q-btn>
 
         <q-toolbar-title>
@@ -41,32 +41,32 @@
                   @click="leftDrawerOpen = !leftDrawerOpen"
                   aria-label="Menu"
           >
-            <q-icon name="fa-caret-left" class="gt-md" />
-            <q-icon name="fa-times" class="lt-lg" color="white" />
+            <q-icon name="fa fa-caret-left" class="gt-md" />
+            <q-icon name="fa fa-times" class="lt-lg" color="white" />
           </q-btn>
         </q-list-header>
         <!--<q-item @click.native="$router.push('/dashboard')">
-          <q-item-side icon="fa-tachometer-alt" />
+          <q-item-side icon="fa fa-tachometer-alt" />
           <q-item-main :label="'layout.dashboard' | translate"/>
         </q-item>-->
         <q-item @click.native="$router.push('/content/edit/ ')">
-          <q-item-side icon="fa-list" />
+          <q-item-side icon="fa fa-list" />
           <q-item-main :label="'layout.content' | translate"  />
         </q-item>
         <q-item @click.native="$router.push('/media')">
-          <q-item-side icon="fa-image" />
+          <q-item-side icon="fa fa-image" />
           <q-item-main :label="'layout.media' | translate" />
         </q-item>
         <q-item @click.native="$router.push('/users')">
-          <q-item-side icon="fa-users" />
+          <q-item-side icon="fa fa-users" />
           <q-item-main :label="'layout.users' | translate" />
         </q-item>
         <q-item @click.native="$router.push('/config')">
-          <q-item-side icon="fa-cog" />
+          <q-item-side icon="fa fa-cog" />
           <q-item-main :label="'layout.configuration' | translate" />
         </q-item>
         <q-item @click.native="$router.push('/login')">
-          <q-item-side icon="fa-sign-out-alt" />
+          <q-item-side icon="fa fa-sign-out-alt" />
           <q-item-main :label="'layout.logout' | translate" />
         </q-item>
       </q-list>

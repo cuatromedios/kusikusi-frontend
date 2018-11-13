@@ -14,7 +14,7 @@
            :trigger="remove"
            :filter="filter"></div>
       <img :src="src" class="q-my-lg">
-      <q-btn class="q-ma-lg" round color="negative" @click="deleteMedia" icon="fa-times" size="sm" :loading="loading" v-if="this.src !== ''"></q-btn>
+      <q-btn class="q-ma-lg" round color="negative" @click="deleteMedia" icon="fa fa-times" size="sm" :loading="loading" v-if="this.src !== ''"></q-btn>
     </q-field>
     <q-btn class="q-ma-lg" color="primary" @click="update" :loading="loading" v-if="this.kind === 'update'">Actualizar datos</q-btn>
     <q-btn class="q-ma-lg" color="negative" @click="deleteEntity" :loading="loading" v-if="this.kind === 'update'">Eliminar</q-btn>
@@ -49,7 +49,6 @@ export default {
   },
   data () {
     return {
-      // TODO: Agregar button group. Se ven mas chidos
       loading: false,
       kind: '',
       entityMedia: {
