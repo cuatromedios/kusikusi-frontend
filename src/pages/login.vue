@@ -9,12 +9,12 @@
               style="width:30vw;max-width:150px;"
             >
           </p>
-          <p class="q-display-1 text-primary">{{ 'login.welcome' | translate }}</p>
+          <p class="q-display-1 text-primary">{{ $t('login.welcome') }}</p>
         </div>
           <div class="card-content" style="width: 650px; max-width: 90vw;">
-            <q-input :autofocus="true" v-model="form.email" :float-label="'login.email' | translate" />
-            <q-input v-model="form.pass" type="password"  :float-label="'login.password' | translate" />
-            <q-btn class="q-ma-lg" color="primary" @click="handleLogin">{{ 'login.button' | translate }}</q-btn>
+            <q-input :autofocus="true" v-model="form.email" :float-label="$t('login.email')" />
+            <q-input v-model="form.pass" type="password"  :float-label="$t('login.password')" />
+            <q-btn class="q-ma-lg" color="primary" @click="handleLogin">{{ $t('login.button') }}</q-btn>
           </div>
         </q-card-main>
         <q-inner-loading :visible="loading" />

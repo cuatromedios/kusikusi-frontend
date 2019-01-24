@@ -5,7 +5,6 @@ import vuexI18n from 'vuex-i18n' // Localization
 import router from '../router'
 import { routes } from '../router/routes'
 import Connection from '../Connection'
-import spanishTexts from '../locale/es.json'
 
 Connection.setBaseUrl(process.env.API_URL)
 
@@ -20,8 +19,6 @@ const store = new Vuex.Store({
 })
 
 Vue.use(vuexI18n.plugin, store)
-Vue.i18n.add('es', spanishTexts)
-Vue.i18n.set('es')
 
 /* Search for stored user data in the browser */
 let authtoken = localstorage.get('authtoken')
