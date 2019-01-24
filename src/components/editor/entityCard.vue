@@ -23,7 +23,6 @@
 
 <script>
 import Connection from '../../Connection'
-import config from '../../config'
 export default {
   name: 'EntityCard',
   props: {
@@ -65,7 +64,7 @@ export default {
       // this.getMediaRelated()
       if (this.result.success) {
         for (let i = 0; i < this.result.data.length; i++) {
-          mediums = {'id': this.result.data[i].id, 'name': this.result.data[i].name, 'src': `${config.media.url}/${this.result.data[i].id}/icon`}
+          mediums = {'id': this.result.data[i].id, 'name': this.result.data[i].name, 'src': `${process.env.MEDIA_URL}/${this.result.data[i].id}/icon`}
           urls.push(mediums)
         }
         return urls

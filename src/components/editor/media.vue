@@ -40,7 +40,6 @@
 <script>
 import EditMedia from '../editMedia'
 import Connection from '../../Connection'
-import config from '../../config'
 import Notifications from '../notifications.js'
 export default {
   name: 'Media',
@@ -82,7 +81,7 @@ export default {
       let mediaResult = await Connection.get(`/entity/${this.entity.id}/relations/medium?fields=e.id,e.name,r.tags`)
       if (mediaResult.success) {
         for (let i = 0; i < mediaResult.data.length; i++) {
-          mediums = {'id': mediaResult.data[i].id, 'name': mediaResult.data[i].name, 'src': `${config.media.url}/${mediaResult.data[i].id}/thumb`, 'tags': mediaResult.data[i].relation.tags}
+          mediums = {'id': mediaResult.data[i].id, 'name': mediaResult.data[i].name, 'src': `${process.env.MEDIA_URL}/${mediaResult.data[i].id}/thumb`, 'tags': mediaResult.data[i].relation.tags}
           this.media.push(mediums)
         }
       }

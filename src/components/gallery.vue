@@ -25,7 +25,6 @@
 
 <script>
 import Connection from '../Connection'
-import config from '../config'
 export default {
   name: 'Gallery',
   mounted () {
@@ -43,7 +42,7 @@ export default {
       let mediumsIdResult = await Connection.get(`/entity/media/children?fields=e.id,e.name`)
       if (mediumsIdResult.success) {
         for (let i = 0; i < mediumsIdResult.data.length; i++) {
-          mediums = {'id': mediumsIdResult.data[i].id, 'name': mediumsIdResult.data[i].name, 'src': `${config.media.url}/${mediumsIdResult.data[i].id}/thumb`}
+          mediums = {'id': mediumsIdResult.data[i].id, 'name': mediumsIdResult.data[i].name, 'src': `${process.env.MEDIA_URL}/${mediumsIdResult.data[i].id}/thumb`}
           this.media.push(mediums)
         }
       }

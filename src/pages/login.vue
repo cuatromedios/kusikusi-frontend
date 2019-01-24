@@ -52,9 +52,9 @@ export default {
           'email': this.form.email,
           'password': this.form.pass
         })
-        let configResult = await Connection.get('/config/cms')
         this.loading = false
         if (loginResult.success) {
+          let configResult = await Connection.get('/config/cms')
           this.$store.commit('main/setAuthtoken', loginResult.data.token)
           this.$store.commit('main/setName', loginResult.data.entity.data.name)
           this.$store.commit('main/setProfile', loginResult.data.entity.data.profile)

@@ -43,7 +43,6 @@
 /* eslint-disable */
 import Connection from '../Connection'
 import { routes } from '../router/routes'
-import config from '../config'
 import Notifications from './notifications.js'
 import textInput from './editor/textInput'
 import wysiwyg from './editor/editorWYSIWYG'

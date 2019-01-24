@@ -26,7 +26,6 @@
 import mediaUpload from './editor/mediaUpload'
 import Input from './editor/textInput'
 import Connection from '../Connection'
-import config from '../config'
 import { routes } from '../router/routes'
 import Notifications from './notifications.js'
 export default {
@@ -95,10 +94,10 @@ export default {
         if (Result.success) {
           if (Result.data.model === 'medium') {
             this.entityMedia = Result.data
-            this.url = `${config.api.url}/media/${this.entityMedia.id}/upload`
+            this.url = `${process.env.API_URL}/media/${this.entityMedia.id}/upload`
             this.kind = 'update'
             if (this.entityMedia.data) {
-              this.src = `${config.media.url}/${this.entityMedia.id}/thumb`
+              this.src = `${process.env.MEDIA_URL}/${this.entityMedia.id}/thumb`
             }
           } else {
             this.kind = 'new'

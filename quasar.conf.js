@@ -23,6 +23,10 @@ module.exports = function (ctx) {
       remove: []
     },
     build: {
+      env: {
+        API_URL: JSON.stringify(process.env.API_URL ? process.env.API_URL : '/api'),
+        MEDIA_URL: JSON.stringify(process.env.MEDIA_URL ? process.env.MEDIA_URL : '/media')
+      },
       scopeHoisting: true,
       vueRouterMode: 'history',
       // gzip: true,
@@ -47,6 +51,7 @@ module.exports = function (ctx) {
     },
     // framework: 'all' --- includes everything; for dev only!
     framework: {
+      i18n: 'es',
       components: [
         'QInput',
         'QField',

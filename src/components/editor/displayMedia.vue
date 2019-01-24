@@ -5,7 +5,6 @@
 </template>
 
 <script>
-import config from '../../config'
 export default {
   name: 'DisplayMedia',
   mounted () {
@@ -27,7 +26,7 @@ export default {
   },
   methods: {
     getSRC: async function () {
-      this.src = `${config.media.url}/${this.entity.id}/thumb`
+      this.src = `${process.env.MEDIA_URL}/${this.entity.id}/thumb`
     }
   }
 }

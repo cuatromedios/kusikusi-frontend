@@ -4,11 +4,10 @@ import localstorage from 'store' // local storage in the browser
 import vuexI18n from 'vuex-i18n' // Localization
 import router from '../router'
 import { routes } from '../router/routes'
-import config from '../config'
 import Connection from '../Connection'
 import spanishTexts from '../locale/es.json'
 
-Connection.setBaseUrl(config.api.url)
+Connection.setBaseUrl(process.env.API_URL)
 
 import main from './main'
 
