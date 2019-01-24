@@ -10,10 +10,6 @@ let notLoggedRoutes = {
   }
 }
 let loggedRoutes = {
-  home: {
-    path: '/home',
-    component: () => import('pages/home')
-  },
   dashboard: {
     path: '/dashboard',
     component: () => import('pages/dashboard')

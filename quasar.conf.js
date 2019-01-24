@@ -5,7 +5,8 @@ module.exports = function (ctx) {
     // app plugins (/src/plugins)
     plugins: [
       'i18n',
-      'axios'
+      'axios',
+      'vuelidate'
     ],
     css: [
       'app.styl'
@@ -94,7 +95,8 @@ module.exports = function (ctx) {
         'QEditor',
         'QDatetime',
         'QToggle',
-        'QCheckbox'
+        'QCheckbox',
+        'QAlert'
       ],
       directives: [
         'Ripple'
@@ -107,6 +109,14 @@ module.exports = function (ctx) {
     },
     // animations: 'all' --- includes all animations
     animations: [
+        'shake',
+        'bounceIn',
+        'bounceOut',
+        'slideInDown',
+        'slideOutUp',
+        'FadeIn',
+        'FadeOut',
+
     ],
     pwa: {
       cacheExt: 'js,html,css,ttf,eot,otf,woff,woff2,json,svg,gif,jpg,jpeg,png,wav,ogg,webm,flac,aac,mp4,mp3',

@@ -6,14 +6,22 @@
           <p>
             <img
               src="~assets/logo.svg"
-              style="width:30vw;max-width:150px;"
+              style="width:25vw;max-width:125px;"
             >
           </p>
           <p class="q-display-1 text-primary">{{ $t('login.welcome') }}</p>
         </div>
           <div class="card-content" style="width: 650px; max-width: 90vw;">
-            <q-input :autofocus="true" v-model="form.email" :float-label="$t('login.email')" />
-            <q-input v-model="form.pass" type="password"  :float-label="$t('login.password')" />
+            <q-input :autofocus="true"
+                     v-model="form.email"
+                     :float-label="$t('login.email')"
+                     :error="$v.form.email.$error" />
+            <q-input v-model="form.pass"
+                     type="password"
+                     :float-label="$t('login.password')"
+                     :error="$v.form.pass.$error"
+                     @keyup.enter="handleLogin" />
+            <kk-alert :message="message" dismiss-text="OK" />
             <q-btn class="q-ma-lg" color="primary" @click="handleLogin">{{ $t('login.button') }}</q-btn>
           </div>
         </q-card-main>
@@ -23,10 +31,12 @@
 </template>
 <script>
 import Connection from '../Connection'
+import kkAlert from '../components/kkAlert'
 import { routes } from '../router/routes'
+import { required, email } from 'vuelidate/lib/validators'
 
 export default {
-  components: {},
+  components: { kkAlert },
   name: 'Login',
   beforeCreate () {
     this.$store.dispatch('main/resetUserData')
@@ -40,12 +50,23 @@ export default {
         email: '',
         pass: ''
       },
-      loading: false
+      loading: false,
+      message: ''
+    }
+  },
+  validations: {
+    form: {
+      email: { required, email },
+      pass: { required }
     }
   },
   methods: {
     handleLogin: async function () {
       this.message = ''
+      this.$v.form.$touch()
+      if (this.$v.form.$error) {
+        return
+      }
       try {
         this.loading = true
         let loginResult = await Connection.post('/user/login', {
@@ -54,47 +75,31 @@ export default {
         })
         this.loading = false
         if (loginResult.success) {
-          let configResult = await Connection.get('/config/cms')
+          console.log(loginResult)
           this.$store.commit('main/setAuthtoken', loginResult.data.token)
-          this.$store.commit('main/setName', loginResult.data.entity.data.name)
-          this.$store.commit('main/setProfile', loginResult.data.entity.data.profile)
-          this.$store.commit('main/setUserId', loginResult.data.entity.id)
+          this.$store.commit('main/setName', loginResult.data.user.name)
+          this.$store.commit('main/setProfile', loginResult.data.user.profile)
+          this.$store.commit('main/setUserId', loginResult.data.user.id)
+          let configResult = await Connection.get('/config/cms')
           this.$store.commit('main/setConfig', configResult.data)
-          this.$router.push({name: routes.home.name})
+          console.log('>>>', routes.dashboard.name)
+          this.$router.push({name: routes.dashboard.name})
         } else {
-          this.notifyError(this.$t('login.invalid'))
+          this.message = this.$t('login.invalid')
         }
       } catch (error) {
         this.loading = false
         if (error.response) {
           switch (error.response.status) {
             case 401:
-              this.notifyError(this.$t('login.invalid'))
+              this.message = this.$t('login.invalid')
               break
             default:
-              this.notifyError(this.$t('general.serverError'))
+              this.message = this.$t('general.serverError')
               break
           }
         }
       }
-    },
-    notifyError: function (message) {
-      this.$q.notify({
-        message: message,
-        timeout: 2000,
-        type: 'warning',
-        textColor: 'black',
-        icon: 'error',
-        position: 'top',
-        actions: [
-          {
-            label: '',
-            icon: 'close', // optional
-            handler: () => {
-            }
-          }
-        ]
-      })
     }
   }
 }
