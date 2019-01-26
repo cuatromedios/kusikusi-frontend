@@ -9,31 +9,26 @@ import Connection from '../Connection'
 Connection.setBaseUrl(process.env.API_URL)
 
 import main from './main'
+import session from './session'
 
 Vue.use(Vuex)
 
 const store = new Vuex.Store({
   modules: {
-    main
+    main, session
   }
 })
 
 Vue.use(vuexI18n.plugin, store)
 
 /* Search for stored user data in the browser */
+let user = localstorage.get('user')
 let authtoken = localstorage.get('authtoken')
-let name = localstorage.get('name')
-let profile = localstorage.get('profile')
-let userId = localstorage.get('userId')
-let Config = localstorage.get('config')
 if (authtoken && authtoken !== '') {
-  store.commit('main/setAuthtoken', authtoken)
-  store.commit('main/setName', name)
-  store.commit('main/setUserId', userId)
-  store.commit('main/setProfile', profile)
-  store.commit('main/setConfig', Config)
+  store.commit('session/setAuthtoken', authtoken)
+  store.commit('session/setUser', user)
 } else {
-  store.dispatch('main/resetUserData')
+  store.dispatch('session/resetUserData')
   Vue.nextTick(() => {
     router.push({name: routes.login.name})
   })

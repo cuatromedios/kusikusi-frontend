@@ -75,14 +75,12 @@ export default {
         })
         this.loading = false
         if (loginResult.success) {
-          console.log(loginResult)
-          this.$store.commit('main/setAuthtoken', loginResult.data.token)
-          this.$store.commit('main/setName', loginResult.data.user.name)
-          this.$store.commit('main/setProfile', loginResult.data.user.profile)
-          this.$store.commit('main/setUserId', loginResult.data.user.id)
+          this.$store.commit('session/setAuthtoken', loginResult.result.token)
+          this.$store.commit('session/setUser', loginResult.result.user)
+          this.loading = true
           let configResult = await Connection.get('/config/cms')
-          this.$store.commit('main/setConfig', configResult.data)
-          console.log('>>>', routes.dashboard.name)
+          this.loading = false
+          this.$store.commit('main/setConfig', configResult.result)
           this.$router.push({name: routes.dashboard.name})
         } else {
           this.message = this.$t('login.invalid')
