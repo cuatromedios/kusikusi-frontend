@@ -39,7 +39,7 @@ export default {
   components: { kkAlert },
   name: 'Login',
   beforeCreate () {
-    this.$store.dispatch('main/resetUserData')
+    this.$store.dispatch('session/resetUserData')
   },
   mounted () {
     // this.$store.commit('main/setTitle', this.$t('login.title'))
