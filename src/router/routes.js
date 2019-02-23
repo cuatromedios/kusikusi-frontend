@@ -1,94 +1,20 @@
-let loggedBasePath = '/home'
-let notLoggedRoutes = {
-  index: {
-    path: '/',
-    component: () => import('pages/index')
-  },
-  login: {
-    path: '/login',
-    component: () => import('pages/login')
-  }
-}
-let loggedRoutes = {
-  dashboard: {
-    path: '/dashboard',
-    component: () => import('pages/dashboard')
-  },
-  content: {
-    path: '/content/edit/:id?',
-    component: () => import('components/editEntity'),
-    props: {isNew: false},
-    children: [
-      {path: '', component: () => import('pages/content')}
-    ]
-  },
-  gallery: {
-    path: '/media',
-    component: () => import('components/gallery'),
-    children: [
-      {path: '', component: () => import('pages/media')}
-    ]
-  },
-  media: {
-    path: '/media/edit/:id?',
-    component: () => import('components/editMedia'),
-    children: [
-      {path: '', component: () => import('pages/media')}
-    ]
-  },
-  users: {
-    path: '/users',
-    component: () => import('pages/users')
-  },
-  usersEdit: {
-    path: '/users/edit/:id?',
-    component: () => import('components/editUser'),
-    children: [
-      {path: '', component: () => import('pages/users')}
-    ]
-  },
-  config: {
-    path: '/config',
-    component: () => import('pages/config')
-  }
-}
-let routes = {}
-Object.assign(routes, notLoggedRoutes, loggedRoutes)
 
-let notLoggedRoutesArray = []
-for (let id in notLoggedRoutes) {
-  routes[id].name = id
-  notLoggedRoutesArray.push({
-    path: notLoggedRoutes[id].path,
-    component: notLoggedRoutes[id].component,
-    name: id
-  })
-}
-
-let loggedRoutesArray = []
-for (let id in loggedRoutes) {
-  routes[id].name = id
-  loggedRoutesArray.push({
-    path: loggedRoutes[id].path,
-    component: loggedRoutes[id].component,
-    name: id
-  })
-}
-let routesObject = [
+const routes = [
   {
     path: '/',
-    component: () => import('layouts/notlogged'),
-    children: notLoggedRoutesArray
-  },
-  {
-    path: loggedBasePath + '/',
-    component: () => import('layouts/logged'),
-    children: loggedRoutesArray
-  },
-  { // Always leave this as last one
-    path: '*',
-    component: () => import('pages/404')
+    component: () => import('layouts/MyLayout.vue'),
+    children: [
+      { path: '', component: () => import('pages/Index.vue') }
+    ]
   }
 ]
-export default routesObject
-export { routes }
+
+// Always leave this as last one
+if (process.env.MODE !== 'ssr') {
+  routes.push({
+    path: '*',
+    component: () => import('pages/Error404.vue')
+  })
+}
+
+export default routes

@@ -2,124 +2,92 @@
 
 module.exports = function (ctx) {
   return {
-    // app plugins (/src/plugins)
-    plugins: [
+    // app boot file (/src/boot)
+    // --> boot files are part of "main.js"
+    boot: [
       'i18n',
-      'axios',
-      'vuelidate'
+      'axios'
     ],
+
     css: [
       'app.styl'
     ],
+
     extras: [
-      ctx.theme.mat ? 'roboto-font' : null,
-      // 'material-icons'
-      // 'ionicons',
-      // 'mdi',
-      'fontawesome'
+      'roboto-font',
+      'material-icons' // optional, you are not bound to it
+      // 'ionicons-v4',
+      // 'mdi-v3',
+      // 'fontawesome-v5',
+      // 'eva-icons'
     ],
-    supportIE: true,
-    vendor: {
-      add: [],
-      remove: []
-    },
-    build: {
-      env: {
-        API_URL: JSON.stringify(process.env.API_URL ? process.env.API_URL : '/api'),
-        MEDIA_URL: JSON.stringify(process.env.MEDIA_URL ? process.env.MEDIA_URL : '/media')
-      },
-      scopeHoisting: true,
-      vueRouterMode: 'history',
-      // gzip: true,
-      // analyze: true,
-      // extractCSS: false,
-      // useNotifier: false,
-      publicPath:'/cms/',
-      distDir: 'dist/cms',
-      extendWebpack (cfg) {
-        cfg.module.rules.push({
-          enforce: 'pre',
-          test: /\.(js|vue)$/,
-          loader: 'eslint-loader',
-          exclude: /(node_modules|quasar)/
-        })
-      }
-    },
-    devServer: {
-      // https: true,
-      port: 8001,
-      open: true // opens browser window automatically
-    },
-    // framework: 'all' --- includes everything; for dev only!
+
+    // framework: 'all', // --- includes everything; for dev only!
     framework: {
-      i18n: 'es',
       components: [
-        'QInput',
-        'QField',
         'QLayout',
-        'QLayoutHeader',
-        'QLayoutDrawer',
+        'QHeader',
+        'QDrawer',
         'QPageContainer',
         'QPage',
         'QToolbar',
         'QToolbarTitle',
         'QBtn',
-        'QBtnDropdown',
-        'QBtnToggle',
-        'QBtnGroup',
         'QIcon',
         'QList',
-        'QListHeader',
         'QItem',
-        'QItemMain',
-        'QItemSide',
-        'QItemTile',
-        'QItemSeparator',
-        'QCard',
-        'QCardTitle',
-        'QCardMain',
-        'QCardMedia',
-        'QCardSeparator',
-        'QCardActions',
-        'QInnerLoading',
-        'Loading',
-        'QSelect',
-        'QSpinner',
-        'QSpinnerAudio',
-        'QModal',
-        'QModalLayout',
-        'QBreadcrumbs',
-        'QBreadcrumbsEl',
-        'QCollapsible',
-        'QUploader',
-        'QEditor',
-        'QDatetime',
-        'QToggle',
-        'QCheckbox',
-        'QAlert'
+        'QItemSection',
+        'QItemLabel'
       ],
+
       directives: [
         'Ripple'
       ],
+
       // Quasar plugins
       plugins: [
         'Notify'
-      ],
-      iconSet: 'fontawesome'
-    },
-    // animations: 'all' --- includes all animations
-    animations: [
-        'shake',
-        'bounceIn',
-        'bounceOut',
-        'slideInDown',
-        'slideOutUp',
-        'FadeIn',
-        'FadeOut',
+      ]
 
-    ],
+      // iconSet: 'ionicons-v4'
+      // lang: 'de' // Quasar language
+    },
+
+    supportIE: false,
+
+    build: {
+      scopeHoisting: true,
+      // vueRouterMode: 'history',
+      // vueCompiler: true,
+      // gzip: true,
+      // analyze: true,
+      // extractCSS: false,
+      extendWebpack (cfg) {
+        cfg.module.rules.push({
+          enforce: 'pre',
+          test: /\.(js|vue)$/,
+          loader: 'eslint-loader',
+          exclude: /node_modules/
+        })
+      }
+    },
+
+    devServer: {
+      // https: true,
+      // port: 8080,
+      open: true // opens browser window automatically
+    },
+
+    // animations: 'all' --- includes all animations
+    animations: [],
+
+    ssr: {
+      pwa: false
+    },
+
     pwa: {
-      cacheExt: 'js,html,css,ttf,eot,otf,woff,woff2,json,svg,gif,jpg,jpeg,png,wav,ogg,webm,flac,aac,mp4,mp3',
+      // workboxPluginMode: 'InjectManifest',
+      // workboxOptions: {},
       manifest: {
         // name: 'Quasar App',
         // short_name: 'Quasar-PWA',
@@ -157,14 +125,19 @@ module.exports = function (ctx) {
         ]
       }
     },
+
     cordova: {
       // id: 'org.cordova.quasar.app'
     },
+
     electron: {
+      // bundler: 'builder', // or 'packager'
       extendWebpack (cfg) {
-        // do something with cfg
+        // do something with Electron process Webpack cfg
       },
       packager: {
+        // https://github.com/electron-userland/electron-packager/blob/master/docs/api.md#options
+
         // OS X / Mac App Store
         // appBundleId: '',
         // appCategoryType: '',
@@ -173,10 +146,12 @@ module.exports = function (ctx) {
 
         // Window only
         // win32metadata: { ... }
-      }
-    },
+      },
+      builder: {
+        // https://www.electron.build/configuration/configuration
 
-    // leave this here for Quasar CLI
-    starterKit: '1.0.3'
+        // appId: 'quasar-app'
+      }
+    }
   }
 }
