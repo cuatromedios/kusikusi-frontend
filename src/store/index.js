@@ -1,21 +1,30 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import Router from '../router'
+import { LocalStorage } from 'quasar'
 
-// import example from './module-example'
+import main from './main'
+import session from './session'
 
 Vue.use(Vuex)
 
-/*
- * If not building with SSR mode, you can
- * directly export the Store instantiation
- */
+const Store = new Vuex.Store({
+  modules: {
+    main, session
+  }
+})
 
-export default function (/* { ssrContext } */) {
-  const Store = new Vuex.Store({
-    modules: {
-      // example
-    }
+/* Search for stored user data in the browser */
+let user = LocalStorage.getItem('user')
+let authtoken = LocalStorage.getItem('authtoken')
+if (authtoken && authtoken !== '') {
+  Store.commit('session/setAuthtoken', authtoken)
+  Store.commit('session/setUser', user)
+} else {
+  Store.dispatch('session/resetUserData')
+  Vue.nextTick(() => {
+    Router.push({ name: Router.names.login })
   })
-
-  return Store
 }
+
+export default Store

@@ -1,20 +1,34 @@
-
-const routes = [
+let routes = [
   {
     path: '/',
-    component: () => import('layouts/MyLayout.vue'),
+    component: () => import('layouts/ExternalLayout'),
     children: [
-      { path: '', component: () => import('pages/Index.vue') }
+      {
+        path: '/',
+        component: () => import('pages/Login'),
+        name: 'index'
+      },
+      {
+        path: '/login',
+        component: () => import('pages/Login'),
+        name: 'login'
+      }
     ]
+  },
+  {
+    path: '/',
+    component: () => import('layouts/InternalLayout'),
+    children: [
+      {
+        path: '/dashboard',
+        component: () => import('pages/Dashboard'),
+        name: 'dashboard'
+      }
+    ]
+  },
+  { // Always leave this as last one
+    path: '*',
+    component: () => import('pages/Error404')
   }
 ]
-
-// Always leave this as last one
-if (process.env.MODE !== 'ssr') {
-  routes.push({
-    path: '*',
-    component: () => import('pages/Error404.vue')
-  })
-}
-
 export default routes

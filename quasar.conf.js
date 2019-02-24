@@ -6,7 +6,8 @@ module.exports = function (ctx) {
     // --> boot files are part of "main.js"
     boot: [
       'i18n',
-      'axios'
+      'axios',
+      'vuelidate'
     ],
 
     css: [
@@ -37,7 +38,15 @@ module.exports = function (ctx) {
         'QList',
         'QItem',
         'QItemSection',
-        'QItemLabel'
+        'QItemLabel',
+        'QInnerLoading',
+        'QInput',
+        'QCard',
+        'QCardSection',
+        'QCardActions',
+        'QBanner',
+        'QSeparator',
+        'QAvatar'
       ],
 
       directives: [
@@ -46,7 +55,8 @@ module.exports = function (ctx) {
 
       // Quasar plugins
       plugins: [
-        'Notify'
+        'Notify',
+        'LocalStorage'
       ]
 
       // iconSet: 'ionicons-v4'
@@ -56,8 +66,11 @@ module.exports = function (ctx) {
     supportIE: false,
 
     build: {
+      env: {
+        SERVER_URL: JSON.stringify(process.env.SERVER_URL ? process.env.server_url : '/')
+      },
       scopeHoisting: true,
-      // vueRouterMode: 'history',
+      vueRouterMode: 'history',
       // vueCompiler: true,
       // gzip: true,
       // analyze: true,
@@ -74,12 +87,20 @@ module.exports = function (ctx) {
 
     devServer: {
       // https: true,
-      // port: 8080,
+      port: 8001,
       open: true // opens browser window automatically
     },
 
     // animations: 'all' --- includes all animations
-    animations: [],
+    animations: [
+      'shake',
+      'bounceIn',
+      'bounceOut',
+      'slideInDown',
+      'slideOutUp',
+      'FadeIn',
+      'FadeOut'
+    ],
 
     ssr: {
       pwa: false
