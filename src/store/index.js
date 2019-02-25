@@ -5,12 +5,13 @@ import { LocalStorage } from 'quasar'
 
 import main from './main'
 import session from './session'
+import entity from './entity'
 
 Vue.use(Vuex)
 
 const Store = new Vuex.Store({
   modules: {
-    main, session
+    main, session, entity
   }
 })
 

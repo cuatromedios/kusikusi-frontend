@@ -67,17 +67,17 @@ export default {
       let media = {
         label: this.$t('media.title'),
         icon: 'photo',
-        route: this.$router.names.content
+        route: this.$router.names.media
       }
       let users = {
         label: this.$t('users.title'),
         icon: 'supervised_user_circle',
-        route: this.$router.names.content
+        route: this.$router.names.users
       }
       let configuration = {
-        label: this.$t('configuration.title'),
+        label: this.$t('settings.title'),
         icon: 'settings_applications',
-        route: this.$router.names.content
+        route: this.$router.names.settings
       }
       if (this.$store.state.session.user.profile === 'admin') {
         menu = [dashboard, content, media, users, configuration]

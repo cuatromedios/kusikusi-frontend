@@ -31,7 +31,7 @@ export default {
   users: {
     title: 'Users'
   },
-  configuration: {
-    title: 'Configuration'
+  settings: {
+    title: 'Settings'
   }
 }

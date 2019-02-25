@@ -23,6 +23,26 @@ let routes = [
         path: '/dashboard',
         component: () => import('pages/Dashboard'),
         name: 'dashboard'
+      },
+      {
+        path: '/content/:entity_id?',
+        component: () => import('pages/Content'),
+        name: 'content'
+      },
+      {
+        path: '/media',
+        component: () => import('pages/Media'),
+        name: 'media'
+      },
+      {
+        path: '/users/:entity_id?',
+        component: () => import('pages/Users'),
+        name: 'users'
+      },
+      {
+        path: '/settings',
+        component: () => import('pages/Settings'),
+        name: 'settings'
       }
     ]
   },
