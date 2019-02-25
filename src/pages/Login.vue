@@ -13,12 +13,12 @@
     </q-card-section>
     <q-card-section class="q-pa-md">
       <q-input :autofocus="true"
-               outlined class="q-my-sm"
+               square filled class="q-my-sm"
                v-model="form.email"
                :label="$t('login.email')"
                :error="$v.form.email.$error" />
       <q-input v-model="form.pass"
-               outlined class="q-my-sm"
+               square filled class="q-my-sm"
                :type="isPwd ? 'password' : 'text'"
                :label="$t('login.password')"
                :error="$v.form.pass.$error"
@@ -35,7 +35,7 @@
     </q-card-section>
     <q-separator dark />
     <q-card-actions class="q-pa-md">
-      <q-btn class="full-width" color="primary" :disabled="$v.form.$error" @click="handleLogin">{{ $t('login.button') }}</q-btn>
+      <q-btn class="full-width" size="lg" color="primary" :disabled="$v.form.$error" @click="handleLogin">{{ $t('login.button') }}</q-btn>
     </q-card-actions>
     <q-inner-loading :visible="loading" />
   </q-card>

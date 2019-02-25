@@ -11,32 +11,27 @@ export default {
   login: {
     title: 'Login',
     welcome: 'Welcome!',
-    email: 'EMail',
+    email: 'Email',
     password: 'Password',
     button: 'Login',
     invalid: 'Invalid credentials'
   },
-  layout: {
-    dashboard: 'Dashboard',
-    content: 'Content',
-    media: 'Media',
-    users: 'Users',
-    configuration: 'Configuration',
-    logout: 'Logout'
-  },
-  formComponents: {
-    name: 'Name',
-    title: 'Title',
-    description: 'Description',
-    subtitle: 'Subtitle',
-    uploadFiles: 'Upload Files'
+  dashboard: {
+    title: 'Dashboard',
+    whattodo: 'Now what?',
+    content: 'In content, yoy will find all sections and pages you can edit in this website'
   },
   content: {
-    update: 'Update',
-    saveChild: 'Save child',
-    delete: 'Delete',
-    children: 'Children',
-    saveEntitySuccess: 'Saved successfully!',
-    media: 'Media'
+    title: 'Content',
+    icon: 'ballot'
+  },
+  media: {
+    title: 'Media'
+  },
+  users: {
+    title: 'Users'
+  },
+  configuration: {
+    title: 'Configuration'
   }
 }

@@ -27,4 +27,6 @@ if (authtoken && authtoken !== '') {
   })
 }
 
+Store.commit('main/setTitle', '')
+
 export default Store
