@@ -7,7 +7,7 @@
           <q-avatar>
             <img src="~assets/logo.svg">
           </q-avatar>
-          {{ $store.state.cms.currentTitle }}
+          {{ $store.state.ui.currentTitle }}
         </q-toolbar-title>
       </q-toolbar>
     </q-header>

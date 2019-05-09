@@ -31,7 +31,7 @@ export default {
   methods: {
   },
   beforeMount () {
-    this.$store.commit('cms/setTitle', this.title)
+    this.$store.commit('ui/setTitle', this.title)
   },
   async mounted () {
     let entityId = 'root'

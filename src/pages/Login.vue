@@ -37,7 +37,6 @@
     <q-card-actions class="q-pa-md">
       <q-btn class="full-width" size="lg" color="primary" :disabled="$v.form.$error" @click="handleLogin">{{ $t('login.button') }}</q-btn>
     </q-card-actions>
-    <q-inner-loading :visible="loading" />
   </q-card>
 </template>
 <script>
@@ -51,7 +50,7 @@ export default {
     this.$store.dispatch('session/resetUserData')
   },
   mounted () {
-    // this.$store.commit('cms/setTitle', this.$t('login.title'))
+    // this.$store.commit('ui/setTitle', this.$t('login.title'))
   },
   data () {
     return {
@@ -59,7 +58,6 @@ export default {
         email: '',
         pass: ''
       },
-      loading: false,
       message: '',
       isPwd: true
     }
@@ -77,26 +75,16 @@ export default {
       if (this.$v.form.$error) {
         return
       }
-      try {
-        this.loading = true
-        let loginResult = await this.$api.post('/user/login', {
-          'email': this.form.email,
-          'password': this.form.pass
-        })
-        this.loading = false
-        if (loginResult.success) {
-          this.$store.commit('session/setAuthtoken', loginResult.result.token)
-          this.$store.commit('session/setUser', loginResult.result.user)
-          this.loading = true
-          let configResult = await this.$api.get('/config/cms')
-          this.loading = false
-          this.$store.commit('cms/setConfig', configResult.result)
-          this.$router.push({ name: 'dashboard' })
-        } else {
-          this.message = this.$t('login.invalid')
-        }
+      let loginResult = await this.$store.dispatch('session/login', {
+        'email': this.form.email,
+        'password': this.form.pass
+      })
+      if (loginResult.success) {
+        this.$router.push({ name: 'dashboard' })
+      }
+      console.log('loginResult', loginResult)
+      /*
       } catch (error) {
-        this.loading = false
         if (error.response) {
           switch (error.response.status) {
             case 401:
@@ -107,7 +95,7 @@ export default {
               break
           }
         }
-      }
+      } */
     }
   }
 }

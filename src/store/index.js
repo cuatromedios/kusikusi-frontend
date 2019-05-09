@@ -3,15 +3,15 @@ import Vuex from 'vuex'
 import Router from '../router'
 import { LocalStorage } from 'quasar'
 
-import cms from './cms'
-import session from './session'
-import entity from './entity'
+import ui from './modules/ui'
+import session from './modules/session'
+import entity from './modules/entity'
 
 Vue.use(Vuex)
 
 const Store = new Vuex.Store({
   modules: {
-    cms, session, entity
+    ui, session, entity
   }
 })
 
@@ -28,6 +28,6 @@ if (authtoken && authtoken !== '') {
   })
 }
 
-Store.commit('cms/setTitle', '')
+Store.commit('ui/setTitle', '')
 
 export default Store
