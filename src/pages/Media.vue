@@ -28,7 +28,7 @@ export default {
   methods: {
   },
   beforeMount () {
-    this.$store.commit('main/setTitle', this.title)
+    this.$store.commit('cms/setTitle', this.title)
   },
   async mounted () {
   }

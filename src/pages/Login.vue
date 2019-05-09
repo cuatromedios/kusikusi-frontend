@@ -51,7 +51,7 @@ export default {
     this.$store.dispatch('session/resetUserData')
   },
   mounted () {
-    // this.$store.commit('main/setTitle', this.$t('login.title'))
+    // this.$store.commit('cms/setTitle', this.$t('login.title'))
   },
   data () {
     return {
