@@ -7,11 +7,10 @@
           <q-avatar>
             <img src="~assets/logo.svg">
           </q-avatar>
-          {{ $store.state.main.currentTitle }}
+          {{ $store.state.cms.currentTitle }}
         </q-toolbar-title>
       </q-toolbar>
     </q-header>
-
     <q-drawer v-model="left"
               side="left"
               bordered
@@ -81,6 +80,8 @@ export default {
       }
       if (this.$store.state.session.user.profile === 'admin') {
         menu = [dashboard, content, media, users, configuration]
+      } else {
+        menu = [content, media]
       }
       return menu
     }
