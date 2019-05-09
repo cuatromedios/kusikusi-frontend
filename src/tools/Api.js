@@ -62,7 +62,7 @@ class Api {
     }
     let result
     try {
-      result = await axios[method](baseUrl + '/api' + path, data)
+      result = await axios[method](baseUrl + path, data)
     } catch (error) {
       return { success: false, data: null, info: 'An error occurred in the external call' }
     }
