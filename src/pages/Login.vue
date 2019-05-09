@@ -90,7 +90,7 @@ export default {
           this.loading = true
           let configResult = await this.$api.get('/config/cms')
           this.loading = false
-          this.$store.commit('main/setConfig', configResult.result)
+          this.$store.commit('cms/setConfig', configResult.result)
           this.$router.push({ name: 'dashboard' })
         } else {
           this.message = this.$t('login.invalid')
