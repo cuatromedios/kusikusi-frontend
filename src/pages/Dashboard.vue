@@ -9,8 +9,16 @@
         <q-list bordered separator>
           <q-item clickable v-ripple
                   v-for="entity in $store.getters['session/entitiesWithPermissions']"
-                  :key="entity.id">
-            <q-item-section><router-link :to="{name: 'content'}">{{ entity.name || entity.model }}</router-link></q-item-section>
+                  :key="entity.id"
+                  :to="{name: 'content', params: {entity_id: entity.id}}">
+            <q-item-section>
+              <div class="row justify-between">
+                <div class="text-h6">
+                  {{ entity.name || entity.model }}
+                </div>
+                <q-chip :color="entity.write === 'none' ? 'negative' : (entity.write === 'own' ? 'warning' : 'positive')" text-color="white" dense :icon="`lock${entity.write === 'none' ? '' : '_open'}`">{{ $t('security.'+entity.write)}}</q-chip>
+              </div>
+            </q-item-section>
           </q-item>
         </q-list>
       </q-card-section>

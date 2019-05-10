@@ -33,5 +33,10 @@ export default {
   },
   settings: {
     title: 'Settings'
+  },
+  security: {
+    any: 'any',
+    own: 'own',
+    none: 'none'
   }
 }

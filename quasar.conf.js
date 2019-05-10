@@ -46,7 +46,8 @@ module.exports = function (ctx) {
         'QCardActions',
         'QBanner',
         'QSeparator',
-        'QAvatar'
+        'QAvatar',
+        'QChip'
       ],
 
       directives: [
