@@ -5,8 +5,8 @@ let routes = [
     children: [
       {
         path: '/',
-        component: () => import('pages/Login'),
-        name: 'index'
+        component: () => import('pages/Home'),
+        name: 'home'
       },
       {
         path: '/login',

@@ -6,7 +6,10 @@
 
 <script>
 export default {
-  name: 'App'
+  name: 'KusikusiFrontend',
+  mounted () {
+    console.log('Kusikusi Front End App mounted')
+  }
 }
 </script>
 

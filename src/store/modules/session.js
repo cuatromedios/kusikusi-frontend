@@ -9,10 +9,24 @@ const state = {
 
 // getters
 const getters = {
+  hasAuthtoken (state) {
+    return (state.authtoken !== '')
+  }
 }
 
 // actions
 const actions = {
+  getLocalSession ({ dispatch, commit }) {
+    let session = LocalStorage.getItem('session')
+    console.log('getLocalSession', session)
+    if (!session || session === {}) {
+      dispatch('resetUserData')
+    } else {
+      commit('setAuthtoken', session.authtoken)
+      commit('setUser', session.user)
+    }
+    return session
+  },
   resetUserData ({ commit }) {
     commit('setAuthtoken', '')
     commit('setUser', {})
@@ -30,14 +44,17 @@ const actions = {
 // mutations
 const mutations = {
   setAuthtoken (state, newToken) {
-    Api.setHeader('Authorization', 'Bearer ' + newToken)
-    LocalStorage.set('authtoken', newToken)
     state.authtoken = newToken
-    state.logged = newToken === ''
+    Api.setHeader('Authorization', 'Bearer ' + newToken)
+    let session = LocalStorage.getItem('session') || {}
+    session.authtoken = newToken
+    LocalStorage.set('session', session)
   },
   setUser (state, newUser) {
-    LocalStorage.set('user', newUser)
     state.user = newUser
+    let session = LocalStorage.getItem('session') || {}
+    session.user = newUser
+    LocalStorage.set('session', session)
   }
 }
 

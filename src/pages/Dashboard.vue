@@ -36,6 +36,9 @@ export default {
   },
   beforeMount () {
     this.$store.commit('ui/setTitle', this.title)
+  },
+  mounted () {
+    console.log('dashboard', this.$store.getters['session/hasAuthtoken'])
   }
 }
 </script>

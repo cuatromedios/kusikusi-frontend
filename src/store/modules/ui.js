@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import { LocalStorage } from 'quasar'
+import Api from '../../tools/Api'
 
 // initial state
 const state = {
@@ -15,6 +16,10 @@ const getters = {
 
 // actions
 const actions = {
+  async getServerConfig ({ commit }, payload) {
+    let configResult = await Api.get('/config/cms')
+    commit('ui/setCms', configResult.result)
+  }
 }
 
 // mutations
@@ -31,9 +36,6 @@ const mutations = {
     Vue.i18n.set('en')
   }
 }
-
-// let configResult = await this.$api.get('/config/cms')
-// this.$store.commit('ui/setCms', configResult.result)
 
 export default {
   namespaced: true,

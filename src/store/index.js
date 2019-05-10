@@ -1,7 +1,5 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import Router from '../router'
-import { LocalStorage } from 'quasar'
 
 import ui from './modules/ui'
 import session from './modules/session'
@@ -15,19 +13,9 @@ const Store = new Vuex.Store({
   }
 })
 
-/* Search for stored user data in the browser */
-let user = LocalStorage.getItem('user')
-let authtoken = LocalStorage.getItem('authtoken')
-if (authtoken && authtoken !== '') {
-  Store.commit('session/setAuthtoken', authtoken)
-  Store.commit('session/setUser', user)
-} else {
-  Store.dispatch('session/resetUserData')
-  Vue.nextTick(() => {
-    Router.push({ name: Router.names.login })
-  })
-}
-
-Store.commit('ui/setTitle', '')
+Store.dispatch('session/getLocalSession')
+let authtoken = Store.state.session.authtoken
+let user = Store.state.session.user
+console.log('auth and user', authtoken, user)
 
 export default Store

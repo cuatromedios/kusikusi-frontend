@@ -1,5 +1,5 @@
 import axios from 'axios'
-import Router from '../router'
+// import Router from '../router'
 
 let baseUrl = ''
 axios.defaults.headers.post['Content-Type'] = 'application/json'
@@ -10,7 +10,7 @@ axios.interceptors.response.use(function (response) {
   // Taken from: https://github.com/mzabriskie/axios
   if (error.response) {
     if (error.response.status === 401) {
-      Router.push({ name: 'login' })
+      // Router.push({ name: 'login' })
     }
     console.log('auth error: ' + error.response.status)
   } else if (error.request) {
