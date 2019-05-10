@@ -14,8 +14,5 @@ const Store = new Vuex.Store({
 })
 
 Store.dispatch('session/getLocalSession')
-let authtoken = Store.state.session.authtoken
-let user = Store.state.session.user
-console.log('auth and user', authtoken, user)
 
 export default Store
