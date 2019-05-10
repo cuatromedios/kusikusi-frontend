@@ -81,8 +81,10 @@ export default {
       })
       if (loginResult.success) {
         this.$router.push({ name: 'dashboard' })
+      } else {
+        this.message = this.$t('login.invalid')
       }
-      console.log('loginResult', loginResult)
+      // console.log('loginResult', loginResult)
       /*
       } catch (error) {
         if (error.response) {
