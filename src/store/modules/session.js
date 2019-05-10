@@ -54,7 +54,6 @@ const getters = {
 const actions = {
   getLocalSession ({ dispatch, commit }) {
     let session = LocalStorage.getItem('session')
-    //console.log('getLocalSession', session)
     if (!session || session === {}) {
       dispatch('resetUserData')
     } else {
