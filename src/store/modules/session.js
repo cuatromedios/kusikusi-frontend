@@ -11,6 +11,42 @@ const state = {
 const getters = {
   hasAuthtoken (state) {
     return (state.authtoken !== '')
+  },
+  entitiesWithWritePermissions (state) {
+    let entities = []
+    for (let e = 0; e < state.user.permissions.length; e++) {
+      if (state.user.permissions[e].write !== 'none' && state.user.permissions[e].read !== 'none') {
+        let entity = state.user.permissions[e].entity
+        entity.write = state.user.permissions[e].write
+        entity.read = state.user.permissions[e].read
+        entities.push(entity)
+      }
+    }
+    return entities
+  },
+  entitiesWithPermissions (state) {
+    let entities = []
+    for (let e = 0; e < state.user.permissions.length; e++) {
+      if (state.user.permissions[e].read !== 'none') {
+        let entity = state.user.permissions[e].entity
+        entity.write = state.user.permissions[e].write
+        entity.read = state.user.permissions[e].read
+        entities.push(entity)
+      }
+    }
+    return entities
+  },
+  firstEntitiesWithWritePermissions (state) {
+    let entities = []
+    for (let e = 0; e < state.user.permissions.length; e++) {
+      if (state.user.permissions[e].write !== 'none' && state.user.permissions[e].read !== 'none') {
+        let entity = state.user.permissions[e].entity
+        entity.write = state.user.permissions[e].write
+        entity.read = state.user.permissions[e].read
+        entities.push(entity)
+      }
+    }
+    return null
   }
 }
 
@@ -33,6 +69,13 @@ const actions = {
   },
   async login ({ commit }, payload) {
     let loginResult = await Api.post('/user/login', payload)
+    loginResult.result.user.permissions = loginResult.result.user.permissions.sort(function (a, b) {
+      let ua = a.entity.distance_to_home < 0 ? a.entity.distance_to_home * -1000 : a.entity.distance_to_home
+      let ub = b.entity.distance_to_home < 0 ? b.entity.distance_to_home * -1000 : b.entity.distance_to_home
+      let comparison = Math.sign(ua - ub)
+      console.log('comparison', a, b, ua, ub, comparison)
+      return comparison
+    })
     if (loginResult.success) {
       commit('setAuthtoken', loginResult.result.token)
       commit('setUser', loginResult.result.user)

@@ -18,8 +18,8 @@ export default {
   },
   dashboard: {
     title: 'Dashboard',
-    whattodo: 'Now what?',
-    content: 'In content, yoy will find all sections and pages you can edit in this website'
+    yourcontent: 'Your content',
+    yourcontentdescription: 'The content you have permissions to edit'
   },
   content: {
     title: 'Content',
