@@ -19,7 +19,7 @@ export default {
   dashboard: {
     title: 'Dashboard',
     yourcontent: 'Your content',
-    yourcontentdescription: 'The content you have permissions to edit'
+    yourcontentdescription: 'The content you have access to'
   },
   content: {
     title: 'Content',

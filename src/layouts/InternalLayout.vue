@@ -25,7 +25,7 @@
             v-ripple
             :active="false"
             active-class="bg-info text-white"
-            :to="item.route">
+            :to="{ name: item.route} ">
           <q-item-section avatar>
             <q-icon :name="item.icon"/>
           </q-item-section>

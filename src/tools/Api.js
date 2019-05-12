@@ -1,5 +1,5 @@
 import axios from 'axios'
-// import Router from '../router'
+import { Loading } from 'quasar'
 
 let baseUrl = ''
 axios.defaults.headers.post['Content-Type'] = 'application/json'
@@ -62,10 +62,14 @@ class Api {
     }
     let result
     try {
+      Loading.show()
       result = await axios[method](baseUrl + path, data)
+      Loading.hide()
     } catch (error) {
+      Loading.hide()
       return { success: false, data: null, info: 'An error occurred in the external call' }
     }
+    Loading.hide()
     return result.data
   }
 }
