@@ -16,9 +16,9 @@ const getters = {
 
 // actions
 const actions = {
-  async getServerConfig ({ commit }, payload) {
+  async getCmsConfig ({ commit }, payload) {
     let configResult = await Api.get('/config/cms')
-    commit('ui/setCms', configResult.result)
+    commit('setCms', configResult.result)
   }
 }
 

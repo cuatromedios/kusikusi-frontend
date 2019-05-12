@@ -13,6 +13,4 @@ const Store = new Vuex.Store({
   }
 })
 
-Store.dispatch('session/getLocalSession')
-
 export default Store
