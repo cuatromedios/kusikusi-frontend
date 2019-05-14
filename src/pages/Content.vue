@@ -1,15 +1,29 @@
 <template>
   <main>
+    <q-card flat bordered class="my-card q-mb-lg entity-card" v-if="!edit && !ready">
+      <q-card-section>
+        <q-banner dense rounded class="bg-grey-2 q-mb-xs placeholder ph-subtitle"></q-banner>
+        <q-banner rounded class="bg-grey-4 q-mb-xs placeholder ph-title"></q-banner>
+        <q-banner dense rounded class="bg-grey-2 placeholder ph-summary"></q-banner>
+      </q-card-section>
+      <div class="fade-screen"></div>
+    </q-card>
     <div v-if="!edit && ready">
       <div v-for="item in $store.state.ui.config.models[$store.state.content.entity.model].display"
            v-bind:key="item.index"
            :is="item.component"
            v-bind="item.props"
+           @edit="edit = true"
            class="q-mb-lg">
       </div>
     </div>
     <div v-if="edit && ready">
-      edit
+      <q-card flat bordered class="my-card q-mb-lg">
+        <q-card-section>
+          <q-btn @click="cancelEdit">Cancel</q-btn>
+          <q-btn>Save</q-btn>
+        </q-card-section>
+      </q-card>
     </div>
   </main>
 </template>
@@ -68,6 +82,10 @@ export default {
         this.$store.commit('content/setChildren', call.result.children)
       }
       this.ready = true
+    },
+    async cancelEdit () {
+      this.edit = false
+      this.getEntity()
     }
   }
 }

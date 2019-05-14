@@ -4,7 +4,7 @@
       <h2><q-icon :name="$store.state.ui.config.models[$store.state.content.entity.model].icon || 'note' "/> {{ $store.state.ui.config.models[$store.state.content.entity.model].name }}</h2>
       <h1>{{ $store.state.content.entity.name ||  $store.state.content.entity.model }}</h1>
       <div>{{ $store.state.content.entity.contents['en'].summary }}</div>
-      <q-btn class="absolute-top-right q-ma-md" outline color="primary" icon="edit" :label="$t('general.edit')" />
+      <q-btn class="absolute-top-right q-ma-md" outline color="primary" icon="edit" :label="$t('general.edit')" @click="$emit('edit')" />
     </q-card-section>
     <div class="fade-screen"></div>
   </q-card>
