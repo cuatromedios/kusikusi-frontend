@@ -1,5 +1,5 @@
 <template>
-  <main>
+  <main class="q-pb-xl">
     <q-card flat bordered class="my-card q-mb-lg entity-card" v-if="!edit && !ready">
       <q-card-section>
         <q-banner dense rounded class="bg-grey-2 q-mb-xs placeholder ph-subtitle"></q-banner>
@@ -18,13 +18,27 @@
       </div>
     </div>
     <div v-if="edit && ready">
-      <q-card flat bordered class="my-card q-mb-lg">
-        <q-card-section>
-          <q-btn @click="cancelEdit">Cancel</q-btn>
-          <q-btn>Save</q-btn>
-        </q-card-section>
-      </q-card>
+      <div v-for="item in $store.state.ui.config.models[$store.state.content.entity.model].editor"
+           v-bind:key="item.index"
+           :is="item.component"
+           v-bind="item.props"
+           @edit="edit = true"
+           class="q-mb-lg">
+      </div>
     </div>
+    <transition
+        appear
+        enter-active-class="animated slideInUp"
+        leave-active-class="animated slideOutDown"
+    >
+      <div v-if="edit && ready"
+           transition-show="jump-down"
+           class="bg-grey-4 q-py-md row justify-center fixed-bottom inset-shadow"
+    >
+      <q-btn flat class="q-mx-lg" @click="cancelEdit">Cancel</q-btn>
+      <q-btn color="positive" class="q-px-xl q-mx-lg">Save</q-btn>
+    </div>
+    </transition>
   </main>
 </template>
 <script>

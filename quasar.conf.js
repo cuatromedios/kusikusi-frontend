@@ -28,6 +28,7 @@ module.exports = function (ctx) {
       components: [
         'QLayout',
         'QHeader',
+        'QFooter',
         'QDrawer',
         'QPageContainer',
         'QPage',
@@ -103,7 +104,9 @@ module.exports = function (ctx) {
       'bounceIn',
       'bounceOut',
       'slideInDown',
+      'slideInUp',
       'slideOutUp',
+      'slideOutDown',
       'FadeIn',
       'FadeOut'
     ],
