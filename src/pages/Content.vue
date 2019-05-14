@@ -1,23 +1,28 @@
 <template>
-  <div>
-    <q-card flat bordered class="my-card q-mb-lg">
-      <q-card-section>
-        <div class="text-h5">{{ entity.name || entity.model }}</div>
-      </q-card-section>
-    </q-card>
-  </div>
+  <main>
+    <div v-if="!edit && ready">
+      <div v-for="item in $store.state.ui.config.models[$store.state.content.entity.model].display"
+           v-bind:key="item.index"
+           :is="item.component"
+           v-bind="item.props"
+           class="q-mb-lg">
+      </div>
+    </div>
+    <div v-if="edit && ready">
+      edit
+    </div>
+  </main>
 </template>
 <script>
+import entityCard from '../components/display/entityCard'
+import children from '../components/display/children'
 export default {
-  components: {},
+  components: { entityCard, children },
   name: 'Content',
   data () {
     return {
-      entity: {
-        contents: {}
-      },
-      relations: [],
-      ancestors: []
+      edit: false,
+      ready: false
     }
   },
   computed: {
@@ -31,7 +36,6 @@ export default {
     }
   },
   async mounted () {
-    // TODO: A single call?
     await this.getEntity()
   },
   beforeMount () {
@@ -39,33 +43,25 @@ export default {
   },
   methods: {
     async getEntity () {
+      this.ready = false
       this.$store.dispatch('content/clear')
       let entityId = this.$route.params.entity_id || this.$store.getters['session/firstEntityWithWithWritePermissions'] || 'home'
-      let call = await this.$api.get(`/entity/${entityId}?select=contents.*,entity.*,data.*`)
+      let call = await this.$api.get(`/entity/${entityId}/forEdit`)
       if (call.success) {
-        this.$store.commit('content/setEntity', call.result)
-        await this.getRelations()
-        await this.getAncestors()
-        await this.getChildren()
+        let groupedContents = {}
+        for (let c = 0; c < call.result.entity.contents.length; c++) {
+          if (!groupedContents[call.result.entity.contents[c].lang]) {
+            groupedContents[call.result.entity.contents[c].lang] = {}
+          }
+          groupedContents[call.result.entity.contents[c].lang][call.result.entity.contents[c].field] = call.result.entity.contents[c].value
+        }
+        call.result.entity.contents = groupedContents
+        this.$store.commit('content/setEntity', call.result.entity)
+        this.$store.commit('content/setRelations', call.result.relations)
+        this.$store.commit('content/setAncestors', call.result.ancestors)
+        this.$store.commit('content/setChildren', call.result.children)
       }
-    },
-    async getRelations () {
-      let call = await this.$api.get(`/entity/${this.$store.state.content.entity.id}/relations`)
-      if (call.success) {
-        this.$store.commit('content/setRelations', call.result)
-      }
-    },
-    async getAncestors () {
-      let call = await this.$api.get(`/entity/${this.$store.state.content.entity.id}/ancestors`)
-      if (call.success) {
-        this.$store.commit('content/setAncestors', call.result)
-      }
-    },
-    async getChildren () {
-      let call = await this.$api.get(`/entity/${this.$store.state.content.entity.id}/children`)
-      if (call.success) {
-        this.$store.commit('content/setChildren', call.result)
-      }
+      this.ready = true
     }
   }
 }

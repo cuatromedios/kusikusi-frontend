@@ -6,7 +6,12 @@ export default {
     releaseToRefresh: 'release to refresh',
     refreshing: 'Refreshing',
     serverError: 'There was an error in the server',
-    back: 'Back'
+    back: 'Back',
+    edit: 'Edit',
+    save: 'Save',
+    cancel: 'Cancel',
+    delete: 'Delete',
+    add: 'Add'
   },
   login: {
     title: 'Login',
