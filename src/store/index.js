@@ -3,13 +3,13 @@ import Vuex from 'vuex'
 
 import ui from './modules/ui'
 import session from './modules/session'
-import entity from './modules/entity'
+import content from './modules/content'
 
 Vue.use(Vuex)
 
 const Store = new Vuex.Store({
   modules: {
-    ui, session, entity
+    ui, session, content
   }
 })
 

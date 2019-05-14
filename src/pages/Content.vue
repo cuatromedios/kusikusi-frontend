@@ -15,7 +15,9 @@ export default {
     return {
       entity: {
         contents: {}
-      }
+      },
+      relations: [],
+      ancestors: []
     }
   },
   computed: {
@@ -28,16 +30,42 @@ export default {
       title: this.title
     }
   },
-  methods: {
+  async mounted () {
+    // TODO: A single call?
+    await this.getEntity()
   },
   beforeMount () {
     this.$store.commit('ui/setTitle', this.title)
   },
-  async mounted () {
-    let entityId = this.$route.params.entity_id || this.$store.getters['session/firstEntityWithWithWritePermissions'] || 'home'
-    let apiCall = await this.$api.get(`/entity/${entityId}`)
-    if (apiCall.success) {
-      this.entity = apiCall.result
+  methods: {
+    async getEntity () {
+      this.$store.dispatch('content/clear')
+      let entityId = this.$route.params.entity_id || this.$store.getters['session/firstEntityWithWithWritePermissions'] || 'home'
+      let call = await this.$api.get(`/entity/${entityId}?select=contents.*,entity.*,data.*`)
+      if (call.success) {
+        this.$store.commit('content/setEntity', call.result)
+        await this.getRelations()
+        await this.getAncestors()
+        await this.getChildren()
+      }
+    },
+    async getRelations () {
+      let call = await this.$api.get(`/entity/${this.$store.state.content.entity.id}/relations`)
+      if (call.success) {
+        this.$store.commit('content/setRelations', call.result)
+      }
+    },
+    async getAncestors () {
+      let call = await this.$api.get(`/entity/${this.$store.state.content.entity.id}/ancestors`)
+      if (call.success) {
+        this.$store.commit('content/setAncestors', call.result)
+      }
+    },
+    async getChildren () {
+      let call = await this.$api.get(`/entity/${this.$store.state.content.entity.id}/children`)
+      if (call.success) {
+        this.$store.commit('content/setChildren', call.result)
+      }
     }
   }
 }
