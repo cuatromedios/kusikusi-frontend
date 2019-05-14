@@ -19,7 +19,8 @@
       <q-list bordered separator>
         <q-item clickable v-ripple
                 v-for="entity in $store.state.content.children"
-                :key="entity.id">
+                :key="entity.id"
+                :to="{name: 'content', params: {entity_id: entity.id}}">
           <q-item-section>{{ entity.name || entity.model }}</q-item-section>
           <q-item-section avatar>
             <q-icon color="grey" name="chevron_right" />

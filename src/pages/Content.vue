@@ -38,8 +38,14 @@ export default {
   async mounted () {
     await this.getEntity()
   },
-  beforeMount () {
-    this.$store.commit('ui/setTitle', this.title)
+  async beforeRouteUpdate (to, from, next) {
+    await this.getEntity()
+    next()
+  },
+  watch: {
+    '$route' (to, from) {
+      this.getEntity()
+    }
   },
   methods: {
     async getEntity () {
