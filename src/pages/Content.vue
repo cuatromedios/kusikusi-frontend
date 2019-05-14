@@ -33,10 +33,10 @@
     >
       <div v-if="edit && ready"
            transition-show="jump-down"
-           class="bg-grey-4 q-py-md row justify-center fixed-bottom inset-shadow"
+           class="bg-grey-8 q-py-md row justify-center fixed-bottom inset-shadow"
     >
-      <q-btn flat class="q-mx-lg" @click="cancelEdit">Cancel</q-btn>
-      <q-btn color="positive" class="q-px-xl q-mx-lg">Save</q-btn>
+      <q-btn flat class="q-mx-lg" @click="cancelEdit" color="grey-6">{{ $t('general.cancel') }}</q-btn>
+      <q-btn color="positive" class="q-px-xl q-mx-lg">{{ $t('general.save') }}</q-btn>
     </div>
     </transition>
   </main>
