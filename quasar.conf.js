@@ -49,7 +49,9 @@ module.exports = function (ctx) {
         'QSeparator',
         'QAvatar',
         'QChip',
-        'QBtnDropdown'
+        'QBtnDropdown',
+        'QField',
+        'QBadge'
       ],
 
       directives: [

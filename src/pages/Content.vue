@@ -25,16 +25,33 @@
            @edit="edit = true"
            class="q-mb-lg">
       </div>
+      <q-card flat bordered class="q-mb-sm"
+              v-for="group in $store.state.ui.config.models[$store.state.content.entity.model].editor"
+              v-bind:key="group.index"
+              v-bind="group.props"
+              >
+        <q-card-section>
+          <h2>{{ $t(group.groupName) }}</h2>
+          <field-wrapper v-for="field in group.fields"
+               v-bind:key="field.index"
+               :label="field.label"
+               :field="field.field"
+               :component="field.component"
+               :settings="field.settins"
+               >
+          </field-wrapper>
+        </q-card-section>
+      </q-card>
     </div>
     <transition
         appear
         enter-active-class="animated slideInUp"
         leave-active-class="animated slideOutDown"
-    >
+        >
       <div v-if="edit && ready"
            transition-show="jump-down"
            class="bg-grey-8 q-py-md row justify-center fixed-bottom inset-shadow"
-    >
+           >
       <q-btn flat class="q-mx-lg" @click="cancelEdit" color="grey-6">{{ $t('general.cancel') }}</q-btn>
       <q-btn color="positive" class="q-px-xl q-mx-lg">{{ $t('general.save') }}</q-btn>
     </div>
@@ -42,10 +59,11 @@
   </main>
 </template>
 <script>
-import entityCard from '../components/display/entityCard'
-import children from '../components/display/children'
+import EntityCard from '../components/display/EntityCard'
+import Children from '../components/display/Children'
+import FieldWrapper from '../components/FieldWrapper'
 export default {
-  components: { entityCard, children },
+  components: { EntityCard, Children, FieldWrapper },
   name: 'Content',
   data () {
     return {

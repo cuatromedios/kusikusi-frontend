@@ -8,7 +8,7 @@
                   v-for="model in allowed"
                   :key="model">
             <q-item-section>
-              <q-item-label>{{ $store.state.ui.config.models[model].name || model }}</q-item-label>
+              <q-item-label>{{ $store.state.ui.config.models[model] ? $store.state.ui.config.models[model].name : model }}</q-item-label>
             </q-item-section>
           </q-item>
         </q-list>
@@ -33,7 +33,7 @@
 
 <script>
 export default {
-  name: 'EntityCard',
+  name: 'Children',
   props: {
     label: {
       type: String,

@@ -28,7 +28,13 @@ export default {
   },
   content: {
     title: 'Content',
-    icon: 'ballot'
+    icon: 'ballot',
+    editor: {
+      contents: 'Contents',
+      title: 'Title',
+      summary: 'Summary',
+      url: 'Access'
+    }
   },
   media: {
     title: 'Media'
