@@ -3,16 +3,18 @@
     <div v-for="lang in langs"
          class="relative-position"
          v-bind:key="lang">
-      <q-badge v-if="lang && lang !== ''" color="info" class="absolute-top-right q-ma-xs">
-        <q-icon name="language" />&ensp;{{ lang }}
-      </q-badge>
-      <div
-           :is="component"
-           :label="label"
-           :field="field"
-           :lang="lang"
-           :settings="settings"
-      >
+      <div v-show="lang === '' || lang === $store.state.ui.editorLang">
+        <div
+            :is="component"
+            :label="label"
+            :field="field"
+            :lang="lang"
+            :settings="settings"
+        >
+        </div>
+        <q-badge v-if="lang && lang !== ''" color="info" floating class="langBadge" @click="showLangMenu = true" >
+          <q-icon name="language" />&ensp;{{ lang }}
+        </q-badge>
       </div>
     </div>
   </div>
@@ -43,7 +45,8 @@ export default {
   },
   data () {
     return {
-      multilanguage: null
+      multilanguage: null,
+      showLangMenu: false
     }
   },
   computed: {
@@ -62,4 +65,6 @@ export default {
 </script>
 
 <style lang="stylus">
+.langBadge
+  font-size 1.25em
 </style>

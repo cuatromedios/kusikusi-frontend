@@ -51,7 +51,13 @@ module.exports = function (ctx) {
         'QChip',
         'QBtnDropdown',
         'QField',
-        'QBadge'
+        'QBadge',
+        'QTabs',
+        'QTab',
+        'QCheckbox',
+        'QToggle',
+        'QSelect',
+        'QMenu'
       ],
 
       directives: [

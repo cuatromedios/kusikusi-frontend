@@ -6,6 +6,7 @@ import Api from '../../tools/Api'
 const state = {
   config: {},
   lang: 'en',
+  editorLang: null,
   currentTitle: '',
   loading: false
 }
@@ -19,6 +20,11 @@ const actions = {
   async getCmsConfig ({ commit }, payload) {
     let configResult = await Api.get('/config/cms')
     commit('setCms', configResult.result)
+    let editorLang = LocalStorage.getItem('editorLang')
+    if (!editorLang || editorLang === '') {
+      editorLang = configResult.result.langs[0] || 'en'
+    }
+    commit('setEditorLang', editorLang)
   }
 }
 
@@ -33,7 +39,11 @@ const mutations = {
   setLang (state, newLang) {
     LocalStorage.set('lang', newLang)
     state.lang = newLang
-    Vue.i18n.set('en')
+    Vue.i18n.set(newLang)
+  },
+  setEditorLang (state, newLang) {
+    LocalStorage.set('editorLang', newLang)
+    state.editorLang = newLang
   }
 }
 

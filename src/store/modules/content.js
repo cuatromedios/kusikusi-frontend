@@ -4,7 +4,8 @@ const state = {
   entity: { contents: [] },
   relations: [],
   children: [],
-  ancestors: []
+  ancestors: [],
+  parent: {}
 }
 
 // getters

@@ -1,5 +1,6 @@
 <template>
   <main class="q-pb-xl">
+    <lang-tabs />
     <q-card flat bordered class="my-card q-mb-lg entity-card" v-if="!edit && !ready">
       <q-card-section>
         <q-banner dense rounded class="bg-grey-2 q-mb-xs placeholder ph-subtitle"></q-banner>
@@ -62,13 +63,15 @@
 import EntityCard from '../components/display/EntityCard'
 import Children from '../components/display/Children'
 import FieldWrapper from '../components/FieldWrapper'
+import LangTabs from '../components/LangTabs'
 export default {
-  components: { EntityCard, Children, FieldWrapper },
+  components: { EntityCard, Children, FieldWrapper, LangTabs },
   name: 'Content',
   data () {
     return {
       edit: false,
-      ready: false
+      ready: false,
+      showLangMenu: true
     }
   },
   computed: {
