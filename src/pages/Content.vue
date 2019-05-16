@@ -13,19 +13,12 @@
       <div v-for="item in $store.state.ui.config.models[$store.state.content.entity.model].display"
            v-bind:key="item.index"
            :is="item.component"
-           v-bind="item.props"
+           :settings="item.settings"
            @edit="edit = true"
            class="q-mb-lg">
       </div>
     </div>
     <div v-if="edit && ready">
-      <div v-for="item in $store.state.ui.config.models[$store.state.content.entity.model].editor"
-           v-bind:key="item.index"
-           :is="item.component"
-           v-bind="item.props"
-           @edit="edit = true"
-           class="q-mb-lg">
-      </div>
       <q-card flat bordered class="q-mb-sm"
               v-for="group in $store.state.ui.config.models[$store.state.content.entity.model].editor"
               v-bind:key="group.index"
@@ -38,7 +31,7 @@
                :label="field.label"
                :field="field.field"
                :component="field.component"
-               :settings="field.settins"
+               :settings="field.settings"
                >
           </field-wrapper>
         </q-card-section>

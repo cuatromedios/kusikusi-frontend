@@ -9,11 +9,11 @@
             :label="label"
             :field="field"
             :lang="lang"
-            :settings="settings"
+            :settingsObject="settings"
         >
         </div>
-        <q-badge v-if="lang && lang !== ''" color="info" floating class="langBadge" @click="showLangMenu = true" >
-          <q-icon name="language" />&ensp;{{ lang }}
+        <q-badge v-if="lang && lang !== ''" color="info" floating class="langBadge"  >
+          <q-icon name="language" />&ensp;<span>{{ lang }}</span>
         </q-badge>
       </div>
     </div>
@@ -36,7 +36,7 @@ export default {
     },
     settings: {
       type: Object,
-      default: () => {}
+      default: () => { return {} }
     },
     component: {
       type: String,
@@ -45,8 +45,7 @@ export default {
   },
   data () {
     return {
-      multilanguage: null,
-      showLangMenu: false
+      multilanguage: null
     }
   },
   computed: {
@@ -66,5 +65,9 @@ export default {
 
 <style lang="stylus">
 .langBadge
-  font-size 1.25em
+  font-size 1.1em
+  span
+    font-size 1.1em
+    position relative
+    bottom .075em
 </style>

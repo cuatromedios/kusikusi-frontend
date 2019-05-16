@@ -1,5 +1,6 @@
 <template>
   <q-tabs
+      v-if="this.$store.state.ui.config.langs.length > 1"
       v-model="editorLang"
       class="q-mb-lg"
   >

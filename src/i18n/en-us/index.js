@@ -30,6 +30,7 @@ export default {
     title: 'Content',
     icon: 'ballot',
     editor: {
+      name: 'Entity name',
       contents: 'Contents',
       title: 'Title',
       summary: 'Summary',

@@ -8,6 +8,10 @@ export default {
     lang: {
       type: String,
       default: null
+    },
+    settingsObject: {
+      type: Object,
+      default: () => { return {} }
     }
   },
   computed: {
@@ -32,6 +36,9 @@ export default {
           value: value
         })
       }
+    },
+    settings () {
+      return this.settingsObject || {}
     }
   }
 }

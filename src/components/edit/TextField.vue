@@ -1,6 +1,13 @@
 <template>
   <div>
-    <q-input class="q-mb-sm" filled v-model="fieldReference" :label="$t(label)" />
+    <q-input class="q-mb-sm"
+             :type="settings.type || 'text'"
+             :filled="true"
+             v-model="fieldReference"
+             :label="$t(label)"
+             :debounce="1000"
+             :autogrow="settings.autogrow || false"
+    />
   </div>
 </template>
 
@@ -13,19 +20,7 @@ export default {
     label: {
       type: String,
       default: ''
-    },
-    lang: {
-      type: String,
-      default: null
     }
-  },
-  data () {
-    return {
-    }
-  },
-  computed: {
-  },
-  methods: {
   }
 }
 </script>
