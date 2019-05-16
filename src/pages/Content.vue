@@ -1,6 +1,6 @@
 <template>
   <main class="q-pb-xl">
-    <lang-tabs />
+    <lang-tabs v-if="edit && ready" />
     <q-card flat bordered class="my-card q-mb-lg entity-card" v-if="!edit && !ready">
       <q-card-section>
         <q-banner dense rounded class="bg-grey-2 q-mb-xs placeholder ph-subtitle"></q-banner>
