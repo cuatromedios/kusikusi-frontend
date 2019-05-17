@@ -47,7 +47,7 @@
            class="bg-grey-8 q-py-md row justify-center fixed-bottom inset-shadow"
            >
       <q-btn flat class="q-mx-lg" @click="cancelEdit" color="grey-6">{{ $t('general.cancel') }}</q-btn>
-      <q-btn color="positive" class="q-px-xl q-mx-lg">{{ $t('general.save') }}</q-btn>
+      <q-btn color="positive" class="q-px-xl q-mx-lg" @click="saveEntity">{{ $t('general.save') }}</q-btn>
     </div>
     </transition>
   </main>
@@ -110,6 +110,12 @@ export default {
         this.$store.commit('content/setChildren', call.result.children)
       }
       this.ready = true
+    },
+    async saveEntity () {
+      let call = await this.$api.patch(`/entity/${this.$route.params.entity_id}`, this.$store.state.content.entity)
+      if (call.success) {
+        console.log('ok!')
+      }
     },
     async cancelEdit () {
       this.edit = false
