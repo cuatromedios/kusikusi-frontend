@@ -112,10 +112,16 @@ export default {
       this.ready = true
     },
     async saveEntity () {
-      let call = await this.$api.patch(`/entity/${this.$route.params.entity_id}`, this.$store.state.content.entity)
-      if (call.success) {
-        console.log('ok!')
+      let call
+      if (this.$route.params.entity_id === 'new') {
+        call = await this.$api.post(`/entity`, this.$store.state.content.entity)
+      } else {
+        call = await this.$api.patch(`/entity/${this.$route.params.entity_id}`, this.$store.state.content.entity)
+        if (call.success) {
+          console.log('ok!')
+        }
       }
+
     },
     async cancelEdit () {
       this.edit = false
