@@ -6,6 +6,7 @@
         <q-list>
           <q-item clickable v-close-popup
                   v-for="model in settings.allowed"
+                  @click="$store.dispatch('content/newEntity', { parent_id: $store.state.content.entity.id, model: model})"
                   :key="model">
             <q-item-section>
               <q-item-label>{{ $store.state.ui.config.models[model] ? $store.state.ui.config.models[model].name : model }}</q-item-label>
@@ -13,7 +14,7 @@
           </q-item>
         </q-list>
       </q-btn-dropdown>
-      <q-btn class="absolute-top-right q-ma-md" outline color="positive"  icon="add_circle"  :label="`${$t('general.add')} ${$store.state.ui.config.models[allowed[0]].name}`" v-if="settings.allowed && settings.allowed.length == 1" />
+      <q-btn class="absolute-top-right q-ma-md" outline color="positive"  icon="add_circle"  :label="`${$t('general.add')} ${$store.state.ui.config.models[allowed[0]].name}`" v-if="settings.allowed && settings.allowed.length === 1" />
     </q-card-section>
     <q-card-section class="q-mt-md">
       <q-list bordered separator>

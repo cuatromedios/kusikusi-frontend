@@ -80,52 +80,58 @@ export default {
   async mounted () {
     await this.getEntity()
   },
-  async beforeRouteUpdate (to, from, next) {
-    await this.getEntity()
-    next()
-  },
   watch: {
     '$route' (to, from) {
-      this.getEntity()
+      if (from.params.entity_id !== 'new') {
+        this.getEntity()
+      }
     }
   },
   methods: {
     async getEntity () {
       this.ready = false
-      this.$store.dispatch('content/clear')
       let entityId = this.$route.params.entity_id || this.$store.getters['session/firstEntityWithWithWritePermissions'] || 'home'
-      let call = await this.$api.get(`/entity/${entityId}/forEdit`)
-      if (call.success) {
-        let groupedContents = {}
-        for (let c = 0; c < call.result.entity.contents.length; c++) {
-          if (!groupedContents[call.result.entity.contents[c].lang]) {
-            groupedContents[call.result.entity.contents[c].lang] = {}
+      if (entityId === 'new') {
+        this.edit = true
+        this.ready = true
+      } else {
+        this.$store.dispatch('content/clear')
+        let call = await this.$api.get(`/entity/${entityId}/forEdit`)
+        if (call.success) {
+          let groupedContents = {}
+          for (let c = 0; c < call.result.entity.contents.length; c++) {
+            if (!groupedContents[call.result.entity.contents[c].lang]) {
+              groupedContents[call.result.entity.contents[c].lang] = {}
+            }
+            groupedContents[call.result.entity.contents[c].lang][call.result.entity.contents[c].field] = call.result.entity.contents[c].value
           }
-          groupedContents[call.result.entity.contents[c].lang][call.result.entity.contents[c].field] = call.result.entity.contents[c].value
+          call.result.entity.contents = groupedContents
+          this.$store.commit('content/setEntity', call.result.entity)
+          this.$store.commit('content/setRelations', call.result.relations)
+          this.$store.commit('content/setAncestors', call.result.ancestors)
+          this.$store.commit('content/setChildren', call.result.children)
         }
-        call.result.entity.contents = groupedContents
-        this.$store.commit('content/setEntity', call.result.entity)
-        this.$store.commit('content/setRelations', call.result.relations)
-        this.$store.commit('content/setAncestors', call.result.ancestors)
-        this.$store.commit('content/setChildren', call.result.children)
+        this.ready = true
       }
-      this.ready = true
     },
     async saveEntity () {
       let call
       if (this.$route.params.entity_id === 'new') {
+        this.$store.dispatch('content/clearId')
         call = await this.$api.post(`/entity`, this.$store.state.content.entity)
+        if (call.success) {
+          this.$router.push({ name: 'content', params: { entity_id: call.result.id } })
+        }
       } else {
         call = await this.$api.patch(`/entity/${this.$route.params.entity_id}`, this.$store.state.content.entity)
         if (call.success) {
           console.log('ok!')
         }
       }
-
     },
     async cancelEdit () {
       this.edit = false
-      this.getEntity()
+      this.$router.back()
     }
   }
 }

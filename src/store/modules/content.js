@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import router from '../../router'
 // initial state
 const state = {
   entity: { contents: [] },
@@ -15,10 +16,22 @@ const getters = {
 // actions
 const actions = {
   clear ({ commit }) {
-    commit('setEntity', { contents: [] })
+    commit('setEntity', { contents: {} })
     commit('setRelations', [])
     commit('setChildren', [])
     commit('setAncestors', [])
+  },
+  clearId ({ commit }) {
+    commit('setEntityValue', { field: 'id', value: undefined })
+  },
+  newEntity ({ commit }, entity) {
+    let newEntity = { id: 'new', contents: {} }
+    let merged = { ...newEntity, ...entity }
+    commit('setEntity', merged)
+    commit('setRelations', [])
+    commit('setChildren', [])
+    commit('setAncestors', [])
+    router.push({ name: 'content', params: { entity_id: merged.id } })
   }
 }
 
