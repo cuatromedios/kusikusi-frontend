@@ -6,7 +6,7 @@
         <q-list>
           <q-item clickable v-close-popup
                   v-for="model in settings.allowed"
-                  @click="$router.push({name: 'contentNew', params: {parent_id: $store.state.content.entity.id, model: model}})"
+                  @click="$router.push({name: 'contentNew', params: {entity_id: 'new', parent_id: $store.state.content.entity.id, model: model}})"
                   :key="model">
             <q-item-section>
               <q-item-label>{{ $store.state.ui.config.models[model] ? $store.state.ui.config.models[model].name : model }}</q-item-label>
