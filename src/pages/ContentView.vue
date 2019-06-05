@@ -45,6 +45,11 @@ export default {
   async mounted () {
     await this.getEntity()
   },
+  watch: {
+    '$route' (to, from) {
+      this.getEntity()
+    }
+  },
   methods: {
     async getEntity () {
       this.ready = false
