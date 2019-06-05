@@ -15,6 +15,7 @@ export default {
   },
   login: {
     title: 'Login',
+    logout: 'Logout',
     welcome: 'Welcome!',
     email: 'Email',
     password: 'Password',

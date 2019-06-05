@@ -78,10 +78,15 @@ export default {
         icon: 'settings_applications',
         route: this.$router.names.settings
       }
+      let logout = {
+        label: this.$t('login.logout'),
+        icon: 'exit_to_app',
+        route: this.$router.names.login
+      }
       if (this.$store.state.session.user.profile === 'admin') {
-        menu = [dashboard, content, media, users, configuration]
+        menu = [dashboard, content, media, users, configuration, logout]
       } else {
-        menu = [content, media]
+        menu = [content, media, logout]
       }
       return menu
     }
