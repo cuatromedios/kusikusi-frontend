@@ -88,7 +88,7 @@ export default {
       } else {
         call = await this.$api.patch(`/entity/${this.$route.params.entity_id}`, this.$store.state.content.entity)
         if (call.success) {
-          console.log('ok!')
+          this.cancelEdit()
         }
       }
     },
