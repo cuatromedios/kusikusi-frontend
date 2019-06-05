@@ -28,7 +28,8 @@ export default {
   name: 'Content',
   data () {
     return {
-      ready: false
+      ready: false,
+      entityId: undefined
     }
   },
   computed: {
@@ -47,12 +48,12 @@ export default {
   methods: {
     async getEntity () {
       this.ready = false
-      let entityId = this.$route.params.entity_id || this.$store.getters['session/firstEntityWithWithWritePermissions'] || 'home'
-      await this.$store.dispatch('content/getEntity', entityId)
+      this.entityId = this.$route.params.entity_id || this.$store.getters['session/firstEntityWithWithWritePermissions'] || 'home'
+      await this.$store.dispatch('content/getEntity', this.entityId)
       this.ready = true
     },
     editEntity () {
-      this.$router.push({ name: 'contentEdit', params: { entity_id: this.$route.params.entity_id } })
+      this.$router.push({ name: 'contentEdit', params: { entity_id: this.entityId } })
     }
   }
 }
