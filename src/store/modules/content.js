@@ -1,5 +1,7 @@
 import Vue from 'vue'
 import router from '../../router'
+import Api from '../../tools/Api'
+
 // initial state
 const state = {
   entity: { contents: [] },
@@ -31,7 +33,25 @@ const actions = {
     commit('setRelations', [])
     commit('setChildren', [])
     commit('setAncestors', [])
-    router.push({ name: 'content', params: { entity_id: merged.id } })
+    router.push({ name: 'contentNew', params: { parent_id: entity.parent_id, model: entity.model } })
+  },
+  async getEntity ({ commit, dispatch }, entityId) {
+    dispatch('clear')
+    let call = await Api.get(`/entity/${entityId}/forEdit`)
+    if (call.success) {
+      let groupedContents = {}
+      for (let c = 0; c < call.result.entity.contents.length; c++) {
+        if (!groupedContents[call.result.entity.contents[c].lang]) {
+          groupedContents[call.result.entity.contents[c].lang] = {}
+        }
+        groupedContents[call.result.entity.contents[c].lang][call.result.entity.contents[c].field] = call.result.entity.contents[c].value
+      }
+      call.result.entity.contents = groupedContents
+      commit('setEntity', call.result.entity)
+      commit('setRelations', call.result.relations)
+      commit('setAncestors', call.result.ancestors)
+      commit('setChildren', call.result.children)
+    }
   }
 }
 
