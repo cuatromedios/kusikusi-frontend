@@ -73,6 +73,12 @@ export default {
     },
     async saveEntity () {
       let call
+      if (this.$store.state.ui.config.langs[0] && this.$store.state.content.entity.contents[this.$store.state.ui.config.langs[0]] && this.$store.state.content.entity.contents[this.$store.state.ui.config.langs[0]].title) {
+        this.$store.commit('content/setEntityValue', {
+          field: 'name',
+          value: this.$store.state.content.entity.contents[this.$store.state.ui.config.langs[0]].title
+        })
+      }
       if (this.$route.params.entity_id === 'new') {
         this.$store.dispatch('content/clearId')
         call = await this.$api.post(`/entity`, this.$store.state.content.entity)
