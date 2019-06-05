@@ -96,7 +96,13 @@ export default {
       if (this.$route.params.entity_id === 'new') {
         this.$router.back()
       } else {
-        this.$router.push({ name: 'content', params: { entity_id: this.$store.state.content.entity.parent_id } })
+        let whereToGo
+        if (this.$store.state.content.entity.parent_id === 'root') {
+          whereToGo = 'home'
+        } else {
+          whereToGo = this.$store.state.content.entity.parent_id
+        }
+        this.$router.push({ name: 'content', params: { entity_id: whereToGo } })
       }
     }
   }
