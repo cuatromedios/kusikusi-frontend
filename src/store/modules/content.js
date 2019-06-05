@@ -1,5 +1,4 @@
 import Vue from 'vue'
-import router from '../../router'
 import Api from '../../tools/Api'
 
 // initial state
@@ -33,7 +32,6 @@ const actions = {
     commit('setRelations', [])
     commit('setChildren', [])
     commit('setAncestors', [])
-    router.push({ name: 'contentNew', params: { parent_id: entity.parent_id, model: entity.model } })
   },
   async getEntity ({ commit, dispatch }, entityId) {
     dispatch('clear')
