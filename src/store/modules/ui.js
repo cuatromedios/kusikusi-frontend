@@ -13,6 +13,12 @@ const state = {
 
 // getters
 const getters = {
+  langs: (state) => {
+    return state.config.langs
+  },
+  defaultLang: (state) => {
+    return state.config.langs[0]
+  }
 }
 
 // actions

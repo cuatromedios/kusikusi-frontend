@@ -58,7 +58,10 @@ module.exports = function (ctx) {
         'QToggle',
         'QSelect',
         'QMenu',
-        'QMarkupTable'
+        'QMarkupTable',
+        'QImg',
+        'QScrollArea',
+        'QPageSticky'
       ],
 
       directives: [

@@ -13,18 +13,27 @@
            v-bind:key="item.index"
            :is="item.component"
            :settings="item.settings"
-           @edit="editEntity"
+           v-bind="item.props"
            class="q-mb-lg">
       </div>
     </div>
+    <q-page-sticky position="top-right" :offset="[0,0]">
+      <q-btn color="primary"
+             class="q-ma-md "
+             icon="edit" type="a"
+             :label="$t('general.edit')"
+             :to="{ name: 'contentEdit', params: { entity_id: this.entityId } }"
+      />
+    </q-page-sticky>
   </main>
 </template>
 <script>
 import EntityCard from '../components/display/EntityCard'
 import Children from '../components/display/Children'
+import Media from '../components/display/Media'
 import FieldWrapper from '../components/FieldWrapper'
 export default {
-  components: { EntityCard, Children, FieldWrapper },
+  components: { EntityCard, Children, Media, FieldWrapper },
   name: 'Content',
   data () {
     return {
@@ -56,9 +65,6 @@ export default {
       this.entityId = this.$route.params.entity_id || this.$store.getters['session/firstEntityWithWithWritePermissions'] || 'home'
       await this.$store.dispatch('content/getEntity', this.entityId)
       this.ready = true
-    },
-    editEntity () {
-      this.$router.push({ name: 'contentEdit', params: { entity_id: this.entityId } })
     }
   }
 }

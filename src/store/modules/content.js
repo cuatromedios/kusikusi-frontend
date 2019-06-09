@@ -12,6 +12,9 @@ const state = {
 
 // getters
 const getters = {
+  getRelationsByKind: (state) => (kind) => {
+    return state.relations.filter(relation => relation.kind === kind)
+  }
 }
 
 // actions
