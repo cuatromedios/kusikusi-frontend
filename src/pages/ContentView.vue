@@ -30,10 +30,10 @@
 <script>
 import EntityHeader from '../components/display/EntityHeader'
 import Children from '../components/display/Children'
-import Media from '../components/display/Media'
+import MediaStrip from '../components/display/MediaStrip'
 import FieldWrapper from '../components/FieldWrapper'
 export default {
-  components: { EntityHeader, Children, Media, FieldWrapper },
+  components: { EntityHeader, Children, MediaStrip, FieldWrapper },
   name: 'Content',
   data () {
     return {

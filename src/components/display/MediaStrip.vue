@@ -1,13 +1,28 @@
 <template>
-  <q-card flat bordered class="my-card q-mb-lg entity-card">
+  <q-card flat bordered class="my-card q-mb-lg media-strip">
     <q-card-section>
-      <h2><q-icon :name="$store.state.ui.config.models[$store.state.content.entity.model].icon || 'note' "/> {{ $store.state.ui.config.models[$store.state.content.entity.model].name }}</h2>
+      <h2><q-icon name="photo_library"/> {{ $t('media.title') }}</h2>
     </q-card-section>
     <q-card-section>
-      <h1>{{ title }}</h1>
-      <div>{{ summary }}</div>
+      <div class="row no-wrap q-col-gutter-sm q-pa-xs">
+        <div class="media-container col-2 col-xs-4 col-sm-3 col-md-2 col-lg-1 col-xl-1"
+             v-for="entity in $store.getters['content/getRelationsByKind']('medium')"
+             :key="entity.id">
+          <q-img
+              src="https://cdn.quasar.dev/img/parallax2.jpg"
+              class=""
+              basic
+              :ratio="1"
+          >
+            <template v-slot:error>
+              <div class="absolute-full flex flex-center bg-negative text-white">
+                Cannot load image
+              </div>
+            </template>
+          </q-img>
+        </div>
+      </div>
     </q-card-section>
-    <div class="fade-screen"></div>
   </q-card>
 </template>
 
@@ -58,14 +73,6 @@ export default {
 </script>
 
 <style lang="stylus">
-.entity-card
-  height 8rem
+.media-strip
   overflow hidden
-.fade-screen
-  background-image linear-gradient(rgba(255,255,255,0), rgba(255,255,255,1));
-  height 3rem
-  width 100%
-  position absolute
-  bottom 0
-  left 0
 </style>
