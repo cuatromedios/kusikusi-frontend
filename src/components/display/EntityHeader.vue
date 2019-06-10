@@ -26,7 +26,7 @@
 
 <script>
 export default {
-  name: 'EntityCard',
+  name: 'EntityHeader',
   props: {
     title_field: {
       type: String,

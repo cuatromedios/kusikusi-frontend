@@ -28,12 +28,12 @@
   </main>
 </template>
 <script>
-import EntityCard from '../components/display/EntityCard'
+import EntityHeader from '../components/display/EntityHeader'
 import Children from '../components/display/Children'
 import Media from '../components/display/Media'
 import FieldWrapper from '../components/FieldWrapper'
 export default {
-  components: { EntityCard, Children, Media, FieldWrapper },
+  components: { EntityHeader, Children, Media, FieldWrapper },
   name: 'Content',
   data () {
     return {
