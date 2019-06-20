@@ -31,9 +31,10 @@
 import EntityHeader from '../components/display/EntityHeader'
 import Children from '../components/display/Children'
 import MediaStrip from '../components/display/MediaStrip'
+import MediaGrid from '../components/display/MediaGrid'
 import FieldWrapper from '../components/FieldWrapper'
 export default {
-  components: { EntityHeader, Children, MediaStrip, FieldWrapper },
+  components: { EntityHeader, Children, MediaStrip, MediaGrid, FieldWrapper },
   name: 'Content',
   data () {
     return {

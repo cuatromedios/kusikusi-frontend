@@ -61,12 +61,13 @@ module.exports = function (ctx) {
         'QMarkupTable',
         'QImg',
         'QScrollArea',
-        'QPageSticky'
+        'QPageSticky',
+        'QDialog'
       ],
 
       directives: [
         'Ripple',
-         'ClosePopup'
+        'ClosePopup'
       ],
 
       // Quasar plugins

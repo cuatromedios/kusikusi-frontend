@@ -39,7 +39,8 @@ export default {
     }
   },
   media: {
-    title: 'Media'
+    title: 'Media',
+    singular: 'medium'
   },
   users: {
     title: 'Users'
