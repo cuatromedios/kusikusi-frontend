@@ -40,7 +40,14 @@ export default {
   },
   media: {
     title: 'Media',
-    singular: 'medium'
+    singular: 'medium',
+    uploader: 'Media uploader',
+    upload: 'Upload selected files',
+    select: 'Select or drop files...',
+    status: {
+      title: 'Status',
+      idle: 'Idle'
+    }
   },
   users: {
     title: 'Users'
