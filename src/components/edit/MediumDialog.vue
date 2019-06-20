@@ -3,8 +3,9 @@
     <q-dialog v-model="open" @hide="closeDialog">
       <q-uploader
           ref="uploader"
-          multiple
           style="width: 36em; max-width: 90vw"
+          field-name="file"
+          @uploaded="uploaded"
       >
         <template v-slot:header="scope">
           <q-toolbar class="bg-primary">
@@ -21,6 +22,7 @@
                    class="full-width"
                    :class="{'q-py-xl': scope.files.length === 0}"
                    style="border-style: dashed"
+                   v-if="scope.files.length === 0"
             >
               <q-uploader-add-trigger />
               {{ $t('media.select')}}
@@ -110,8 +112,34 @@ export default {
     changed () {
       this.open = this.entityId !== null
     },
-    startUpload () {
-      console.log(this.$refs.uploader.files.length)
+    async startUpload () {
+      let file = this.$refs.uploader.files[0]
+      console.log(file)
+      let filenameParts = file.name.split('.')
+      let format = filenameParts[filenameParts.length - 1]
+      let entity = {
+        parent_id: 'media',
+        model: 'medium',
+        medium: {
+          size: file.size,
+          filename: file.name,
+          mimetype: file.type,
+          format: format
+        }
+      }
+      let createResult = await this.$api.post(`/media`, entity)
+      if (createResult.success) {
+        let relationResult = await this.$api.post(`/entity/${this.$store.state.content.entity.id}/relations`, { kind: 'medium', id: createResult.result.id })
+        if (relationResult.success) {
+          this.$refs.uploader.url = `${process.env.API_URL}/media/${createResult.result.id}/upload`
+          this.$refs.uploader.headers = [{ name: 'Authorization', value: 'Bearer ' + this.$store.state.session.authtoken }]
+          this.$refs.uploader.upload()
+        }
+      }
+    },
+    uploaded (info) {
+      this.closeDialog()
+      this.$router.go()
     }
   }
 }

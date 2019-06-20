@@ -48,7 +48,8 @@ export default {
       title: 'Status',
       idle: 'Idle',
       failed: 'Failed',
-      uploading: 'Uploading'
+      uploading: 'Uploading',
+      uploaded: 'Uploaded'
     }
   },
   users: {
