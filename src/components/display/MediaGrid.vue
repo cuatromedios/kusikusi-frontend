@@ -2,7 +2,7 @@
   <q-card flat bordered class="my-card q-mb-lg media-strip">
     <q-card-section>
       <h2><q-icon name="photo_library"/> {{ $t('media.title') }}</h2>
-      <q-btn class="absolute-top-right q-ma-md" outline color="positive"  icon="add_circle"  :label="`${$t('general.add')} ${$t('media.singular')}`" @click="currentMediumId = 'new'" />
+      <q-btn class="absolute-top-right q-ma-md" outline color="positive"  icon="add_circle"  :label="`${$t('general.add')} ${$t('media.singular')}`" @click="setMediumDialog('new')" />
     </q-card-section>
     <q-card-section>
       <div class="row wrap q-col-gutter-sm q-pa-xs">
@@ -43,6 +43,10 @@ export default {
   computed: {
   },
   methods: {
+    setMediumDialog (id) {
+      this.currentMediumId = null
+      this.currentMediumId = id
+    }
   }
 }
 </script>
