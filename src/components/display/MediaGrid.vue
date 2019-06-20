@@ -5,13 +5,14 @@
       <q-btn class="absolute-top-right q-ma-md" outline color="positive"  icon="add_circle"  :label="`${$t('general.add')} ${$t('media.singular')}`" @click="setMediumDialog('new')" />
     </q-card-section>
     <q-card-section>
-      <div class="row wrap q-col-gutter-sm q-pa-xs">
+      <div class="row wrap q-col-gutter-sm q-pa-xs items-stretch">
         <div class="media-container col-3 col-xs-6 col-sm-4 col-md-3 col-lg-2 col-xl-2"
              v-for="entity in $store.getters['content/getRelationsByKind']('medium')"
              :key="entity.id">
           <q-img
-              src="https://cdn.quasar.dev/img/parallax2.jpg"
+              :src="`${mediaUrl}${entity.medium.thumb}`"
               class=""
+              v-if="['jpg', 'png', 'gif'].indexOf(entity.medium.format) !== -1"
               basic
               :ratio="1"
           >
@@ -21,6 +22,13 @@
               </div>
             </template>
           </q-img>
+          <div style="background-color: azure">
+            <q-icon
+                name="attachment"
+                style="font-size: 4.4em;"
+                v-if="['jpg', 'png', 'gif'].indexOf(entity.medium.format) === -1"
+            />
+          </div>
         </div>
       </div>
     </q-card-section>
@@ -41,6 +49,9 @@ export default {
     }
   },
   computed: {
+    mediaUrl () {
+      return process.env.MEDIA_URL
+    }
   },
   methods: {
     setMediumDialog (id) {

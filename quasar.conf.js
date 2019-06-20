@@ -90,7 +90,7 @@ module.exports = function (ctx) {
     build: {
       env: {
         API_URL: JSON.stringify(process.env.API_URL ? process.env.API_URL : '/api'),
-        MEDIA_URL: JSON.stringify(process.env.MEDIA_URL ? process.env.MEDIA_URL : '/media')
+        MEDIA_URL: JSON.stringify(process.env.MEDIA_URL ? process.env.MEDIA_URL : '')
       },
       scopeHoisting: true,
       vueRouterMode: 'history',
