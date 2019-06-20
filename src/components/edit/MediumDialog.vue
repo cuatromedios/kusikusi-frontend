@@ -2,7 +2,7 @@
   <div>
     <q-dialog v-model="open" @hide="closeDialog">
       <q-uploader
-          :url="uploadUrl"
+          ref="uploader"
           multiple
           style="width: 36em; max-width: 90vw"
       >
@@ -68,7 +68,7 @@
           </q-list>
           <div class="row justify-around q-mt-md" v-if="scope.files.length !== 0">
             <q-btn flat @click="closeDialog">{{ $t('general.cancel')}}</q-btn>
-            <q-btn color="positive" @click="scope.upload">{{ $t('media.upload')}}</q-btn>
+            <q-btn color="positive" @click="startUpload">{{ $t('media.upload')}}</q-btn>
           </div>
         </template>
       </q-uploader>
@@ -100,9 +100,6 @@ export default {
   computed: {
     showDialog () {
       return this.entityId !== null
-    },
-    uploadUrl () {
-      return `${process.env.API_URL}/media/id/upload`
     }
   },
   methods: {
@@ -112,6 +109,9 @@ export default {
     },
     changed () {
       this.open = this.entityId !== null
+    },
+    startUpload () {
+      console.log(this.$refs.uploader.files.length)
     }
   }
 }
