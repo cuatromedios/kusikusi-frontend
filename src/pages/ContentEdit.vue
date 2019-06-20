@@ -14,7 +14,7 @@
                :label="field.label"
                :field="field.field"
                :component="field.component"
-               :settings="field.settings"
+               :props="field.props"
                >
           </field-wrapper>
         </q-card-section>

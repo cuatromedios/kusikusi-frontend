@@ -1,12 +1,11 @@
 <template>
   <div>
     <q-input class="q-mb-sm"
-             :type="settings.type || 'text'"
              :filled="true"
              v-model="fieldReference"
              :label="$t(label)"
              :debounce="1000"
-             :autogrow="settings.autogrow || false"
+             v-bind="props"
     />
   </div>
 </template>
@@ -20,6 +19,10 @@ export default {
     label: {
       type: String,
       default: ''
+    },
+    props: {
+      type: Object,
+      default: () => { return {} }
     }
   }
 }

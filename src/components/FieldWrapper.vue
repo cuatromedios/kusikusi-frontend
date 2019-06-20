@@ -9,7 +9,7 @@
             :label="label"
             :field="field"
             :lang="lang"
-            :settingsObject="settings"
+            :props="props"
         >
         </div>
         <q-badge v-if="lang && lang !== ''" color="info" floating class="langBadge"  >
@@ -34,7 +34,7 @@ export default {
       type: String,
       default: null
     },
-    settings: {
+    props: {
       type: Object,
       default: () => { return {} }
     },
