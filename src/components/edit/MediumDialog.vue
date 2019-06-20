@@ -1,20 +1,29 @@
 <template>
   <div>
-    <q-dialog v-model="open">
+    <q-dialog v-model="open" @hide="closeDialog">
       <q-uploader
           url="http://localhost:4444/upload"
           multiple
           style="width: 36em; max-width: 90vw"
       >
+        <template v-slot:header="scope">
+          <q-toolbar class="bg-primary">
+            <q-toolbar-title>
+              {{ $t('media.uploader') }}
+            </q-toolbar-title>
+            <q-btn flat round dense icon="close" @click="closeDialog" />
+          </q-toolbar>
+        </template>
         <template v-slot:list="scope">
           <div class="row justify-around">
             <q-btn outline
                    :size="scope.files.length === 0 ? 'lg' : 'md'"
                    class="full-width"
                    :class="{'q-py-xl': scope.files.length === 0}"
-                   @click="scope.pickFiles"
                    style="border-style: dashed"
-            >{{ $t('media.select')}}
+            >
+              <q-uploader-add-trigger />
+              {{ $t('media.select')}}
             </q-btn>
           </div>
           <lang-tabs/>
@@ -32,7 +41,7 @@
                   class="gt-xs"
                   avatar
               >
-                <q-icon name="attachment" style="width: 3.5rem; "/>
+                <q-icon name="attachment" style="width: 3.5rem; height: 4rem"/>
               </q-item-section>
               <q-item-section>
                 <q-item-label class="full-width ellipsis">
@@ -58,8 +67,8 @@
             </q-item>
           </q-list>
           <div class="row justify-around q-mt-md" v-if="scope.files.length !== 0">
-            <q-btn flat>{{ $t('general.cancel')}}</q-btn>
-            <q-btn color="positive">{{ $t('media.upload')}}</q-btn>
+            <q-btn flat @click="closeDialog">{{ $t('general.cancel')}}</q-btn>
+            <q-btn color="positive" @click="scope.upload">{{ $t('media.upload')}}</q-btn>
           </div>
         </template>
       </q-uploader>

@@ -64,6 +64,7 @@ module.exports = function (ctx) {
         'QPageSticky',
         'QDialog',
         'QUploader',
+        'QUploaderAddTrigger',
         'QLinearProgress'
       ],
 
