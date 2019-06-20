@@ -17,7 +17,11 @@ const getters = {
     return state.config.langs
   },
   defaultLang: (state) => {
-    return state.config.langs[0]
+    if (state.config && state.config.langs) {
+      return state.config.langs[0]
+    } else {
+      return ''
+    }
   }
 }
 
