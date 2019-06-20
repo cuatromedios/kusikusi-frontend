@@ -2,7 +2,7 @@
   <div>
     <q-dialog v-model="open" @hide="closeDialog">
       <q-uploader
-          url="http://localhost:4444/upload"
+          :url="uploadUrl"
           multiple
           style="width: 36em; max-width: 90vw"
       >
@@ -50,7 +50,7 @@
                 <q-item-label caption>
                   {{ $t('media.status.title') }}: {{ $t(`media.status.${file.__status}`) }}
                 </q-item-label>
-                <q-linear-progress stripe style="height: 2px; " color="positive" :value="file.__progress"  />
+                <q-linear-progress stripe style="height: 2px; " :color="file.__status === 'failed' ? 'negative' : 'positive'" :value="file.__progress"  />
               </q-item-section>
               <q-item-section top side>
                 <q-btn
@@ -100,6 +100,9 @@ export default {
   computed: {
     showDialog () {
       return this.entityId !== null
+    },
+    uploadUrl () {
+      return `${process.env.API_URL}/media/id/upload`
     }
   },
   methods: {

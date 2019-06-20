@@ -46,7 +46,9 @@ export default {
     select: 'Select or drop files...',
     status: {
       title: 'Status',
-      idle: 'Idle'
+      idle: 'Idle',
+      failed: 'Failed',
+      uploading: 'Uploading'
     }
   },
   users: {
