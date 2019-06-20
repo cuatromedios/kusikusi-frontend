@@ -1,12 +1,12 @@
 <template>
   <div>
-    <q-input class="q-mb-sm"
-             :filled="true"
-             v-model="fieldReference"
-             :label="$t(label)"
-             :debounce="1000"
-             v-bind="props"
-             min-height="5rem"
+    <q-editor class="q-mb-sm"
+              :filled="true"
+              v-model="fieldReference"
+              :label="$t(label)"
+              :debounce="1000"
+              v-bind="props"
+              min-height="5rem"
     />
   </div>
 </template>
