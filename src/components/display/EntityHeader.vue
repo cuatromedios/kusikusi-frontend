@@ -46,7 +46,9 @@ export default {
             value = this.$store.state.content.entity.contents[this.$store.getters['ui/defaultLang']][fieldParts[1]]
           }
         } else {
-
+          if (this.$store.state.content.entity[fieldParts[0]]) {
+            value = this.$store.state.content.entity[fieldParts[0]][fieldParts[1]]
+          }
         }
       } else {
         value = this.$store.state.content.entity[fieldParts[0]]
