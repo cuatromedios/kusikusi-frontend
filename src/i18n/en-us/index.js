@@ -44,6 +44,7 @@ export default {
     uploader: 'Media uploader',
     upload: 'Upload selected files',
     select: 'Select or drop files...',
+    tags: 'Tags',
     status: {
       title: 'Status',
       idle: 'Idle',

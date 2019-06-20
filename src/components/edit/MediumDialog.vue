@@ -5,6 +5,8 @@
           ref="uploader"
           style="width: 36em; max-width: 90vw"
           field-name="file"
+          :headers="[{ name: 'Authorization', value: 'Bearer ' + this.$store.state.session.authtoken }]"
+          :url="uploadUrl"
           @uploaded="uploaded"
       >
         <template v-slot:header="scope">
@@ -96,12 +98,16 @@ export default {
   },
   data () {
     return {
-      open: false
+      open: false,
+      newEntityId: null
     }
   },
   computed: {
     showDialog () {
       return this.entityId !== null
+    },
+    uploadUrl () {
+      return `${process.env.API_URL}/media/${this.newEntityId}/upload`
     }
   },
   methods: {
@@ -133,10 +139,11 @@ export default {
       let createResult = await this.$api.post(`/media`, entity)
       if (createResult.success) {
         let relationResult = await this.$api.post(`/entity/${this.$store.state.content.entity.id}/relations`, { kind: 'medium', id: createResult.result.id })
+        this.newEntityId = createResult.result.id
         if (relationResult.success) {
-          this.$refs.uploader.url = `${process.env.API_URL}/media/${createResult.result.id}/upload`
-          this.$refs.uploader.headers = [{ name: 'Authorization', value: 'Bearer ' + this.$store.state.session.authtoken }]
-          this.$refs.uploader.upload()
+          this.$nextTick(() => {
+            this.$refs.uploader.upload()
+          })
         }
       }
     },

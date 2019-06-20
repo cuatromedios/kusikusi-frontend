@@ -30,6 +30,19 @@
                     text-color="white" size="64px"
                 />
             </div>
+            <q-card-section class="q-pa-sm" v-if="tags && tags.length > 0">
+              <q-select
+                  v-model="entity.tags"
+                  multiple
+                  outlined
+                  :dense="true"
+                  :options-dense="true"
+                  :options="tags"
+                  use-chips
+                  :label="$t('media.tags')"
+                  @input="updateMediaRelation(entity)"
+              />
+            </q-card-section>
             <q-card-actions align="around" class="media-card-actions">
               <div class="media-card-actions-title" style="width: 80%">
                 <span>{{ entity.medium.filename }}</span><br>
@@ -51,6 +64,10 @@ export default {
   name: 'MediaGrid',
   components: { MediumDialog },
   props: {
+    tags: {
+      type: Array,
+      default: null
+    }
   },
   data () {
     return {
@@ -70,6 +87,11 @@ export default {
     async deleteMedia (mediaId) {
       await this.$api.delete(`/entity/${this.$store.state.content.entity.id}/relations/medium/${mediaId}`)
       this.$router.go()
+    },
+    async updateMediaRelation (media) {
+      console.log(media)
+      await this.$api.post(`/entity/${this.$store.state.content.entity.id}/relations`, { kind: 'medium', id: media.id, depth: media.depth, position: media.position, tags: media.tags })
+      // this.$router.go()
     }
   }
 }
