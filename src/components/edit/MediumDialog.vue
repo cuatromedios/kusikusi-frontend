@@ -5,10 +5,7 @@
         <q-img src="https://media-cdn.tripadvisor.com/media/photo-s/0a/47/a8/91/chicken-salad-sandwich.jpg" />
 
         <q-card-section>
-
-        </q-card-section>
-
-        <q-card-section>
+          <lang-tabs />
           <div class="text-subtitle1">$・Italian, Cafe</div>
           <div class="text-subtitle2 text-grey">Small plates, salads & sandwiches in an intimate setting.</div>
         </q-card-section>
@@ -25,7 +22,9 @@
 </template>
 
 <script>
+import LangTabs from '../LangTabs'
 export default {
+  components: { LangTabs },
   name: 'MediumDialog',
   props: {
     entityId: {

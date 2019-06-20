@@ -14,10 +14,11 @@
 export default {
   data () {
     return {
-      checkedLangs: {
-        fr: true,
-        de: false
-      }
+    }
+  },
+  mounted () {
+    if (this.$store.state.ui.config.langs.indexOf(this.$store.state.ui.editorLang) === -1) {
+      this.editorLang = this.$store.state.ui.config.langs[0]
     }
   },
   computed: {

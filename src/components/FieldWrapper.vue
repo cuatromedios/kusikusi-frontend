@@ -3,7 +3,7 @@
     <div v-for="lang in langs"
          class="relative-position"
          v-bind:key="lang">
-      <div v-show="lang === '' || lang === $store.state.ui.editorLang">
+      <div v-show="lang === '' || lang === $store.state.ui.editorLang || langs.length === 1">
         <div
             :is="component"
             :label="label"
