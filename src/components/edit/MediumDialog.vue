@@ -12,7 +12,7 @@
 
         <q-separator />
 
-        <q-card-actions>
+        <q-card-actions align="center">
           <q-btn flat @click="closeDialog">{{ $t('general.cancel') }}</q-btn>
           <q-btn color="primary" v-close-popup>{{ $t('general.save') }}</q-btn>
         </q-card-actions>
