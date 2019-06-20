@@ -125,6 +125,9 @@ export default {
           filename: file.name,
           mimetype: file.type,
           format: format
+        },
+        contents: {
+          title: filenameParts[0]
         }
       }
       let createResult = await this.$api.post(`/media`, entity)
