@@ -65,7 +65,8 @@ module.exports = function (ctx) {
         'QDialog',
         'QUploader',
         'QUploaderAddTrigger',
-        'QLinearProgress'
+        'QLinearProgress',
+        'QEditor'
       ],
 
       directives: [

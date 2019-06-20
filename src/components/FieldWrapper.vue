@@ -22,8 +22,9 @@
 
 <script>
 import TextField from './edit/TextField'
+import HtmlField from './edit/HtmlField'
 export default {
-  components: { TextField },
+  components: { TextField, HtmlField },
   name: 'FieldWrapper',
   props: {
     label: {
