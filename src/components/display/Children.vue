@@ -23,6 +23,7 @@
                 :key="entity.id"
                 :to="{name: 'content', params: {entity_id: entity.id}}">
           <q-item-section>{{ entity.name || entity.model }}</q-item-section>
+          <q-item-section>{{ entity.created_at }}</q-item-section>
           <q-item-section avatar>
             <q-icon color="grey" name="chevron_right" />
           </q-item-section>
