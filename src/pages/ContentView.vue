@@ -17,7 +17,10 @@
            class="q-mb-lg">
       </div>
     </div>
-    <q-page-sticky position="top-right" :offset="[0,0]" v-if="$store.state.ui.config.models[$store.state.content.entity.model].editor && $store.state.ui.config.models[$store.state.content.entity.model].editor.length > 0">
+    <q-page-sticky
+        position="top-right"
+        :offset="[0,0]"
+        v-if="_.get($store, 'state.ui.config.models[' + $store.state.content.entity.model + '].editor.length')">
       <q-btn color="primary"
              class="q-ma-md "
              icon="edit" type="a"
@@ -34,6 +37,7 @@ import Children from '../components/display/Children'
 import MediaStrip from '../components/display/MediaStrip'
 import MediaGrid from '../components/display/MediaGrid'
 import FieldWrapper from '../components/FieldWrapper'
+
 export default {
   components: { EntityHeader, EntityCard, Children, MediaStrip, MediaGrid, FieldWrapper },
   name: 'Content',
@@ -54,6 +58,7 @@ export default {
     }
   },
   async mounted () {
+    console.log(this._.defaults({ 'a': 1 }, { 'a': 3, 'b': 2 }))
     await this.getEntity()
   },
   watch: {
