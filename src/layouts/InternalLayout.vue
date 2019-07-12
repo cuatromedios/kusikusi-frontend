@@ -86,7 +86,7 @@ export default {
       if (this.$store.state.session.user.profile === 'admin') {
         menu = [dashboard, content, media, users, configuration, logout]
       } else {
-        menu = [content, media, logout]
+        menu = [dashboard, content, logout]
       }
       return menu
     }
