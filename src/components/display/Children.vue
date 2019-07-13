@@ -18,17 +18,17 @@
     </q-card-section>
     <q-card-section class="q-mt-md">
       <q-list bordered separator>
-        <q-item clickable v-ripple
-                v-for="entity in $store.state.content.children"
-                :key="entity.id"
-                :to="{name: 'content', params: {entity_id: entity.id}}">
+        <q-item v-for="entity in $store.state.content.children"
+                :key="entity.id">
           <q-item-section avatar><q-icon :name="$store.state.ui.config.models[entity.model] ? $store.state.ui.config.models[entity.model].icon : 'insert_drive_file'"/></q-item-section>
           <q-item-section>
-            <q-item-label>{{ entity.name || entity.model }}</q-item-label>
-            <q-item-label caption></q-item-label>
+            <q-item-label class="text-body2 text-weight-bold text-primary" >
+              <q-btn flat dense class="q-pa-none" :to="{name: 'content', params: {entity_id: entity.id}}">{{ entity.name || entity.model }}</q-btn>
+            </q-item-label>
+            <q-item-label caption>{{ entity.model }}</q-item-label>
           </q-item-section>
           <q-item-section side bottom>
-            <q-item-label caption>{{ $moment(entity.publicated_at).fromNow() }}</q-item-label>
+            <q-item-label caption>{{ $moment(entity.publicated_at).fromNow() }}  <q-icon name="lens" :color="entity.published ? 'positive' : 'negative'" /></q-item-label>
           </q-item-section>
         </q-item>
       </q-list>
