@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Api from '../../tools/Api'
+import lodash from 'lodash'
 
 // initial state
 const state = {
@@ -53,6 +54,21 @@ const actions = {
       commit('setAncestors', call.result.ancestors)
       commit('setChildren', call.result.children)
     }
+  },
+  async changeRelationsPosition ({ commit, dispatch, state }, relations) {
+    let index = 0
+    let objects = lodash.keyBy(lodash.map(relations, (o) => {
+      index++
+      return { id: o.id, position: index }
+    }), 'id')
+    let oldRelations = state.relations
+    lodash.forEach(oldRelations, async (value, key) => {
+      if (objects[state.relations[key].id]) {
+        state.relations[key].position = objects[state.relations[key].id].position
+        await Api.post(`/entity/${state.entity.id}/relations`, { kind: 'medium', id: state.relations[key].id, depth: state.relations[key].depth, position: state.relations[key].position, tags: state.relations[key].tags })
+      }
+    })
+    state.relations = lodash.sortBy(oldRelations, ['position'])
   }
 }
 
@@ -79,7 +95,7 @@ const mutations = {
     }
   },
   setRelations (state, newRelations) {
-    state.relations = newRelations
+    state.relations = lodash.sortBy(newRelations, ['position'])
   },
   setChildren (state, newChildren) {
     state.children = newChildren

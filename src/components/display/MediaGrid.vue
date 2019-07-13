@@ -1,17 +1,17 @@
 <template>
   <q-card flat bordered class="my-card q-mb-lg media-strip">
     <q-card-section>
-      <h2><q-icon name="photo_library"/> {{ $t('media.title') }}</h2>
+      <h2><q-icon name="photo_library"/> {{ $t(label) }}</h2>
       <q-btn class="absolute-top-right q-ma-md" outline color="positive"  icon="add_circle"  :label="`${$t('general.add')} ${$t('media.singular')}`" @click="setMediumDialog('new')" />
     </q-card-section>
     <q-card-section>
-      <div class="row wrap q-col-gutter-md q-mt-xs justify-center items-stretch">
-        <div class="col-xs-6 col-sm-4 col-md-3 col-lg-2 col-xl-1"
-             v-for="medium in $store.getters['content/getRelationsByKind']('medium')"
-             :key="medium.id">
-          <medium-card :entity="medium" :tags="tags"/>
-        </div>
-      </div>
+      <draggable v-model="mediaList" class="row wrap q-col-gutter-md q-mt-xs justify-center items-stretch">
+          <div class="col-xs-6 col-sm-4 col-md-3 col-lg-2 col-xl-1"
+               v-for="medium in mediaList"
+               :key="medium.id" >
+            <medium-card :entity="medium" :tags="tags"/>
+          </div>
+      </draggable>
     </q-card-section>
     <MediumDialog :entity-id="currentMediumId" @closed="currentMediumId = null" />
   </q-card>
@@ -20,10 +20,16 @@
 <script>
 import MediumDialog from '../edit/MediumDialog'
 import MediumCard from './elements/MediumCard'
+import draggable from 'vuedraggable'
+
 export default {
   name: 'MediaGrid',
-  components: { MediumDialog, MediumCard },
+  components: { MediumDialog, MediumCard, draggable },
   props: {
+    label: {
+      type: String,
+      default: 'media.title'
+    },
     tags: {
       type: Array,
       default: null
@@ -31,13 +37,20 @@ export default {
   },
   data () {
     return {
-      currentMediumId: null,
-      showTagEditor: false
+      currentMediumId: null
     }
   },
   computed: {
     mediaUrl () {
       return process.env.MEDIA_URL
+    },
+    mediaList: {
+      get () {
+        return this.$store.getters['content/getRelationsByKind']('medium')
+      },
+      set (value) {
+        this.$store.dispatch('content/changeRelationsPosition', value)
+      }
     }
   },
   methods: {
