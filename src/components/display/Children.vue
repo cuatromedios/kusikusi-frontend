@@ -18,26 +18,31 @@
     </q-card-section>
     <q-card-section class="q-mt-md">
       <q-list bordered separator>
-        <q-item v-for="entity in $store.state.content.children"
-                :key="entity.id">
-          <q-item-section avatar><q-icon :name="$store.state.ui.config.models[entity.model] ? $store.state.ui.config.models[entity.model].icon : 'insert_drive_file'"/></q-item-section>
-          <q-item-section>
-            <q-item-label class="text-body2 text-weight-bold text-primary" >
-              <q-btn flat dense class="q-pa-none" :to="{name: 'content', params: {entity_id: entity.id}}">{{ entity.name || entity.model }}</q-btn>
-            </q-item-label>
-            <q-item-label caption>{{ entity.model }}</q-item-label>
-          </q-item-section>
-          <q-item-section side bottom>
-            <q-item-label caption>{{ $moment(entity.publicated_at).fromNow() }}  <q-icon name="lens" :color="entity.published ? 'positive' : 'negative'" /></q-item-label>
-          </q-item-section>
-        </q-item>
+        <draggable v-model="childrenList">
+          <q-item v-for="entity in childrenList"
+                  class="bg-white"
+                  :key="entity.id">
+            <q-item-section avatar><q-icon :name="$store.state.ui.config.models[entity.model] ? $store.state.ui.config.models[entity.model].icon : 'insert_drive_file'"/></q-item-section>
+            <q-item-section>
+              <q-item-label class="text-body2 text-weight-bold text-primary" >
+                <q-btn flat dense class="q-pa-none" :to="{name: 'content', params: {entity_id: entity.id}}">{{ entity.contents.title || entity.name || entity.model }}</q-btn>
+              </q-item-label>
+              <q-item-label caption>{{ entity.contents.url || '' }}</q-item-label>
+            </q-item-section>
+            <q-item-section side bottom>
+              <q-item-label caption>{{ $moment(entity.publicated_at).fromNow() }}  <q-icon name="lens" :color="entity.published ? 'positive' : 'negative'" /></q-item-label>
+            </q-item-section>
+          </q-item>
+        </draggable>
       </q-list>
     </q-card-section>
   </q-card>
 </template>
 
 <script>
+import draggable from 'vuedraggable'
 export default {
+  components: { draggable },
   name: 'Children',
   props: {
     label: {
@@ -54,6 +59,14 @@ export default {
     }
   },
   computed: {
+    childrenList: {
+      get () {
+        return this.$store.state.content.children
+      },
+      set (value) {
+        this.$store.dispatch('content/changeChildrenPosition', value)
+      }
+    }
   },
   methods: {
   }

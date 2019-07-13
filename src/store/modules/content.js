@@ -69,6 +69,21 @@ const actions = {
       }
     })
     state.relations = lodash.sortBy(oldRelations, ['position'])
+  },
+  async changeChildrenPosition ({ commit, dispatch, state }, relations) {
+    let index = 0
+    let objects = lodash.keyBy(lodash.map(relations, (o) => {
+      index++
+      return { id: o.id, position: index }
+    }), 'id')
+    let oldRelations = state.children
+    lodash.forEach(oldRelations, async (value, key) => {
+      if (objects[state.children[key].id]) {
+        state.children[key].position = objects[state.children[key].id].position
+        await Api.post(`/entity/${state.children[key].id}/relations`, { kind: 'ancestor', id: state.entity.id, depth: state.children[key].depth, position: state.children[key].position, tags: state.children[key].tags })
+      }
+    })
+    state.children = lodash.sortBy(oldRelations, ['position'])
   }
 }
 
