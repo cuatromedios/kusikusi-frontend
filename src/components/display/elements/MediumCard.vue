@@ -23,32 +23,38 @@
     </div>
     <q-card-section class="absolute-top-right q-pa-xs"
                     v-if="tags && tags.length > 0"
-                    @click="openTagEditor">
+                   >
+      <q-chip v-if="tags && tags.length > 0"
+              dense
+              color="positive" text-color="white"
+              icon-right="add"
+              class="float-right cursor-pointer">
+        <q-avatar icon="local_offer" color="grey-5" text-color="white" />
+        {{ $t('general.add') }} {{ $t('media.tag') }}
+        <q-menu>
+          <q-list style="min-width: 100px">
+            <q-item v-for="(tag, index) in notUsedTags"
+                    :key="index"
+                    @click="addTag(tag)"
+                    dense clickable v-close-popup>
+              <q-item-section>{{ tag }}</q-item-section>
+            </q-item>
+          </q-list>
+        </q-menu>
+      </q-chip>
       <q-chip v-for="(tag, index) in entity.tags"
               :key="index"
-              dense class="float-right cursor-pointer"
-              icon="local_offer">
+              removable
+              @remove="removeTag(tag)"
+              dense class="float-right"
+              >
+        <q-avatar icon="local_offer" color="grey-5" text-color="white" />
         {{ tag }}
       </q-chip>
     </q-card-section>
-    <q-card-section v-show="showTagEditor" class="absolute-top q-pa-sm bg-white" v-if="tags && tags.length > 0">
-      <q-select
-          ref="tagEditor"
-          v-model="entity.tags"
-          multiple
-          outlined
-          :dense="true"
-          :options-dense="true"
-          :options="tags"
-          use-chips
-          :label="$t('media.tags')"
-          @mouseleave="hideTagEditor"
-          @input="updateMediaRelation"
-      />
-    </q-card-section>
     <q-card-actions align="around" class="media-card-actions">
       <div class="media-card-actions-title" style="width: 80%">
-        <span>{{ entity.medium.filename }}</span><br>
+        <span class="ellipsis">{{ entity.medium.filename }}</span><br>
         <span class="text-grey-5">{{ Math.round(entity.medium.size / 1024) }} Kb</span>
       </div>
       <q-btn style="width: 20%" flat size="small" dense icon="delete" color="grey-4" @click="deleteRelation"></q-btn>
@@ -70,29 +76,39 @@ export default {
   },
   data () {
     return {
-      showTagEditor: false
     }
   },
   computed: {
     mediaUrl () {
       return process.env.MEDIA_URL
+    },
+    notUsedTags () {
+      return this._.difference(this.tags, this.entity.tags)
     }
   },
   methods: {
     async deleteRelation () {
-      await this.$api.delete(`/entity/${this.$store.state.content.entity.id}/relations/medium/${this.entity.id}`)
-      this.$router.go()
+      this.$q.dialog({
+        title: this.$t('general.confirm'),
+        message: this.$t('general.sure'),
+        cancel: true,
+        persistent: true
+      }).onOk(async () => {
+        await this.$api.delete(`/entity/${this.$store.state.content.entity.id}/relations/medium/${this.entity.id}`)
+        this.$router.go()
+      })
     },
-    async updateMediaRelation () {
+    async addTag (tag) {
+      this.entity.tags.push(tag)
+      this.updateTags()
+    },
+    async removeTag (tag) {
+      console.log(tag)
+      this.entity.tags = this._.without(this.entity.tags, tag)
+      this.updateTags()
+    },
+    async updateTags () {
       await this.$api.post(`/entity/${this.$store.state.content.entity.id}/relations`, { kind: 'medium', id: this.entity.id, depth: this.entity.depth, position: this.entity.position, tags: this.entity.tags })
-    },
-    openTagEditor () {
-      this.showTagEditor = true
-      this.$refs.tagEditor.showPopup()
-    },
-    hideTagEditor () {
-      this.showTagEditor = false
-      this.$refs.tagEditor.hidePopup()
     }
   }
 }

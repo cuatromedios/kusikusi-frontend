@@ -6,7 +6,7 @@
     </q-card-section>
     <q-card-section>
       <div class="row wrap q-col-gutter-md q-mt-xs justify-center items-stretch">
-        <div class="col-xs-6 col-sm-3 col-md-3 col-lg-2 col-xl-1"
+        <div class="col-xs-6 col-sm-4 col-md-3 col-lg-2 col-xl-1"
              v-for="medium in $store.getters['content/getRelationsByKind']('medium')"
              :key="medium.id">
           <medium-card :entity="medium" :tags="tags"/>

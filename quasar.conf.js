@@ -81,7 +81,8 @@ module.exports = function (ctx) {
         'Notify',
         'LocalStorage',
         'Meta',
-        'Loading'
+        'Loading',
+        'Dialog'
       ]
 
       // iconSet: 'ionicons-v4'

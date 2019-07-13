@@ -10,6 +10,9 @@ export default {
     edit: 'Edit',
     save: 'Save',
     cancel: 'Cancel',
+    confirm: 'Confirm',
+    ok: 'Ok',
+    sure: 'Are you sure?',
     delete: 'Delete',
     add: 'Add'
   },
@@ -45,6 +48,7 @@ export default {
     upload: 'Upload selected files',
     select: 'Select or drop files...',
     tags: 'Tags',
+    tag: 'tag',
     status: {
       title: 'Status',
       idle: 'Idle',
