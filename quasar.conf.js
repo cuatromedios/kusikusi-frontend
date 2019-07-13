@@ -8,7 +8,8 @@ module.exports = function (ctx) {
       'i18n',
       'axios',
       'vuelidate',
-      'lodash'
+      'lodash',
+      'moment'
     ],
 
     css: [

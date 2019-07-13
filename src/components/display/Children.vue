@@ -22,10 +22,13 @@
                 v-for="entity in $store.state.content.children"
                 :key="entity.id"
                 :to="{name: 'content', params: {entity_id: entity.id}}">
-          <q-item-section>{{ entity.name || entity.model }}</q-item-section>
-          <q-item-section>{{ entity.created_at }}</q-item-section>
-          <q-item-section avatar>
-            <q-icon color="grey" name="chevron_right" />
+          <q-item-section avatar><q-icon :name="$store.state.ui.config.models[entity.model] ? $store.state.ui.config.models[entity.model].icon : 'insert_drive_file'"/></q-item-section>
+          <q-item-section>
+            <q-item-label>{{ entity.name || entity.model }}</q-item-label>
+            <q-item-label caption></q-item-label>
+          </q-item-section>
+          <q-item-section side bottom>
+            <q-item-label caption>{{ $moment(entity.publicated_at).fromNow() }}</q-item-label>
           </q-item-section>
         </q-item>
       </q-list>
