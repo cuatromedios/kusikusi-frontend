@@ -68,7 +68,9 @@ module.exports = function (ctx) {
         'QUploader',
         'QUploaderAddTrigger',
         'QLinearProgress',
-        'QEditor'
+        'QEditor',
+        'QBreadcrumbs',
+        'QBreadcrumbsEl'
       ],
 
       directives: [

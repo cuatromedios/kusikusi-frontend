@@ -15,6 +15,26 @@ const state = {
 const getters = {
   getRelationsByKind: (state) => (kind) => {
     return state.relations.filter(relation => relation.kind === kind)
+  },
+  getBreadcrums: (state, getters, rootState, rootGetters) => {
+    let firstFound
+    let ancestors = []
+    for (let a = 0; a < state.ancestors.length; a++) {
+      if (state.ancestors[a].id === 'home') firstFound = true
+      if (firstFound) {
+        ancestors.push({
+          id: state.ancestors[a].id,
+          title: lodash.get(state.ancestors[a], 'contents.title') || state.ancestors[a].name || state.ancestors[a].model,
+          icon: rootState.ui.config.models[state.ancestors[a].model].icon
+        })
+      }
+    }
+    ancestors.push({
+      id: state.entity.id,
+      title: lodash.get(state.entity, 'contents.title') || state.entity.name || state.entity.model,
+      icon: rootState.ui.config.models[state.entity.model].icon
+    })
+    return ancestors
   }
 }
 

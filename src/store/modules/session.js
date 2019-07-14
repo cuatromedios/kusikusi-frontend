@@ -35,18 +35,6 @@ const getters = {
       }
     }
     return entities
-  },
-  firstEntitiesWithWritePermissions (state) {
-    let entities = []
-    for (let e = 0; e < state.user.permissions.length; e++) {
-      if (state.user.permissions[e].write !== 'none' && state.user.permissions[e].read !== 'none') {
-        let entity = state.user.permissions[e].entity
-        entity.write = state.user.permissions[e].write
-        entity.read = state.user.permissions[e].read
-        entities.push(entity)
-      }
-    }
-    return null
   }
 }
 

@@ -9,6 +9,13 @@
       <div class="fade-screen"></div>
     </q-card>
     <div v-if="ready">
+      <q-breadcrumbs class="q-mb-sm q-mt-none">
+        <q-breadcrumbs-el v-for="ancestor in $store.getters['content/getBreadcrums']"
+                          :key="ancestor.id"
+                          :to="{name: 'content', params: {entity_id: ancestor.id}}"
+                          :icon="ancestor.icon"
+                          :label="ancestor.title" />
+      </q-breadcrumbs>
       <div v-for="item in $store.state.ui.config.models[$store.state.content.entity.model].display"
            v-bind:key="item.index"
            :is="item.component"
@@ -22,7 +29,7 @@
         :offset="[0,0]"
         v-if="_.get($store, 'state.ui.config.models[' + $store.state.content.entity.model + '].editor.length')">
       <q-btn color="primary"
-             class="q-ma-md "
+             class="q-mr-lg q-mt-sm"
              icon="edit" type="a"
              :label="$t('general.edit')"
              :to="{ name: 'contentEdit', params: { entity_id: this.entityId } }"
@@ -58,7 +65,6 @@ export default {
     }
   },
   async mounted () {
-    console.log(this._.defaults({ 'a': 1 }, { 'a': 3, 'b': 2 }))
     await this.getEntity()
   },
   watch: {
@@ -69,7 +75,7 @@ export default {
   methods: {
     async getEntity () {
       this.ready = false
-      this.entityId = this.$route.params.entity_id || this.$store.getters['session/firstEntityWithWithWritePermissions'] || 'home'
+      this.entityId = this.$route.params.entity_id || 'home'
       await this.$store.dispatch('content/getEntity', this.entityId)
       this.ready = true
     }
