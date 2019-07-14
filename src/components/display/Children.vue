@@ -25,7 +25,10 @@
             <q-item-section avatar><q-icon :name="$store.state.ui.config.models[entity.model] ? $store.state.ui.config.models[entity.model].icon : 'insert_drive_file'"/></q-item-section>
             <q-item-section>
               <q-item-label class="text-body2 text-weight-bold text-primary" >
-                <q-btn flat dense class="q-pa-none" :to="{name: 'content', params: {entity_id: entity.id}}">{{ entity.contents.title || entity.name || entity.model }}</q-btn>
+                <q-btn flat dense class="q-pa-none full-width"
+                       align="left"
+                       :to="{name: 'content', params: {entity_id: entity.id}}"
+                >{{ entity.contents.title || entity.name || entity.model }}</q-btn>
               </q-item-label>
               <q-item-label caption>{{ entity.contents.url || '' }}</q-item-label>
             </q-item-section>
