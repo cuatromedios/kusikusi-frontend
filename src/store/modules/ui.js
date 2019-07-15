@@ -1,6 +1,8 @@
 import Vue from 'vue'
 import { LocalStorage } from 'quasar'
 import Api from '../../tools/Api'
+import lodash from 'lodash'
+import router from '../../router'
 
 // initial state
 const state = {
@@ -8,7 +10,39 @@ const state = {
   lang: 'en',
   editorLang: null,
   currentTitle: '',
-  loading: false
+  loading: false,
+  menuItems: {
+    dashboard: {
+      label: 'dashboard.title',
+      icon: 'dashboard',
+      name: router.names.dashboard
+    },
+    content: {
+      label: 'content.title',
+      icon: 'home',
+      name: router.names.content
+    },
+    media: {
+      label: 'media.title',
+      icon: 'photo',
+      name: router.names.media
+    },
+    users: {
+      label: 'users.title',
+      icon: 'supervised_user_circle',
+      name: router.names.users
+    },
+    configuration: {
+      label: 'settings.title',
+      icon: 'settings_applications',
+      name: router.names.settings
+    },
+    logout: {
+      label: 'login.logout',
+      icon: 'exit_to_app',
+      name: router.names.login
+    }
+  }
 }
 
 // getters
@@ -22,6 +56,18 @@ const getters = {
     } else {
       return ''
     }
+  },
+  menu: (state, getters, rootState, rootGetters) => {
+    let menu = lodash.clone(lodash.get(state, `config.menu.${rootState.session.user.profile}`))
+    if (!menu) {
+      if (rootState.session.user.profile === 'admin') {
+        menu = [state.menuItems.dashboard, state.menuItems.content, state.menuItems.media, state.menuItems.users, state.menuItems.configuration]
+      } else {
+        menu = [state.menuItems.dashboard, state.menuItems.content]
+      }
+    }
+    menu.push(state.menuItems.logout)
+    return menu
   }
 }
 

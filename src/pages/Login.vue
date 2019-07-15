@@ -80,7 +80,8 @@ export default {
         'password': this.form.pass
       })
       if (loginResult.success) {
-        this.$router.push({ name: 'dashboard' })
+        console.log(this.$store.getters['ui/menu'])
+        this.$router.push(this.$store.getters['ui/menu'][0])
       } else {
         this.message = this.$t('login.invalid')
       }

@@ -3,7 +3,9 @@ import Api from '../../tools/Api'
 
 // initial state
 const state = {
-  user: {},
+  user: {
+    profile: ''
+  },
   authtoken: ''
 }
 
@@ -60,7 +62,6 @@ const actions = {
       let ua = a.entity.distance_to_home < 0 ? a.entity.distance_to_home * -1000 : a.entity.distance_to_home
       let ub = b.entity.distance_to_home < 0 ? b.entity.distance_to_home * -1000 : b.entity.distance_to_home
       let comparison = Math.sign(ua - ub)
-      console.log('comparison', a, b, ua, ub, comparison)
       return comparison
     })
     if (loginResult.success) {
