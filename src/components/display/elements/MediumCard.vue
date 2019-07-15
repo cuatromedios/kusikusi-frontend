@@ -24,7 +24,7 @@
     <q-card-section class="absolute-top-right q-pa-xs"
                     v-if="tags && tags.length > 0"
                    >
-      <q-chip v-if="tags && tags.length > 0"
+      <q-chip v-if="tags && tags.length > 0 && notUsedTags.length > 0"
               dense
               color="positive" text-color="white"
               icon-right="add"
