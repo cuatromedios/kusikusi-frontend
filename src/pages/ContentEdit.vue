@@ -57,7 +57,18 @@ export default {
     }
   },
   async mounted () {
-    await this.getEntity()
+    if (this.$store.state.ui.config.models === undefined) {
+      this.$store.watch(
+        (state) => state.ui.config.models,
+        (newValue, oldValue) => {
+          if (newValue) {
+            this.getEntity()
+          }
+        }
+      )
+    } else {
+      this.getEntity()
+    }
   },
   watch: {
   },
@@ -65,7 +76,7 @@ export default {
     async getEntity () {
       let entityId = this.$route.params.entity_id
       if (entityId === 'new') {
-        this.$store.dispatch('content/newEntity', { model: this.$route.params.model, parent_id: this.$route.params.parent_id })
+        await this.$store.dispatch('content/newEntity', { model: this.$route.params.model, parent_id: this.$route.params.parent_id })
       } else if (entityId !== this.$store.state.content.entity.id) {
         await this.$store.dispatch('content/getEntity', entityId)
       }
@@ -83,7 +94,7 @@ export default {
         this.$store.dispatch('content/clearId')
         call = await this.$api.post(`/entity`, this.$store.state.content.entity)
         if (call.success) {
-          this.$router.push({ name: 'contentEdit', params: { entity_id: call.result.id } })
+          this.$router.push({ name: 'content', params: { entity_id: call.result.id } })
         }
       } else {
         call = await this.$api.patch(`/entity/${this.$route.params.entity_id}`, this.$store.state.content.entity)
@@ -93,7 +104,11 @@ export default {
       }
     },
     async cancelEdit () {
-      this.$router.back()
+      if (this.$route.params.entity_id === 'new') {
+        this.$router.push({ name: 'content', params: { entity_id: this.$route.params.parent_id } })
+      } else {
+        this.$router.push({ name: 'content', params: { entity_id: this.$route.params.entity_id } })
+      }
     }
   }
 }

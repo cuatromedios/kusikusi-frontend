@@ -12,7 +12,7 @@
             :props="props"
         >
         </div>
-        <q-badge v-if="lang && lang !== ''" color="info" floating class="langBadge"  >
+        <q-badge v-if="lang && lang !== '' && langs.length > 1" color="info" floating class="langBadge"  >
           <q-icon name="language" />&ensp;<span>{{ lang }}</span>
         </q-badge>
       </div>
@@ -22,9 +22,10 @@
 
 <script>
 import TextField from './edit/TextField'
+import UrlField from './edit/UrlField'
 import HtmlField from './edit/HtmlField'
 export default {
-  components: { TextField, HtmlField },
+  components: { TextField, HtmlField, UrlField },
   name: 'FieldWrapper',
   props: {
     label: {
