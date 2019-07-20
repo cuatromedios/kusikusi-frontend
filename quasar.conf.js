@@ -100,6 +100,7 @@ module.exports = function (ctx) {
       },
       scopeHoisting: true,
       vueRouterMode: 'history',
+      publicPath: '/cms/',
       // vueCompiler: true,
       // gzip: true,
       // analyze: true,
