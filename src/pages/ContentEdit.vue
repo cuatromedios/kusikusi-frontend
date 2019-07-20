@@ -88,22 +88,12 @@ export default {
       } else {
         call = await this.$api.patch(`/entity/${this.$route.params.entity_id}`, this.$store.state.content.entity)
         if (call.success) {
-          this.cancelEdit()
+          this.$router.push({ name: 'content', params: { entity_id: this.$route.params.entity_id } })
         }
       }
     },
     async cancelEdit () {
-      if (this.$route.params.entity_id === 'new') {
-        this.$router.back()
-      } else {
-        let whereToGo
-        if (this.$store.state.content.entity.parent_id === 'root') {
-          whereToGo = 'home'
-        } else {
-          whereToGo = this.$store.state.content.entity.parent_id
-        }
-        this.$router.push({ name: 'content', params: { entity_id: whereToGo } })
-      }
+      this.$router.back()
     }
   }
 }
