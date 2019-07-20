@@ -14,7 +14,11 @@
           </q-item>
         </q-list>
       </q-btn-dropdown>
-      <q-btn class="absolute-top-right q-ma-md" outline color="positive"  icon="add_circle"  :label="`${$t('general.add')} ${$store.state.ui.config.models[allowed[0]].name}`" v-if="allowed && allowed.length === 1" />
+      <q-btn class="absolute-top-right q-ma-md"
+             outline color="positive"  icon="add_circle"
+             :label="`${$t('general.add')} ${$store.state.ui.config.models[allowed[0]].name}`" v-if="allowed && allowed.length === 1"
+             @click="$router.push({name: 'contentNew', params: {entity_id: 'new', parent_id: $store.state.content.entity.id, model: allowed[0]}})"
+      />
     </q-card-section>
     <q-card-section class="q-mt-md">
       <q-list bordered separator>
