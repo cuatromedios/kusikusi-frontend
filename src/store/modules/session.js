@@ -58,13 +58,13 @@ const actions = {
   },
   async login ({ commit }, payload) {
     let loginResult = await Api.post('/user/login', payload)
-    loginResult.result.user.permissions = loginResult.result.user.permissions.sort(function (a, b) {
-      let ua = a.entity.distance_to_home < 0 ? a.entity.distance_to_home * -1000 : a.entity.distance_to_home
-      let ub = b.entity.distance_to_home < 0 ? b.entity.distance_to_home * -1000 : b.entity.distance_to_home
-      let comparison = Math.sign(ua - ub)
-      return comparison
-    })
     if (loginResult.success) {
+      loginResult.result.user.permissions = loginResult.result.user.permissions.sort(function (a, b) {
+        let ua = a.entity.distance_to_home < 0 ? a.entity.distance_to_home * -1000 : a.entity.distance_to_home
+        let ub = b.entity.distance_to_home < 0 ? b.entity.distance_to_home * -1000 : b.entity.distance_to_home
+        let comparison = Math.sign(ua - ub)
+        return comparison
+      })
       commit('setAuthtoken', loginResult.result.token)
       commit('setUser', loginResult.result.user)
     }
