@@ -20,18 +20,6 @@
         </q-card-section>
       </q-card>
     </div>
-    <transition
-        appear
-        enter-active-class="animated slideInUp"
-        leave-active-class="animated slideOutDown"
-        >
-      <div transition-show="jump-down"
-           class="bg-grey-8 q-py-md row justify-center fixed-bottom inset-shadow"
-           >
-      <q-btn flat class="q-mx-lg" @click="cancelEdit" color="grey-6">{{ $t('general.cancel') }}</q-btn>
-      <q-btn color="positive" class="q-px-xl q-mx-lg" @click="saveEntity">{{ $t('general.save') }}</q-btn>
-    </div>
-    </transition>
   </main>
 </template>
 <script>
@@ -46,6 +34,7 @@ export default {
       ready: false
     }
   },
+  props: ['saveBus'],
   computed: {
     title () {
       return this.$t('content.title')
@@ -56,7 +45,11 @@ export default {
       title: this.title
     }
   },
+  beforeDestroy () {
+    this.removeSaveButton()
+  },
   async mounted () {
+    this.removeSaveButton()
     if (this.$store.state.ui.config.models === undefined) {
       this.$store.watch(
         (state) => state.ui.config.models,
@@ -74,6 +67,7 @@ export default {
   },
   methods: {
     async getEntity () {
+      this.removeSaveButton()
       let entityId = this.$route.params.entity_id
       if (entityId === 'new') {
         await this.$store.dispatch('content/newEntity', { model: this.$route.params.model, parent_id: this.$route.params.parent_id })
@@ -81,6 +75,7 @@ export default {
         await this.$store.dispatch('content/getEntity', entityId)
       }
       this.ready = true
+      this.addSaveButton()
     },
     async saveEntity () {
       let call
@@ -109,6 +104,15 @@ export default {
       } else {
         this.$router.push({ name: 'content', params: { entity_id: this.$route.params.entity_id } })
       }
+    },
+    addSaveButton () {
+      this.saveBus.$on('on-save', this.saveEntity)
+      this.saveBus.$on('on-cancel', this.cancelEdit)
+      this.$store.commit('ui/setSaveButton', true)
+    },
+    removeSaveButton () {
+      this.saveBus.$off()
+      this.$store.commit('ui/setSaveButton', false)
     }
   }
 }

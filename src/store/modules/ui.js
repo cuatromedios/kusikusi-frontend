@@ -11,6 +11,10 @@ const state = {
   editorLang: null,
   currentTitle: '',
   loading: false,
+  toolbar: {
+    editButton: false,
+    saveButton: false
+  },
   menuItems: {
     dashboard: {
       label: 'dashboard.title',
@@ -100,6 +104,12 @@ const mutations = {
   setEditorLang (state, newLang) {
     LocalStorage.set('editorLang', newLang)
     state.editorLang = newLang
+  },
+  setEditButton (state, show) {
+    state.toolbar.editButton = show
+  },
+  setSaveButton (state, show) {
+    state.toolbar.saveButton = show
   }
 }
 

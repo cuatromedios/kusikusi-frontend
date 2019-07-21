@@ -24,17 +24,6 @@
            class="q-mb-lg">
       </div>
     </div>
-    <q-page-sticky
-        position="top-right"
-        :offset="[0,0]"
-        v-if="_.get($store, 'state.ui.config.models[' + $store.state.content.entity.model + '].editor.length')">
-      <q-btn color="primary"
-             class="q-mr-lg q-mt-sm"
-             icon="edit" type="a"
-             :label="$t('general.edit')"
-             :to="{ name: 'contentEdit', params: { entity_id: this.entityId } }"
-      />
-    </q-page-sticky>
   </main>
 </template>
 <script>
@@ -54,6 +43,7 @@ export default {
       entityId: undefined
     }
   },
+  props: ['editBus'],
   computed: {
     title () {
       return this.$t('content.title')
@@ -67,6 +57,9 @@ export default {
   async mounted () {
     await this.getEntity()
   },
+  beforeDestroy () {
+    this.removeEditButton()
+  },
   watch: {
     '$route' (to, from) {
       this.getEntity()
@@ -75,9 +68,22 @@ export default {
   methods: {
     async getEntity () {
       this.ready = false
+      this.removeEditButton()
       this.entityId = this.$route.params.entity_id || 'home'
       await this.$store.dispatch('content/getEntity', this.entityId)
+      this.addEditButton()
       this.ready = true
+    },
+    edit () {
+      this.$router.push({ name: 'contentEdit', params: { entity_id: this.entityId } })
+    },
+    addEditButton () {
+      this.editBus.$on('on-edit', this.edit)
+      this.$store.commit('ui/setEditButton', this._.get(this.$store, 'state.ui.config.models[' + this.$store.state.content.entity.model + '].editor.length') > 0)
+    },
+    removeEditButton () {
+      this.editBus.$off()
+      this.$store.commit('ui/setEditButton', false)
     }
   }
 }
