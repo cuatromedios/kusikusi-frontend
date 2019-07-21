@@ -37,7 +37,21 @@
               <q-item-label caption>{{ entity.contents.url || '' }}</q-item-label>
             </q-item-section>
             <q-item-section side bottom>
-              <q-item-label caption>{{ $moment(entity.publicated_at).fromNow() }}  <q-icon name="lens" :color="entity.active ? (entity.published ? 'positive' : 'warning') : 'negative'" /></q-item-label>
+              <q-item-label caption>{{ $moment(entity.publicated_at).fromNow() }} <q-icon name="lens" :color="entity.active ? (entity.published ? 'positive' : 'warning') : 'negative'" /> <q-icon name="info">
+                <q-popup-proxy>
+                  <q-card>
+                    <q-card-section class="text-caption">
+                      ID: <strong style="white-space: nowrap">{{ entity.id }}</strong><br>
+                      Model: <strong>{{ entity.model }}</strong><br>
+                      Active: <strong>{{ entity.active }}</strong><br>
+                      From: <strong>{{ entity.publicated_at }}</strong><br>
+                      To: <strong>{{ entity.unpublicated_at }}</strong><br>
+                      Created: <strong>{{ entity.created_at }}</strong><br>
+                      Updated: <strong>{{ entity.updated_at }}</strong><br>
+                    </q-card-section>
+                  </q-card>
+                </q-popup-proxy>
+              </q-icon></q-item-label>
             </q-item-section>
           </q-item>
         </draggable>

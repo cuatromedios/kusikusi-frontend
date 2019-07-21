@@ -7,6 +7,21 @@
         </div>
         <div class="col-auto">
           {{ $moment($store.state.content.entity.publicated_at).fromNow() }}  <q-icon name="lens" :color="$store.state.content.entity.active ? ($store.state.content.entity.published ? 'positive' : 'warning') : 'negative'" />
+          <q-icon name="info">
+            <q-popup-proxy>
+              <q-card>
+                <q-card-section class="text-caption">
+                  ID: <strong style="white-space: nowrap">{{ $store.state.content.entity.id }}</strong><br>
+                  Model: <strong>{{ $store.state.content.entity.model }}</strong><br>
+                  Active: <strong>{{ $store.state.content.entity.active }}</strong><br>
+                  From: <strong>{{ $store.state.content.entity.publicated_at }}</strong><br>
+                  To: <strong>{{ $store.state.content.entity.unpublicated_at }}</strong><br>
+                  Created: <strong>{{ $store.state.content.entity.created_at }}</strong><br>
+                  Updated: <strong>{{ $store.state.content.entity.updated_at }}</strong><br>
+                </q-card-section>
+              </q-card>
+            </q-popup-proxy>
+          </q-icon>
         </div>
       </div>
     </q-card-section>
