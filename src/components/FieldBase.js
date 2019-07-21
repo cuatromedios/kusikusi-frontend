@@ -18,16 +18,25 @@ export default {
     fieldReference: {
       get: function () {
         let fieldParts = this.field.split('.')
+        let field
         if (fieldParts.length === 1) {
-          return this.$store.state.content.entity[fieldParts[0]]
+          field = this.$store.state.content.entity[fieldParts[0]]
         } else if (fieldParts[0] === 'contents') {
           if (!this.$store.state.content.entity[fieldParts[0]][this.lang]) {
             this.$store.commit('content/addLanguage', this.lang)
           }
-          return this.$store.state.content.entity[fieldParts[0]][this.lang][fieldParts[1]]
+          if (this.$store.getters['content/getField'](`${fieldParts[0]}.${this.lang}.${fieldParts[1]}`) === undefined) {
+            this.$store.commit('content/setEntityValue', {
+              field: this.field,
+              lang: this.lang,
+              value: ''
+            })
+          }
+          field = this.$store.state.content.entity[fieldParts[0]][this.lang][fieldParts[1]]
         } else {
-          return this.$store.state.content.entity[fieldParts[0]][fieldParts[1]]
+          field = this.$store.state.content.entity[fieldParts[0]][fieldParts[1]]
         }
+        return field
       },
       set: function (value) {
         this.$store.commit('content/setEntityValue', {

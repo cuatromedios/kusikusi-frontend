@@ -54,9 +54,9 @@ const actions = {
     commit('setEntityValue', { field: 'id', value: undefined })
   },
   async newEntity ({ commit, rootGetters }, entity) {
-    let newEntity = { id: 'new', contents: {} }
+    let newEntity = { id: 'new', contents: { } }
     for (let l in rootGetters['ui/langs']) {
-      newEntity.contents[rootGetters['ui/langs'][l]] = { summary: 'S', content: 'C' }
+      newEntity.contents[rootGetters['ui/langs'][l]] = { }
     }
     let merged = { ...newEntity, ...entity }
     let call = await Api.get(`/entity/${entity.parent_id}/forEdit`)
