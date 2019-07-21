@@ -27,7 +27,7 @@ import FieldWrapper from '../components/FieldWrapper'
 import LangTabs from '../components/LangTabs'
 export default {
   components: { FieldWrapper, LangTabs },
-  name: 'Content',
+  name: 'ContentEdit',
   data () {
     return {
       showLangMenu: true,
@@ -89,20 +89,20 @@ export default {
         this.$store.dispatch('content/clearId')
         call = await this.$api.post(`/entity`, this.$store.state.content.entity)
         if (call.success) {
-          this.$router.push({ name: 'content', params: { entity_id: call.result.id } })
+          this.$router.push({ name: 'contentDisplay', params: { entity_id: call.result.id } })
         }
       } else {
         call = await this.$api.patch(`/entity/${this.$route.params.entity_id}`, this.$store.state.content.entity)
         if (call.success) {
-          this.$router.push({ name: 'content', params: { entity_id: this.$route.params.entity_id } })
+          this.$router.push({ name: 'contentDisplay', params: { entity_id: this.$route.params.entity_id } })
         }
       }
     },
     async cancelEdit () {
       if (this.$route.params.entity_id === 'new') {
-        this.$router.push({ name: 'content', params: { entity_id: this.$route.params.parent_id } })
+        this.$router.push({ name: 'contentDisplay', params: { entity_id: this.$route.params.parent_id } })
       } else {
-        this.$router.push({ name: 'content', params: { entity_id: this.$route.params.entity_id } })
+        this.$router.push({ name: 'contentDisplay', params: { entity_id: this.$route.params.entity_id } })
       }
     },
     addSaveButton () {

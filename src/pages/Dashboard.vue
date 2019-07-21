@@ -10,7 +10,7 @@
           <q-item clickable v-ripple
                   v-for="entity in $store.getters['session/entitiesWithPermissions']"
                   :key="entity.id"
-                  :to="{name: 'content', params: {entity_id: entity.id}}">
+                  :to="{name: 'contentDisplay', params: {entity_id: entity.id}}">
             <q-item-section>
               <div class="row justify-between">
                 <div class="text-h6">

@@ -31,7 +31,7 @@
               <q-item-label class="text-body2 text-weight-bold text-primary" >
                 <q-btn flat dense class="q-pa-none full-width"
                        align="left"
-                       :to="{name: 'content', params: {entity_id: entity.id}}"
+                       :to="{name: 'contentDisplay', params: {entity_id: entity.id}}"
                 >{{ entity.contents.title || entity.name || entity.model }}</q-btn>
               </q-item-label>
               <q-item-label caption>{{ entity.contents.url || '' }}</q-item-label>

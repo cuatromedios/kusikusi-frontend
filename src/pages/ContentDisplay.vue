@@ -12,7 +12,7 @@
       <q-breadcrumbs class="q-mb-sm q-mt-none">
         <q-breadcrumbs-el v-for="ancestor in $store.getters['content/getBreadcrums']"
                           :key="ancestor.id"
-                          :to="{name: 'content', params: {entity_id: ancestor.id}}"
+                          :to="{name: 'contentDisplay', params: {entity_id: ancestor.id}}"
                           :icon="ancestor.icon"
                           :label="ancestor.title" />
       </q-breadcrumbs>
@@ -36,7 +36,7 @@ import FieldWrapper from '../components/FieldWrapper'
 
 export default {
   components: { EntityHeader, EntityCard, Children, MediaStrip, MediaGrid, FieldWrapper },
-  name: 'Content',
+  name: 'ContentDisplay',
   data () {
     return {
       ready: false,

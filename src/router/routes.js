@@ -36,8 +36,8 @@ let routes = [
       },
       {
         path: '/content/:entity_id?',
-        component: () => import('pages/ContentView'),
-        name: 'content'
+        component: () => import('pages/ContentDisplay'),
+        name: 'contentDisplay'
       },
       {
         path: '/media',

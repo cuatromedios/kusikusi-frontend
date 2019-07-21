@@ -10,7 +10,7 @@
 <script>
 export default {
   components: {},
-  name: 'Content',
+  name: 'Media',
   data () {
     return {
     }
