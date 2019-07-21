@@ -4,7 +4,7 @@
              :filled="true"
              v-model="fieldReference"
              :label="$t(label)"
-             :debounce="1000"
+             :debounce="500"
              v-bind="props"
     />
   </div>
