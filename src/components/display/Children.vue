@@ -37,7 +37,7 @@
               <q-item-label caption>{{ entity.contents.url || '' }}</q-item-label>
             </q-item-section>
             <q-item-section side bottom>
-              <q-item-label caption>{{ $moment(entity.publicated_at).fromNow() }}  <q-icon name="lens" :color="entity.published ? 'positive' : 'negative'" /></q-item-label>
+              <q-item-label caption>{{ $moment(entity.publicated_at).fromNow() }}  <q-icon name="lens" :color="entity.active ? (entity.published ? 'positive' : 'warning') : 'negative'" /></q-item-label>
             </q-item-section>
           </q-item>
         </draggable>
