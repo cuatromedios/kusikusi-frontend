@@ -1,7 +1,14 @@
 <template>
   <q-card flat bordered class="my-card q-mb-lg entity-card">
     <q-card-section>
-      <h2><q-icon :name="$store.state.ui.config.models[$store.state.content.entity.model].icon || 'note' "/> {{ $store.state.ui.config.models[$store.state.content.entity.model].name }}</h2>
+      <div class="row">
+        <div class="col">
+          <h2><q-icon :name="$store.state.ui.config.models[$store.state.content.entity.model].icon || 'note' "/> {{ $store.state.ui.config.models[$store.state.content.entity.model].name }}</h2>
+        </div>
+        <div class="col-auto">
+          {{ $moment($store.state.content.entity.publicated_at).fromNow() }}  <q-icon name="lens" :color="$store.state.content.entity.active ? ($store.state.content.entity.published ? 'positive' : 'warning') : 'negative'" />
+        </div>
+      </div>
     </q-card-section>
     <q-card-section>
       <h1>{{ title }}</h1>
