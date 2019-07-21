@@ -1,10 +1,10 @@
 <template>
   <div>
-    <q-input class="q-mb-sm"
+    <q-toggle class="q-mb-sm"
              :filled="true"
              v-model="fieldReference"
              :label="$t(label)"
-             :debounce="250"
+             :debounce="500"
              v-bind="props"
     />
   </div>
@@ -13,7 +13,7 @@
 <script>
 import FieldBase from '../FieldBase.js'
 export default {
-  name: 'TextField',
+  name: 'BooleanField',
   mixins: [FieldBase],
   props: ['label', 'props']
 }

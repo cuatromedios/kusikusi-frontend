@@ -38,7 +38,10 @@ export default {
       contents: 'Contents',
       title: 'Title',
       summary: 'Summary',
-      url: 'Access'
+      url: 'Access',
+      published_at: 'Publish at',
+      unpublished_at: 'Stop publishing at',
+      active: 'Is active'
     }
   },
   media: {

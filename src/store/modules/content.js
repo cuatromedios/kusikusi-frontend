@@ -1,10 +1,17 @@
 import Vue from 'vue'
 import Api from '../../tools/Api'
 import _ from 'lodash'
+import moment from 'moment'
 
 // initial state
+
+const blankEntity = {
+  contents: [],
+  active: true
+}
+
 const state = {
-  entity: { contents: [] },
+  entity: _.clone(blankEntity),
   relations: [],
   children: [],
   ancestors: []
@@ -45,7 +52,7 @@ const getters = {
 // actions
 const actions = {
   clear ({ commit }) {
-    commit('setEntity', { contents: {} })
+    commit('setEntity', _.clone(blankEntity))
     commit('setRelations', [])
     commit('setChildren', [])
     commit('setAncestors', [])
@@ -54,7 +61,9 @@ const actions = {
     commit('setEntityValue', { field: 'id', value: undefined })
   },
   async newEntity ({ commit, rootGetters }, entity) {
-    let newEntity = { id: 'new', contents: { } }
+    let newEntity = _.clone(blankEntity)
+    newEntity.id = 'new'
+    newEntity.publicated_at = moment().format()
     for (let l in rootGetters['ui/langs']) {
       newEntity.contents[rootGetters['ui/langs'][l]] = { }
     }

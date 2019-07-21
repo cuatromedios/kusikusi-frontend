@@ -36,16 +36,7 @@ import FieldBase from '../FieldBase.js'
 export default {
   name: 'HtmlField',
   mixins: [FieldBase],
-  props: {
-    label: {
-      type: String,
-      default: ''
-    },
-    props: {
-      type: Object,
-      default: () => { return {} }
-    }
-  },
+  props: ['label', 'props'],
   mounted () {
     document.execCommand('defaultParagraphSeparator', false, 'p')
   },

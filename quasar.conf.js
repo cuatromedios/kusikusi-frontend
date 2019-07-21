@@ -70,7 +70,10 @@ module.exports = function (ctx) {
         'QLinearProgress',
         'QEditor',
         'QBreadcrumbs',
-        'QBreadcrumbsEl'
+        'QBreadcrumbsEl',
+        'QDate',
+        'QTime',
+        'QPopupProxy'
       ],
 
       directives: [

@@ -22,20 +22,7 @@ import FieldBase from '../FieldBase.js'
 export default {
   name: 'TextField',
   mixins: [FieldBase],
-  props: {
-    label: {
-      type: String,
-      default: ''
-    },
-    lang: {
-      type: String,
-      default: ''
-    },
-    props: {
-      type: Object,
-      default: () => { return {} }
-    }
-  },
+  props: ['label', 'lang', 'props'],
   data () {
     return {
       auto: false
