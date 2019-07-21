@@ -24,7 +24,7 @@ const state = {
     content: {
       label: 'content.title',
       icon: 'home',
-      name: router.names.content
+      name: router.names.contentDisplay
     },
     media: {
       label: 'media.title',
