@@ -35,7 +35,7 @@ const getters = {
         })
       }
     }
-    if (rootState.ui.config.models && state.entity.model) {
+    if (_.get(rootState, 'ui.config.models', null) && _.get(state, 'entity.model', null)) {
       ancestors.push({
         id: state.entity.id,
         title: _.get(state.entity, 'contents.title') || state.entity.name || state.entity.model,
