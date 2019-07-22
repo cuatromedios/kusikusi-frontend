@@ -24,7 +24,8 @@
       <q-list bordered separator>
         <draggable v-model="childrenList">
           <child-item
-              v-for="entity in childrenList"
+              :class="{'bg-white': index % 2 === 0, 'bg-grey-2': index % 2 !== 0}"
+              v-for="(entity, index) in childrenList"
               :key="entity.id"
               :entity="entity"
               :tags="tags"
