@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import { LocalStorage } from 'quasar'
 import Api from '../../tools/Api'
-import lodash from 'lodash'
+import _ from 'lodash'
 import router from '../../router'
 
 // initial state
@@ -52,7 +52,7 @@ const state = {
 // getters
 const getters = {
   langs: (state) => {
-    return state.config.langs
+    return _.get(state, 'config.langs', [])
   },
   defaultLang: (state) => {
     if (state.config && state.config.langs) {
@@ -62,7 +62,7 @@ const getters = {
     }
   },
   menu: (state, getters, rootState, rootGetters) => {
-    let menu = lodash.clone(lodash.get(state, `config.menu.${rootState.session.user.profile}`))
+    let menu = _.clone(_.get(state, `config.menu.${rootState.session.user.profile}`))
     if (!menu) {
       if (rootState.session.user.profile === 'admin') {
         menu = [state.menuItems.dashboard, state.menuItems.content, state.menuItems.media, state.menuItems.users, state.menuItems.configuration]
