@@ -6,7 +6,7 @@ import moment from 'moment'
 // initial state
 
 const blankEntity = {
-  contents: [],
+  contents: {},
   active: true
 }
 
@@ -65,7 +65,7 @@ const actions = {
     newEntity.id = 'new'
     newEntity.publicated_at = moment().format()
     for (let l in rootGetters['ui/langs']) {
-      newEntity.contents[rootGetters['ui/langs'][l]] = { }
+      Vue.set(newEntity.contents, rootGetters['ui/langs'][l], {})
     }
     let merged = { ...newEntity, ...entity }
     let call = await Api.get(`/entity/${entity.parent_id}/forEdit`)
@@ -141,7 +141,9 @@ const mutations = {
     if (fieldParts.length === 1) {
       Vue.set(state.entity, fieldParts[0], payload.value)
     } else if (fieldParts[0] === 'contents') {
-      if (!state.entity.contents[payload.lang]) state.entity.contents[payload.lang] = {}
+      if (!state.entity.contents[payload.lang]) {
+        Vue.set(state.entity.contents, payload.lang, {})
+      }
       Vue.set(state.entity.contents[payload.lang], fieldParts[1], payload.value)
     } else {
       if (!state.entity[fieldParts[1]]) state.entity[fieldParts[1]] = {}
