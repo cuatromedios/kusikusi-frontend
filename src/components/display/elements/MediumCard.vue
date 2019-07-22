@@ -3,7 +3,7 @@
     <q-img
         :src="`${mediaUrl}${entity.medium.thumb}`"
         class=""
-        v-if="['jpg', 'png', 'gif'].indexOf(entity.medium.format) !== -1"
+        v-if="['jpg', 'png', 'gif'].indexOf(_.get(entity, 'medium.format')) !== -1"
         basic
         :ratio="1"
     >
@@ -13,7 +13,7 @@
         </div>
       </template>
     </q-img>
-    <div v-if="['jpg', 'png', 'gif'].indexOf(entity.medium.format) === -1"
+    <div v-if="['jpg', 'png', 'gif'].indexOf(_.get(entity, 'medium.format')) === -1"
          class="flex flex-center bg-grey full-width text-white square">
       <q-avatar
           icon="attachment"
@@ -25,12 +25,12 @@
                     v-if="tags && tags.length > 0"
                    >
       <q-chip v-if="tags && tags.length > 0 && notUsedTags.length > 0"
-              dense
+              dense outline
               color="positive" text-color="white"
               icon-right="add"
               class="float-right cursor-pointer">
-        <q-avatar icon="local_offer" color="grey-5" text-color="white" />
-        {{ $t('general.add') }} {{ $t('media.tag') }}
+        <q-avatar icon="local_offer" text-color="grey" />
+        {{ $t('media.tag') }}
         <q-menu>
           <q-list style="min-width: 100px">
             <q-item v-for="(tag, index) in notUsedTags"
@@ -54,8 +54,8 @@
     </q-card-section>
     <q-card-actions align="around" class="media-card-actions">
       <div class="media-card-actions-title" style="width: 80%">
-        <span class="ellipsis">{{ entity.medium.filename || entity.id }}</span><br>
-        <span class="text-grey-5">{{ Math.round(entity.medium.size / 1024) }} Kb</span>
+        <span class="ellipsis">{{ _.get(entity, 'medium.filename') || entity.id }}</span><br>
+        <span class="text-grey-5">{{ Math.round(_.get(entity, 'medium.size', 1) / 1024) }} Kb</span>
       </div>
       <q-btn style="width: 20%" flat size="small" dense icon="delete" color="grey-4" @click="deleteRelation"></q-btn>
     </q-card-actions>
@@ -103,7 +103,6 @@ export default {
       this.updateTags()
     },
     async removeTag (tag) {
-      console.log(tag)
       this.entity.tags = this._.without(this.entity.tags, tag)
       this.updateTags()
     },
