@@ -104,6 +104,7 @@ module.exports = function (ctx) {
       scopeHoisting: true,
       vueRouterMode: 'history',
       publicPath: '/cms/',
+      distDir: process.env.DIST_DIR ? process.env.DIST_DIR : `dist/${ctx.modeName}`,
       // vueCompiler: true,
       // gzip: true,
       // analyze: true,
