@@ -12,9 +12,8 @@
 export default {
   name: 'Home',
   mounted () {
-    console.log('home', this.$store.getters['session/hasAuthtoken'])
     if (this.$store.getters['session/hasAuthtoken']) {
-      this.$router.push({ name: 'dashboard' })
+      this.$router.push({ name: 'login' })
     } else {
       this.$router.push({ name: 'login' })
     }

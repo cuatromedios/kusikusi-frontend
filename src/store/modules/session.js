@@ -1,5 +1,6 @@
 import { LocalStorage } from 'quasar'
 import Api from '../../tools/Api'
+import _ from 'lodash'
 
 // initial state
 const state = {
@@ -16,7 +17,7 @@ const getters = {
   },
   entitiesWithWritePermissions (state) {
     let entities = []
-    for (let e = 0; e < state.user.permissions.length; e++) {
+    for (let e = 0; e < _.get(state, 'user.permissions.length', 0); e++) {
       if (state.user.permissions[e].write !== 'none' && state.user.permissions[e].read !== 'none') {
         let entity = state.user.permissions[e].entity
         entity.write = state.user.permissions[e].write
@@ -28,7 +29,7 @@ const getters = {
   },
   entitiesWithPermissions (state) {
     let entities = []
-    for (let e = 0; e < state.user.permissions.length; e++) {
+    for (let e = 0; e < _.get(state, 'user.permissions.length', 0); e++) {
       if (state.user.permissions[e].read !== 'none') {
         let entity = state.user.permissions[e].entity
         entity.write = state.user.permissions[e].write
