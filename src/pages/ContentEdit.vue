@@ -26,7 +26,7 @@
              @click="deleteEntity" >
         {{ $t('general.delete') }}
       </q-btn>
-      <q-btn v-if="_.get($store, 'state.content.entity.id') === 'new' && _.get($store, 'state.session.user.profile') === 'editor'"
+      <q-btn v-if="_.get($store, 'state.content.entity.id') === 'new' && _.get($store, 'state.session.user.profile') === 'admin'"
              flat size="xs" class="q-mt-md"
              color="grey-5"
              @click="showCustomId = true">
