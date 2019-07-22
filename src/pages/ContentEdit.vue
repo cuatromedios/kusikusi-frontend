@@ -21,11 +21,22 @@
       </q-card>
     </div>
     <div class="text-center">
-      <q-btn v-if="$store.state.content.entity.id !== 'new'"
+      <q-btn v-if="ready && $store.state.content.entity.id !== 'new'"
              flat color="negative" size="xs" class="q-mt-md"
              @click="deleteEntity" >
         {{ $t('general.delete') }}
       </q-btn>
+      <q-btn v-if="_.get($store, 'state.content.entity.id') === 'new' && _.get($store, 'state.session.user.profile') === 'editor'"
+             flat size="xs" class="q-mt-md"
+             color="grey-5"
+             @click="showCustomId = true">
+        ID
+      </q-btn>
+      <q-input v-if="showCustomId"
+               v-model="customId"
+               outlined dense autofocus
+               mask='xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'
+               label="Custom ID"></q-input>
     </div>
   </main>
 </template>
@@ -38,7 +49,9 @@ export default {
   data () {
     return {
       showLangMenu: true,
-      ready: false
+      ready: false,
+      customId: '',
+      showCustomId: false
     }
   },
   props: ['saveBus'],
@@ -94,6 +107,9 @@ export default {
       }
       if (this.$route.params.entity_id === 'new') {
         this.$store.dispatch('content/clearId')
+        if (this.customId !== '') {
+          this.$store.state.content.entity.id = this.customId
+        }
         call = await this.$api.post(`/entity`, this.$store.state.content.entity)
         if (call.success) {
           this.$router.push({ name: 'contentDisplay', params: { entity_id: call.result.id } })
