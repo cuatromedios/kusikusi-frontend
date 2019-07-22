@@ -25,7 +25,7 @@ let routes = [
         name: 'dashboard'
       },
       {
-        path: '/content/:entity_id/:model/on/:parent_id',
+        path: '/content/:entity_id/:model/in/:parent_id',
         component: () => import('pages/ContentEdit'),
         name: 'contentNew'
       },
