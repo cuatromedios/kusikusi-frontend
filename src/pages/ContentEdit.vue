@@ -20,6 +20,13 @@
         </q-card-section>
       </q-card>
     </div>
+    <div class="text-center">
+      <q-btn v-if="$store.state.content.entity.id !== 'new'"
+             flat color="negative" size="xs" class="q-mt-md"
+             @click="deleteEntity" >
+        {{ $t('general.delete') }}
+      </q-btn>
+    </div>
   </main>
 </template>
 <script>
@@ -104,6 +111,27 @@ export default {
       } else {
         this.$router.push({ name: 'contentDisplay', params: { entity_id: this.$route.params.entity_id } })
       }
+    },
+    async deleteEntity () {
+      this.$q.dialog({
+        title: this.$t('general.sure'),
+        message: this.$t('content.editor.delete'),
+        color: 'negative',
+        cancel: {
+          flat: true,
+          label: this.$t('general.cancel'),
+          color: 'grey'
+        },
+        ok: {
+          color: 'negative',
+          label: this.$t('general.delete'),
+          icon: 'delete'
+        },
+        persistent: true
+      }).onOk(async () => {
+        await this.$api.delete(`/entity/${this.$route.params.entity_id}`)
+        this.$router.push({ name: 'contentDisplay', params: { entity_id: this.$store.state.content.entity.parent_id } })
+      })
     },
     addSaveButton () {
       this.saveBus.$on('on-save', this.saveEntity)

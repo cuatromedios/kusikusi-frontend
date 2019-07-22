@@ -41,7 +41,8 @@ export default {
       url: 'Access',
       published_at: 'Publish at',
       unpublished_at: 'Stop publishing at',
-      active: 'Is active'
+      active: 'Is active',
+      delete: 'Do you really want to delete this entity?'
     }
   },
   media: {
