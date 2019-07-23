@@ -8,7 +8,7 @@
               v-bind="group.props"
               >
         <q-card-section>
-          <h2>{{ $t(group.groupName) }}</h2>
+          <h2 class="q-mb-sm">{{ $t(group.groupName) }}</h2>
           <field-wrapper v-for="field in group.fields"
                v-bind:key="field.index"
                :label="field.label"

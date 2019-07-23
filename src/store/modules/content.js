@@ -80,11 +80,14 @@ const actions = {
     commit('setChildren', [])
     commit('setAncestors', ancestors)
   },
-  async getEntity ({ commit, dispatch }, entityId) {
+  async getEntity ({ commit, dispatch, rootState }, entityId) {
     dispatch('clear')
     let call = await Api.get(`/entity/${entityId}/forEdit`)
     if (call.success) {
       call.result.entity.contents = groupContents(call.result.entity.contents)
+      if (!_.get(rootState, 'ui.config.models.' + call.result.entity.model)) {
+        call.result.entity.model = 'undefined'
+      }
       commit('setEntity', call.result.entity)
       commit('setRelations', call.result.relations)
       for (let a = 0; a < call.result.ancestors.length; a++) {

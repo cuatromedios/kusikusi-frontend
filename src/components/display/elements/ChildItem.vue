@@ -1,6 +1,6 @@
 <template>
   <q-item>
-    <q-item-section avatar><q-icon :name="$store.state.ui.config.models[entity.model] ? $store.state.ui.config.models[entity.model].icon : 'insert_drive_file'"/></q-item-section>
+    <q-item-section avatar><q-icon :name="$store.state.ui.config.models[entity.model] ? $store.state.ui.config.models[entity.model].icon : 'blur_on'"/></q-item-section>
     <q-item-section>
       <q-item-label class="text-body2 text-weight-bold text-primary" >
         <q-btn flat dense class="q-pa-none full-width ellipsis"
