@@ -63,7 +63,7 @@ const actions = {
   async newEntity ({ commit, rootGetters }, entity) {
     let newEntity = _.clone(blankEntity)
     newEntity.id = 'new'
-    newEntity.publicated_at = moment().format()
+    newEntity.published_at = moment().format()
     for (let l in rootGetters['ui/langs']) {
       Vue.set(newEntity.contents, rootGetters['ui/langs'][l], {})
     }
