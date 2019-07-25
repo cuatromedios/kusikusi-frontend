@@ -9,7 +9,8 @@ module.exports = function (ctx) {
       'axios',
       'vuelidate',
       'lodash',
-      'moment'
+      'moment',
+      'components'
     ],
 
     css: [

@@ -63,6 +63,10 @@ export default {
       uploaded: 'Uploaded'
     }
   },
+  qr: {
+    title: 'QR Code',
+    print: 'Print'
+  },
   users: {
     title: 'Users'
   },

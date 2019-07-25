@@ -30,12 +30,13 @@
 import EntityHeader from '../components/display/EntityHeader'
 import EntityCard from '../components/display/EntityCard'
 import Children from '../components/display/Children'
+import QR from '../components/display/QR'
 import MediaStrip from '../components/display/MediaStrip'
 import MediaGrid from '../components/display/MediaGrid'
 import FieldWrapper from '../components/FieldWrapper'
 
 export default {
-  components: { EntityHeader, EntityCard, Children, MediaStrip, MediaGrid, FieldWrapper },
+  components: { EntityHeader, EntityCard, Children, MediaStrip, MediaGrid, FieldWrapper, QR },
   name: 'ContentDisplay',
   data () {
     return {

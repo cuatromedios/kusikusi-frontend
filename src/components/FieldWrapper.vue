@@ -26,6 +26,7 @@ import UrlField from './edit/UrlField'
 import HtmlField from './edit/HtmlField'
 import DatetimeField from './edit/DatetimeField'
 import BooleanField from './edit/BooleanField'
+
 export default {
   components: { TextField, HtmlField, UrlField, DatetimeField, BooleanField },
   name: 'FieldWrapper',
