@@ -137,7 +137,7 @@ export default {
       for (let f = 0; f < this.$refs.uploader.files.length; f++) {
         let file = this.$refs.uploader.files[f]
         let filenameParts = file.name.split('.')
-        let format = filenameParts[filenameParts.length - 1]
+        let format = filenameParts[filenameParts.length - 1].toLowerCase()
         let entity = {
           parent_id: 'media',
           model: 'medium',
