@@ -8,7 +8,7 @@
         :ratio="1"
     >
       <template v-slot:error>
-        <div class="absolute-full flex flex-center bg-negative text-white">
+        <div class="absolute-full flex flex-center bg-warning text-grey-8">
           Cannot load image
         </div>
       </template>
@@ -51,6 +51,12 @@
         <q-avatar icon="local_offer" color="grey-5" text-color="white" />
         {{ tag }}
       </q-chip>
+      <br>
+      <q-btn class="float-right q-mr-xs bg-white-25"
+             dense flat
+             icon="input"
+             @click="newMediaWindow(entity.id)"
+             />
     </q-card-section>
     <q-card-actions align="around" class="media-card-actions">
       <div class="media-card-actions-title" style="width: 80%">
@@ -108,6 +114,10 @@ export default {
     },
     async updateTags () {
       await this.$api.post(`/entity/${this.$store.state.content.entity.id}/relations`, { kind: 'medium', id: this.entity.id, depth: this.entity.depth, position: this.entity.position, tags: this.entity.tags })
+    },
+    newMediaWindow (entityId) {
+      let routeData = this.$router.resolve({ name: 'contentDisplay', params: { entity_id: entityId } })
+      window.open(routeData.href, '_blank')
     }
   }
 }

@@ -55,6 +55,12 @@ export default {
     select: 'Select or drop files...',
     tags: 'Tags',
     tag: 'tag',
+    details: 'Details',
+    filename: 'Original file name',
+    format: 'Format',
+    mimetype: 'Mime Type',
+    size: 'Size',
+    url: 'External URL',
     status: {
       title: 'Status',
       idle: 'Idle',
