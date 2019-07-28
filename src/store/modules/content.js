@@ -142,6 +142,7 @@ const mutations = {
   setEntityValue (state, payload) {
     let fieldParts = payload.field.split('.')
     if (fieldParts.length === 1) {
+      console.log('- entity')
       Vue.set(state.entity, fieldParts[0], payload.value)
     } else if (fieldParts[0] === 'contents') {
       if (!state.entity.contents[payload.lang]) {
@@ -149,8 +150,8 @@ const mutations = {
       }
       Vue.set(state.entity.contents[payload.lang], fieldParts[1], payload.value)
     } else {
-      if (!state.entity[fieldParts[1]]) state.entity[fieldParts[1]] = {}
-      Vue.set(state.entity[fieldParts[1]], payload.value)
+      if (!state.entity[fieldParts[0]]) Vue.set(state.entity, fieldParts[0], {})
+      Vue.set(state.entity[fieldParts[0]], fieldParts[1], payload.value)
     }
   },
   setRelations (state, newRelations) {
