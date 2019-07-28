@@ -28,7 +28,7 @@
               dense outline
               color="positive" text-color="white"
               icon-right="add"
-              class="float-right cursor-pointer">
+              class="float-right cursor-pointer bg-white-75">
         <q-avatar icon="local_offer" text-color="grey" />
         {{ $t('media.tag') }}
         <q-menu>
@@ -46,7 +46,7 @@
               :key="index"
               removable
               @remove="removeTag(tag)"
-              dense class="float-right"
+              dense class="float-right bg-white-75"
               >
         <q-avatar icon="local_offer" color="grey-5" text-color="white" />
         {{ tag }}
