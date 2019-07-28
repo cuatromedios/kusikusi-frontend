@@ -54,7 +54,7 @@
     </q-card-section>
     <q-card-actions align="around" class="media-card-actions">
       <div class="media-card-actions-title" style="width: 80%">
-        <span class="ellipsis">{{ _.get(entity, 'medium.filename') || entity.id }}</span><br>
+        <span class="ellipsis">{{ _.get(entity, 'contents.title') || entity.name || entity.model }}</span><br>
         <span class="text-grey-5">{{ Math.round(_.get(entity, 'medium.size', 1) / 1024) }} Kb</span>
       </div>
       <q-btn style="width: 20%" flat size="small" dense icon="delete" color="grey-4" @click="deleteRelation"></q-btn>

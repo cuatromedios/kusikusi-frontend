@@ -5,8 +5,9 @@
           ref="uploader"
           style="width: 36em; max-width: 90vw"
           field-name="file"
-          :headers="[{ name: 'Authorization', value: 'Bearer ' + this.$store.state.session.authtoken }]"
+          :headers="[{ name: 'Authorization', value: 'Bearer ' + $store.state.session.authtoken }]"
           :url="uploadUrl"
+          @added="added"
           @uploaded="uploaded"
       >
         <template v-slot:header="scope">
@@ -30,7 +31,7 @@
               {{ $t('media.select')}}
             </q-btn>
           </div>
-          <lang-tabs/>
+          <lang-tabs v-if="scope.files.length > 0"/>
           <q-list>
             <q-item v-for="file in scope.files" :key="file.name">
               <q-item-section
@@ -48,6 +49,16 @@
                 <q-icon name="attachment" style="width: 3.5rem; height: 4rem"/>
               </q-item-section>
               <q-item-section>
+                <q-item-label v-for="lang in $store.state.ui.config.langs"
+                        :key="lang">
+                  <q-input :filled="true"
+                           dense
+                           v-show="$store.state.ui.editorLang === lang"
+                           v-model="titles[file.name][lang].title"
+                           :label="$t('content.editor.title')"
+                           :debounce="250"
+                  />
+                </q-item-label>
                 <q-item-label class="full-width ellipsis">
                   {{ file.name }}
                 </q-item-label>
@@ -72,7 +83,7 @@
           </q-list>
           <div class="row justify-around q-mt-md" v-if="scope.files.length !== 0">
             <q-btn flat @click="closeDialog">{{ $t('general.cancel')}}</q-btn>
-            <q-btn color="positive" @click="startUpload">{{ $t('media.upload')}}</q-btn>
+            <q-btn color="positive" @click="startUpload" :disabled="uploading" :loading="uploading">{{ $t('media.upload')}}</q-btn>
           </div>
         </template>
       </q-uploader>
@@ -82,6 +93,7 @@
 
 <script>
 import LangTabs from '../LangTabs'
+import Vue from 'vue'
 export default {
   components: { LangTabs },
   name: 'MediumDialog',
@@ -99,7 +111,9 @@ export default {
   data () {
     return {
       open: false,
-      newEntityId: null
+      newEntityId: null,
+      uploading: false,
+      titles: {}
     }
   },
   computed: {
@@ -119,36 +133,46 @@ export default {
       this.open = this.entityId !== null
     },
     async startUpload () {
-      let file = this.$refs.uploader.files[0]
-      console.log(file)
-      let filenameParts = file.name.split('.')
-      let format = filenameParts[filenameParts.length - 1]
-      let entity = {
-        parent_id: 'media',
-        model: 'medium',
-        medium: {
-          size: file.size,
-          filename: file.name,
-          mimetype: file.type,
-          format: format
-        },
-        contents: {
-          title: filenameParts[0]
+      this.uploading = true
+      for (let f = 0; f < this.$refs.uploader.files.length; f++) {
+        let file = this.$refs.uploader.files[f]
+        let filenameParts = file.name.split('.')
+        let format = filenameParts[filenameParts.length - 1]
+        let entity = {
+          parent_id: 'media',
+          model: 'medium',
+          medium: {
+            size: file.size,
+            filename: file.name,
+            mimetype: file.type,
+            format: format
+          },
+          contents: this.titles[file.name]
+        }
+        let createResult = await this.$api.post(`/media`, entity)
+        if (createResult.success) {
+          let relationResult = await this.$api.post(`/entity/${this.$store.state.content.entity.id}/relations`, { kind: 'medium', id: createResult.result.id })
+          this.newEntityId = createResult.result.id
+          if (relationResult.success) {
+            this.$nextTick(() => {
+              this.$refs.uploader.upload()
+            })
+          }
         }
       }
-      let createResult = await this.$api.post(`/media`, entity)
-      if (createResult.success) {
-        let relationResult = await this.$api.post(`/entity/${this.$store.state.content.entity.id}/relations`, { kind: 'medium', id: createResult.result.id })
-        this.newEntityId = createResult.result.id
-        if (relationResult.success) {
-          this.$nextTick(() => {
-            this.$refs.uploader.upload()
-          })
+    },
+    added (files) {
+      for (let f = 0; f < files.length; f++) {
+        Vue.set(this.titles, files[f].name, {})
+        for (let l = 0; l < this.$store.state.ui.config.langs.length; l++) {
+          Vue.set(this.titles[files[f].name], this.$store.state.ui.config.langs[l], {})
+          Vue.set(this.titles[files[f].name][this.$store.state.ui.config.langs[l]], 'title', this._.sentenceFromFilename(files[f].name))
         }
       }
     },
     uploaded (info) {
       this.closeDialog()
+      this.uploading = false
       this.$router.go()
     }
   }

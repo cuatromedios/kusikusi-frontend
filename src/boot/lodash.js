@@ -26,7 +26,13 @@ function slugify (string = '', lang = 'en') {
     .replace(/^-+/, '') // Trim - from start of text
     .replace(/-+$/, '') // Trim - from end of text
 }
-_.mixin({ 'slugify': slugify })
+function sentenceFromFilename (string = '') {
+  return _.trim((_.upperFirst(_.toLower(_.dropRight(string.split('.')).join(' ')))).replace(/_|-/g, ' '))
+}
+_.mixin({
+  'slugify': slugify,
+  'sentenceFromFilename': sentenceFromFilename
+})
 
 export default ({ Vue }) => {
   Vue.prototype._ = _
