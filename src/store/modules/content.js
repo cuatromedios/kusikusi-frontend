@@ -60,9 +60,23 @@ const actions = {
   clearId ({ commit }) {
     commit('setEntityValue', { field: 'id', value: undefined })
   },
-  async newEntity ({ commit, rootGetters }, entity) {
+  async newEntity ({ commit, rootGetters, rootState }, entity) {
     let newEntity = _.clone(blankEntity)
     newEntity.id = 'new'
+    if (entity.model) {
+      let editorGroups = _.get(rootState, 'ui.config.models.' + entity.model + '.editor')
+      if (editorGroups && editorGroups.length) {
+        for (let g in editorGroups) {
+          for (let f in editorGroups[g].fields) {
+            let fieldName = editorGroups[g].fields[f].field
+            let fieldParts = fieldName.split('.')
+            if (fieldParts[0] === entity.model) {
+              Vue.set(newEntity, entity.model, {})
+            }
+          }
+        }
+      }
+    }
     newEntity.published_at = moment().format()
     for (let l in rootGetters['ui/langs']) {
       Vue.set(newEntity.contents, rootGetters['ui/langs'][l], {})
