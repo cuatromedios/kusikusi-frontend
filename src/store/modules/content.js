@@ -156,7 +156,6 @@ const mutations = {
   setEntityValue (state, payload) {
     let fieldParts = payload.field.split('.')
     if (fieldParts.length === 1) {
-      console.log('- entity')
       Vue.set(state.entity, fieldParts[0], payload.value)
     } else if (fieldParts[0] === 'contents') {
       if (!state.entity.contents[payload.lang]) {
