@@ -129,6 +129,12 @@
               <q-item-label class="text-weight-medium">{{ $store.state.content.entity.medium.url || '-' }}</q-item-label>
             </q-item-section>
           </q-item>
+          <q-item>
+            <q-item-section>
+              <q-item-label caption>{{ $t('media.lang') }}</q-item-label>
+              <q-item-label class="text-weight-medium">{{ $store.state.content.entity.medium.lang || '-' }}</q-item-label>
+            </q-item-section>
+          </q-item>
         </q-list>
       </div>
     </q-card-section>
