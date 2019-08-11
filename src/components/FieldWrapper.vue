@@ -26,9 +26,10 @@ import UrlField from './edit/UrlField'
 import HtmlField from './edit/HtmlField'
 import DatetimeField from './edit/DatetimeField'
 import BooleanField from './edit/BooleanField'
+import SelectField from './edit/SelectField'
 
 export default {
-  components: { TextField, HtmlField, UrlField, DatetimeField, BooleanField },
+  components: { TextField, HtmlField, UrlField, DatetimeField, BooleanField, SelectField },
   name: 'FieldWrapper',
   props: {
     label: {

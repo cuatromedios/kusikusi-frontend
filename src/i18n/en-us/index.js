@@ -62,6 +62,7 @@ export default {
     mimetype: 'Mime Type',
     size: 'Size',
     url: 'External URL',
+    lang: 'Lenguaje del medio',
     status: {
       title: 'Status',
       idle: 'Idle',
