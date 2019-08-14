@@ -21,42 +21,59 @@
           text-color="white" size="64px"
       />
     </div>
-    <q-card-section class="absolute-top-right q-pa-xs"
-                    v-if="tags && tags.length > 0"
-                   >
-      <q-chip v-if="tags && tags.length > 0 && notUsedTags.length > 0"
-              dense outline
-              color="positive" text-color="white"
-              icon-right="add"
-              class="float-right cursor-pointer bg-white-75">
-        <q-avatar icon="local_offer" text-color="grey" />
-        {{ $t('media.tag') }}
-        <q-menu>
-          <q-list style="min-width: 100px">
-            <q-item v-for="(tag, index) in notUsedTags"
-                    :key="index"
-                    @click="addTag(tag)"
-                    dense clickable v-close-popup>
-              <q-item-section>{{ tag }}</q-item-section>
-            </q-item>
-          </q-list>
-        </q-menu>
-      </q-chip>
-      <q-chip v-for="(tag, index) in entity.tags"
-              :key="index"
-              removable
-              @remove="removeTag(tag)"
-              dense class="float-right bg-white-75"
-              >
-        <q-avatar icon="local_offer" color="grey-5" text-color="white" />
-        {{ tag }}
-      </q-chip>
-      <br>
-      <q-btn class="float-right q-mr-xs bg-white-25"
-             dense flat
-             icon="input"
-             @click="newMediaWindow(entity.id)"
-             />
+    <q-card-section class="absolute-top-right q-pa-xs">
+      <div v-if="tags && tags.length > 0">
+        <q-chip v-if="tags && tags.length > 0 && notUsedTags.length > 0"
+                dense outline
+                color="positive" text-color="white"
+                icon-right="add"
+                class="float-right cursor-pointer bg-white-75">
+          <q-avatar icon="local_offer" text-color="grey" />
+          {{ $t('media.tag') }}
+          <q-menu>
+            <q-list style="min-width: 100px">
+              <q-item v-for="(tag, index) in notUsedTags"
+                      :key="index"
+                      @click="addTag(tag)"
+                      dense clickable v-close-popup>
+                <q-item-section>{{ tag }}</q-item-section>
+              </q-item>
+            </q-list>
+          </q-menu>
+        </q-chip>
+        <q-chip v-for="(tag, index) in entity.tags"
+                :key="index"
+                removable
+                @remove="removeTag(tag)"
+                dense class="float-right bg-white-75"
+        >
+          <q-avatar icon="local_offer" color="grey-5" text-color="white" />
+          {{ tag }}
+        </q-chip>
+      </div>
+      <div>
+        <q-btn class="float-right q-mr-xs bg-white-25"
+               dense flat
+               icon="input"
+               @click="newMediaWindow(entity.id)"
+        />
+        <div class="float-right q-mr-sm">{{ entity.medium.lang }}</div>
+        <q-icon name="info" class="float-right q-mr-sm ">
+          <q-popup-proxy>
+            <q-card>
+              <q-card-section class="text-caption">
+                ID: <strong style="white-space: nowrap">{{ entity.id }}</strong><br>
+                Model: <strong>{{ entity.model }}</strong><br>
+                Format: <strong>{{ entity.medium.format }}</strong><br>
+                Size: <strong>{{ entity.medium.size }}</strong><br>
+                Lang: <strong>{{ entity.medium.lang }}</strong><br>
+                Mimetype: <strong>{{ entity.medium.mimetype }}</strong><br>
+                Url: <strong>{{ entity.medium.url }}</strong><br>
+              </q-card-section>
+            </q-card>
+          </q-popup-proxy>
+        </q-icon>
+      </div>
     </q-card-section>
     <q-card-actions align="around" class="media-card-actions">
       <div class="media-card-actions-title" style="width: 80%">
